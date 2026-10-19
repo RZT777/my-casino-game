@@ -28,7 +28,7 @@
   }
 
   .phone {
-    width: 100%; max-width: 420px; height: 100vh;
+    width: 100%; max-width: 480px; height: 100vh;
     background: var(--bg-main);
     position: relative; display: flex; flex-direction: column; overflow: hidden;
     box-shadow: 0 0 50px rgba(0,0,0,1);
@@ -75,10 +75,10 @@
   }
   .app-screen.active { transform: translateX(0); }
 
-  .app-header { display: flex; align-items: center; padding: 12px 16px; background: var(--bg-panel); border-bottom: 1px solid var(--border); }
+  .app-header { display: flex; align-items: center; padding: 12px 16px; background: var(--bg-panel); border-bottom: 1px solid var(--border); flex-shrink: 0; }
   .back-btn { background: transparent; border: none; color: var(--accent); font-size: 16px; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 5px; }
   .app-title { flex: 1; text-align: center; font-weight: bold; font-size: 18px; color: #fff; padding-right: 50px; }
-  .balance-bar { padding: 10px 16px; background: rgba(0,0,0,0.3); display: flex; justify-content: center; font-size: 15px; font-weight: bold; color: var(--accent); border-bottom: 1px solid var(--border); }
+  .balance-bar { padding: 10px 16px; background: rgba(0,0,0,0.3); display: flex; justify-content: center; font-size: 15px; font-weight: bold; color: var(--accent); border-bottom: 1px solid var(--border); flex-shrink: 0; }
   .app-content { flex: 1; padding: 16px; overflow-y: auto; display: flex; flex-direction: column; }
 
   /* ===== ИГРЫ ===== */
@@ -87,7 +87,7 @@
   .tetris-wrapper { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 10px; }
   .tetris-stats { width: 100%; display: flex; justify-content: space-between; margin-bottom: 10px; font-weight: bold; font-size: 14px;}
   .tetris-stats div { color: var(--accent); }
-  #tetrisCanvas { background: #000; border: 2px solid var(--border); border-radius: 8px; box-shadow: 0 0 15px rgba(0,0,0,0.8); }
+  #tetrisCanvas { background: #000; border: 2px solid var(--border); border-radius: 8px; box-shadow: 0 0 15px rgba(0,0,0,0.8); max-width: 100%; }
   .tetris-controls { display: flex; gap: 8px; margin-top: 15px; width: 100%; justify-content: center;}
   .tetris-btn { background: var(--bg-panel); border: 1px solid var(--border); color: white; padding: 15px 20px; border-radius: 10px; font-size: 20px; cursor: pointer; }
 
@@ -151,7 +151,6 @@
   .client-title { font-size: 14px; color: var(--text-muted); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1px;}
   .client-symptoms { font-size: 16px; font-weight: bold; color: #fff; line-height: 1.5; }
   
-  /* Схема мотора (визуализация) */
   .engine-diagram {
     background: #2a323d; border-radius: 12px; padding: 10px; margin-bottom: 16px;
     display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
@@ -171,6 +170,51 @@
 
   .toolbox { display: flex; gap: 10px; margin-bottom: 16px; }
   .tool-btn { flex: 1; padding: 12px; font-size: 14px; border-radius: 8px; background: var(--bg-panel); border: 1px solid var(--border); color: #fff; cursor: pointer; font-weight: bold;}
+
+  /* ===== ИСПРАВЛЕННАЯ РУЛЕТКА ===== */
+  .roulette-wrapper {
+    display: flex; flex-direction: column; align-items: center; width: 100%;
+  }
+  .roulette-table { 
+    background: radial-gradient(circle at center, #1b5e20, #0a2a0a); 
+    border: 4px solid #5d4037; border-radius: 16px; 
+    padding: 10px; margin-bottom: 15px; 
+    display: flex; flex-direction: column; align-items: center; 
+    width: 100%; max-width: 400px; /* Ограничиваем ширину */
+  }
+  .wheel-wrapper { width: 120px; height: 120px; margin: 0 auto 10px auto; position: relative; flex-shrink: 0; }
+  #rouletteCanvas { width: 120px; height: 120px; display: block; border-radius: 50%; border: 4px solid #b8860b; box-shadow: 0 0 10px rgba(0,0,0,0.8); transition: transform 4s cubic-bezier(0.1, 0.8, 0.2, 1); transform: rotate(0deg); }
+  .wheel-pointer { position: absolute; top: -8px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 8px solid transparent; border-right: 8px solid transparent; border-top: 16px solid var(--accent); z-index: 20; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.8)); }
+  .wheel-center { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 30px; height: 30px; background: var(--bg-panel); border: 2px solid var(--accent); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: bold; color: var(--accent); z-index: 10; box-shadow: 0 0 10px rgba(0,0,0,0.8); }
+  
+  .betting-grid { 
+    display: grid; 
+    grid-template-columns: 20px repeat(12, 1fr) 24px; 
+    grid-template-rows: repeat(3, 24px) 24px 24px; 
+    gap: 1px; font-size: 10px; 
+    background: #1b5e20; padding: 2px; border-radius: 4px; 
+    width: 100%; 
+  }
+  .cell { background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.3); display: flex; align-items: center; justify-content: center; cursor: pointer; user-select: none; transition: 0.1s; position: relative; text-align: center; line-height: 1.1; overflow: hidden;}
+  .cell.red-num { background: #c0392b; }
+  .cell.black-num { background: #1a1a1a; }
+  .cell.green-num { background: #27ae60; }
+  .cell.outside { background: rgba(255,255,255,0.1); font-weight: bold; font-size: 9px;}
+  .chip-on-table { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 14px; height: 14px; border-radius: 50%; border: 1px dashed white; box-shadow: 0 1px 3px rgba(0,0,0,0.6); pointer-events: none; z-index: 5; display: flex; align-items: center; justify-content: center; font-size: 8px; color: white; font-weight: bold; }
+  
+  .chip-selector { display: flex; gap: 10px; justify-content: center; margin-top: 10px; }
+  .chip-btn { width: 36px; height: 36px; border-radius: 50%; border: 3px dashed #fff; font-size: 12px; font-weight: bold; color: #fff; display: flex; align-items: center; justify-content: center; cursor: pointer; padding: 0; }
+  .chip-btn.active { transform: scale(1.15); border-style: solid; box-shadow: 0 0 10px var(--accent); }
+  .chip-1 { background: #e74c3c; }
+  .chip-5 { background: #8e44ad; }
+  .chip-10 { background: #2980b9; }
+  
+  .exchange-box { display: flex; flex-direction: column; gap: 10px; align-items: center; background: var(--bg-cell); border: 1px solid var(--border); border-radius: 10px; padding: 15px; margin-bottom: 15px; width: 100%; max-width: 400px; }
+  .exchange-btns { display: flex; gap: 8px; width: 100%; }
+  .exchange-btns button { padding: 10px 5px; font-size: 12px; flex: 1; color: #fff; border: none; border-radius: 8px; cursor: pointer;}
+  .btn-red { background: #e74c3c; }
+  .btn-purple { background: #8e44ad; }
+  .btn-blue { background: #2980b9; }
 
   /* Банк */
   .finance-card { background: var(--bg-panel); border-radius: 16px; padding: 20px; margin-bottom: 16px; border: 1px solid var(--border); }
@@ -195,7 +239,7 @@
   .modal-content { background: var(--bg-panel); border: 2px solid var(--border); padding: 24px; border-radius: 16px; width: 100%; max-width: 340px; text-align: center; }
   .modal-title { font-size: 20px; margin-bottom: 12px; font-weight: bold; color: var(--accent);}
   .modal-text { font-size: 15px; color: var(--text-muted); margin-bottom: 24px; line-height: 1.4;}
-  .nav-bar { height: 48px; background: #111; display: flex; justify-content: space-around; align-items: center; border-top: 1px solid #222; z-index: 200; }
+  .nav-bar { height: 48px; background: #111; display: flex; justify-content: space-around; align-items: center; border-top: 1px solid #222; z-index: 200; flex-shrink: 0; }
   .nav-btn { width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; cursor: pointer; opacity: 0.7; }
   .nav-btn:active { opacity: 1; background: rgba(255,255,255,0.1); border-radius: 50%; }
   .nav-btn svg { width: 20px; height: 20px; fill: none; stroke: #fff; stroke-width: 2; }
@@ -312,14 +356,15 @@
       </div>
     </div>
 
-    <!-- ЭКРАН: Рулетка -->
+    <!-- ЭКРАН: Рулетка (ИСПРАВЛЕНА) -->
     <div class="app-screen" id="app-roulette">
       <div class="app-header">
         <button class="back-btn" onclick="closeApp('roulette')">‹ Назад</button>
         <div class="app-title">Рулетка</div>
       </div>
       <div class="balance-bar">Баланс: <span class="balance-val">0</span> ₽ | Фишек: <span id="exChips">0</span></div>
-      <div class="app-content">
+      <div class="app-content roulette-wrapper">
+        
         <div class="exchange-box">
           <div class="exchange-btns">
             <button class="btn-red" data-val="1">Купить 1К</button>
@@ -334,7 +379,7 @@
         <div class="roulette-table">
           <div class="wheel-wrapper">
             <div class="wheel-pointer"></div>
-            <canvas id="rouletteCanvas" width="200" height="200"></canvas>
+            <canvas id="rouletteCanvas" width="240" height="240"></canvas>
             <div class="wheel-center" id="wheelCenter">?</div>
           </div>
           <div class="betting-grid" id="bettingGrid"></div>
@@ -346,7 +391,7 @@
           <button class="chip-btn chip-10" data-val="10">10</button>
         </div>
         
-        <div style="display:flex; gap:10px; margin-top:10px;">
+        <div style="display:flex; gap:10px; margin-top:10px; width: 100%; max-width: 400px;">
           <button id="clearBetsBtn" class="btn btn-secondary" style="flex:1; padding: 10px; font-size: 14px;">Очистить</button>
           <button id="spinRouletteBtn" class="btn" style="flex:2; padding: 10px; font-size: 14px;">Крутить!</button>
         </div>
@@ -449,7 +494,6 @@
       <div class="balance-bar">Баланс: <span class="balance-val">0</span> ₽</div>
       <div class="app-content">
         
-        <!-- Заказ клиента -->
         <div class="client-order-box" id="clientOrderBox">
           <div class="client-title">Заказ клиента</div>
           <div class="client-symptoms" id="clientSymptoms">
@@ -457,18 +501,12 @@
           </div>
         </div>
 
-        <!-- Схема мотора (скрыта до принятия заказа) -->
         <div id="mechanicGame" style="display: none;">
-          <div class="engine-diagram" id="engineDiagram">
-            <!-- Заполняется JS -->
-          </div>
-
-          <!-- Кнопки действий -->
+          <div class="engine-diagram" id="engineDiagram"></div>
           <div class="toolbox">
             <button class="btn btn-secondary" id="btnCheck" onclick="diagnosePart()" style="margin-top:0;">🔍 Проверить деталь</button>
             <button class="btn" id="btnRepair" onclick="repairPart()" style="margin-top:0; display: none;">🔧 Заменить деталь (1000 ₽)</button>
           </div>
-          
           <div class="result" id="mechanicResult"></div>
         </div>
 
@@ -568,7 +606,6 @@
   function changeTheme() {
     currentThemeIndex = (currentThemeIndex + 1) % themes.length;
     document.getElementById('phoneBody').style.background = themes[currentThemeIndex].css;
-    // Меняем прозрачность рабочего стола, чтобы было видно обои
     document.querySelector('.home-screen').style.background = 'transparent';
     showModal('Обои изменены', `Тема: ${themes[currentThemeIndex].name}`);
   }
@@ -658,6 +695,7 @@
     if (id === 'tetris') setTimeout(initTetris, 100);
     if (id === 'race') setTimeout(initRace, 100);
     if (id === 'mechanic') resetMechanicApp();
+    if (id === 'roulette') drawWheel(); // Перерисовываем колесо при открытии
     updateUI();
   }
 
@@ -879,7 +917,6 @@
   let selectedPart = null;
   let mechanicGameState = 'idle';
 
-  // Расширенный список клиентов
   const clients = [
     { symptoms: "Двигатель троит, потеря мощности, дёргается при разгоне.", brokenId: 'spark', reward: 2000 },
     { symptoms: "При повороте ключа — тишина. Приборная панель еле горит.", brokenId: 'battery', reward: 1500 },
@@ -1038,7 +1075,7 @@
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
       ctx.fillStyle = '#fff';
-      ctx.font = 'bold 9px Arial';
+      ctx.font = 'bold 10px Arial';
       ctx.fillText(item.n, radius - 12, 0);
       ctx.restore();
     });

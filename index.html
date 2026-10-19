@@ -29,7 +29,23 @@
   .modal-content { background: var(--bg-panel); border: 2px solid var(--border); padding: 24px; border-radius: 16px; width: 100%; max-width: 340px; text-align: center; }
   .modal-title { font-size: 20px; margin-bottom: 12px; font-weight: bold; color: var(--accent);}
   .modal-text { font-size: 15px; color: var(--text-muted); margin-bottom: 24px; line-height: 1.4;}
-  .btn { background: var(--accent); color: #000; border: none; padding: 12px 20px; border-radius: 10px; font-weight: bold; cursor: pointer; width: 100%; }
+  .btn { background: var(--accent); color: #000; border: none; padding: 12px 20px; border-radius: 10px; font-weight: bold; cursor: pointer; width: 100%; margin-bottom: 10px;}
+  .shop-item { display: flex; justify-content: space-between; align-items: center; background: var(--bg-panel); padding: 15px; border-radius: 10px; margin-bottom: 10px; border: 1px solid var(--border); flex-wrap: wrap;}
+  .shop-item-info { text-align: left; flex: 1; }
+  .shop-item-title { font-weight: bold; font-size: 14px; color: #fff; margin-bottom: 4px;}
+  .shop-item-desc { font-size: 12px; color: var(--text-muted); margin-bottom: 5px;}
+  .shop-item-price { font-weight: bold; color: var(--accent); font-size: 14px;}
+  .buy-btn { background: var(--accent); color: #000; border: none; padding: 8px 12px; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 12px; margin-left: 10px;}
+  .dark-item { background: #0f0f0f; border: 1px solid #4a148c; border-radius: 10px; padding: 15px; margin-bottom: 10px; }
+  .dark-title { color: #d500f9; font-weight: bold; margin-bottom: 5px; }
+  .dark-desc { font-size: 12px; color: #888; margin-bottom: 10px; }
+  .dark-price { color: var(--accent); font-weight: bold; margin-bottom: 10px; }
+  .dark-btn { background: #4a148c; color: #fff; border: none; padding: 10px; border-radius: 8px; font-weight: bold; cursor: pointer; width: 100%;}
+  .message-item { background: var(--bg-panel); border: 1px solid var(--border); border-radius: 12px; padding: 15px; margin-bottom: 10px; display: flex; gap: 10px; align-items: flex-start; }
+  .message-avatar { width: 40px; height: 40px; border-radius: 50%; background: #e74c3c; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 18px; color: #fff; flex-shrink: 0; }
+  .message-content { flex: 1; }
+  .message-sender { font-weight: bold; color: #fff; margin-bottom: 4px; font-size: 15px; }
+  .message-text { font-size: 14px; color: var(--text-muted); line-height: 1.4; }
 </style>
 </head>
 <body>
@@ -66,9 +82,9 @@
     <div class="app-screen" id="app-messages"><div class="app-header"><button class="back-btn" onclick="closeApp('messages')">‹ Назад</button><div class="app-title">Сообщения</div></div><div class="balance-bar">Баланс: <span class="balance-val">0</span> ₽</div><div class="app-content" id="messagesList"></div></div>
     <div class="app-screen" id="app-garage"><div class="app-header"><button class="back-btn" onclick="closeApp('garage')">‹ Назад</button><div class="app-title">Гараж</div></div><div class="balance-bar">Баланс: <span class="balance-val">0</span> ₽</div><div class="app-content" id="garageContent"></div></div>
     <div class="app-screen" id="app-mechanic"><div class="app-header"><button class="back-btn" onclick="closeApp('mechanic')">‹ Назад</button><div class="app-title">СТО ВАЗ</div></div><div class="balance-bar"><span>Усталость: <span id="fatigueVal">0</span>%</span><span>Еда: <span id="foodVal">100</span>%</span></div><div class="app-content" id="mechanicContent"><button class="btn" onclick="startDay()">Встать и пойти на работу</button></div></div>
-    <div class="app-screen" id="app-casino"><div class="app-header"><button class="back-btn" onclick="closeApp('casino')">‹ Назад</button><div class="app-title">Казино</div></div><div class="balance-bar">Баланс: <span class="balance-val">0</span> ₽</div><div class="app-content"><h2 style="text-align:center; margin-top:20px;">Игры временно недоступны</h2></div></div>
+    <div class="app-screen" id="app-casino"><div class="app-header"><button class="back-btn" onclick="closeApp('casino')">‹ Назад</button><div class="app-title">Казино</div></div><div class="balance-bar">Баланс: <span class="balance-val">0</span> ₽</div><div class="app-content"><h2 style="text-align:center; margin-top:20px;">Угадай число</h2><input type="number" id="guessNum" placeholder="Число (1-5)" style="width:100%; padding:10px; margin-bottom:10px; background:#000; color:#fff; border:1px solid #333;"><input type="number" id="guessBet" placeholder="Ставка" value="1000" style="width:100%; padding:10px; margin-bottom:10px; background:#000; color:#fff; border:1px solid #333;"><button class="btn" onclick="playGuess()">Играть</button><div id="guessRes" style="text-align:center; margin-top:15px; font-weight:bold;"></div></div></div>
     <div class="app-screen" id="app-bank"><div class="app-header"><button class="back-btn" onclick="closeApp('bank')">‹ Назад</button><div class="app-title">Банк</div></div><div class="balance-bar">Баланс: <span class="balance-val">0</span> ₽</div><div class="app-content"></div></div>
-    <div class="app-screen" id="app-darknet"><div class="app-header"><button class="back-btn" onclick="closeApp('darknet')">‹ Назад</button><div class="app-title">Даркнет</div></div><div class="balance-bar">Баланс: <span class="balance-val">0</span> ₽ | Наличка: <span id="dirtyCash">0</span> ₽</div><div class="app-content"><div class="dark-item"><button class="btn" onclick="buyStolenCar('ВАЗ 2107', 100000)">Купить тачку за 100 000 (Наличка+Баланс)</button></div></div></div>
+    <div class="app-screen" id="app-darknet"><div class="app-header"><button class="back-btn" onclick="closeApp('darknet')">‹ Назад</button><div class="app-title">Даркнет</div></div><div class="balance-bar">Баланс: <span class="balance-val">0</span> ₽ | Наличка: <span id="dirtyCash">0</span> ₽</div><div class="app-content"><div class="dark-item"><div class="dark-title">ВАЗ 2107 (Угнан)</div><div class="dark-desc">Шанс спалиться: 30%.</div><div class="dark-price">100 000 ₽</div><button class="dark-btn" onclick="buyStolenCar('ВАЗ 2107', 100000)">Купить</button></div></div></div>
     <div class="app-screen" id="app-sleep"><div class="app-header"><button class="back-btn" onclick="closeApp('sleep')">‹ Назад</button><div class="app-title">Сон</div></div><div class="app-content" style="justify-content: center; align-items: center;"><button class="btn" onclick="goToSleep()">Лечь спать</button></div></div>
     <div class="app-screen" id="app-shop"><div class="app-header"><button class="back-btn" onclick="closeApp('shop')">‹ Назад</button><div class="app-title">Магазин</div></div><div class="app-content"></div></div>
     <div class="app-screen" id="app-cars"><div class="app-header"><button class="back-btn" onclick="closeApp('cars')">‹ Назад</button><div class="app-title">Автосалон</div></div><div class="app-content"></div></div>
@@ -89,14 +105,43 @@
   function closeModal() { document.getElementById('modal').classList.remove('show'); }
   function startGame() { playerName = document.getElementById('playerNameInput').value.trim(); if(!playerName) return alert('Введите имя!'); document.getElementById('startupModal').classList.remove('show'); addMessage("Палыч", "Здарова, новенький. Завтра в 8 утра чтобы был как штык."); updateUI(); startTime(); updateClock(); }
   function addMessage(sender, text) { messages.push({sender, text}); renderMessages(); const b = document.getElementById('msgBadge'); if(b){ b.style.display='flex'; b.textContent = parseInt(b.textContent||0)+1; } }
-  function renderMessages() { const c = document.getElementById('messagesList'); if(!c) return; c.innerHTML = messages.map(m => `<div style="background:#12161f; padding:15px; margin-bottom:10px; border-radius:10px;"><b style="color:#fff;">${m.sender}</b><p style="color:#8b92a5;">${m.text}</p></div>`).join(''); }
+  function renderMessages() { const c = document.getElementById('messagesList'); if(!c) return; c.innerHTML = messages.map(m => `<div class="message-item"><div class="message-avatar">${m.sender[0]}</div><div class="message-content"><div class="message-sender">${m.sender}</div><div class="message-text">${m.text}</div></div></div>`).join(''); }
   function openApp(id) { const a = document.getElementById(`app-${id}`); if(a) a.classList.add('active'); else showModal('Ошибка', 'Экран не найден'); if(id==='messages'){ renderMessages(); const b=document.getElementById('msgBadge'); if(b) b.style.display='none'; } updateUI(); }
   function closeApp(id) { const a = document.getElementById(`app-${id}`); if(a) a.classList.remove('active'); }
   function closeAllApps() { document.querySelectorAll('.app-screen').forEach(el => el.classList.remove('active')); }
-  function startDay() { simGameState='working'; fatigue+=20; food-=10; updateUI(); showModal('Работа', 'Вы приняли первую машину! Усталость растет.'); }
   function goToSleep() { gameDate.setDate(gameDate.getDate()+1); gameTime=480; fatigue=0; food=100; updateUI(); updateClock(); closeApp('sleep'); showModal('Утро', 'Вы проснулись!'); }
-  function buyStolenCar(name, price) { if (balance + dirtyCash >= price) { if (balance >= price) { balance -= price; } else { let rem = price - balance; balance = 0; dirtyCash -= rem; } ownedCar = name; updateUI(); showModal('Даркнет', `Вы купили ${name}!`); } else { showModal('Ошибка', 'Недостаточно денег (на балансе и наличке)!'); } }
-  function bribeJail() { if(balance>=50000){ balance-=50000; inJail=false; closeApp('jail'); updateUI(); showModal('Успех','Вы откупились!'); } }
+    function startDay() { simGameState='working'; fatigue+=20; food-=10; updateUI(); 
+    document.getElementById('mechanicContent').innerHTML = `
+        <div style="background:#12161f; padding:15px; border-radius:10px; margin-bottom:10px;">
+            <b>Клиент: Алексей</b><br><span style="color:#888;">Машина: ВАЗ 2107</span><br><span style="color:#ffc107;">Проблема: Двигатель троит.</span>
+        </div>
+        <button class="btn" onclick="fixCar()">Заменить свечи (Починить)</button>
+    `;
+  }
+  function fixCar() { balance += 2000; fatigue += 10; updateUI(); showModal('Успех', 'Вы починили машину и заработали 2000 ₽!'); document.getElementById('mechanicContent').innerHTML = `<button class="btn" onclick="startDay()">Принять следующую машину</button>`; }
+  
+  function playGuess() {
+    const num = parseInt(document.getElementById('guessNum').value);
+    const bet = parseInt(document.getElementById('guessBet').value);
+    const res = document.getElementById('guessRes');
+    if (!num || num < 1 || num > 5) return alert("Введи число от 1 до 5!");
+    if (!bet || bet < 100 || bet > balance) return alert("Неверная ставка или мало денег!");
+    balance -= bet;
+    const secret = Math.floor(Math.random() * 5) + 1;
+    if (num === secret) { balance += bet * 3; res.style.color = '#4caf50'; res.textContent = `Победа! Было число ${secret}. Выигрыш: ${bet * 3} ₽`; } 
+    else { res.style.color = '#f44336'; res.textContent = `Проигрыш. Было число ${secret}.`; }
+    updateUI();
+  }
+
+  function buyStolenCar(name, price) { 
+    if (balance + dirtyCash >= price) { 
+      if (balance >= price) { balance -= price; } else { let rem = price - balance; balance = 0; dirtyCash -= rem; } 
+      ownedCar = name; updateUI(); showModal('Даркнет', `Вы купили ${name}!`); 
+      if (Math.random() < 0.3) { setTimeout(() => { showModal('Облава', 'Менты нашли тачку!'); goToJail(); }, 2000); }
+    } else { showModal('Ошибка', 'Недостаточно денег (на балансе и наличке)!'); } 
+  }
+  function goToJail() { inJail = true; jailDays = 2; closeAllApps(); openApp('jail'); document.getElementById('jailTimeDisplay').textContent = `${jailDays} дн. (идет время...)`; }
+  function bribeJail() { if(balance>=50000){ balance-=50000; inJail=false; closeApp('jail'); updateUI(); showModal('Успех','Вы откупились!'); } else { showModal('Ошибка', 'Мало денег!'); } }
 </script>
 </body>
 </html>

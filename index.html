@@ -171,7 +171,7 @@
   .toolbox { display: flex; gap: 10px; margin-bottom: 16px; }
   .tool-btn { flex: 1; padding: 12px; font-size: 14px; border-radius: 8px; background: var(--bg-panel); border: 1px solid var(--border); color: #fff; cursor: pointer; font-weight: bold;}
 
-  /* ===== ИСПРАВЛЕННАЯ РУЛЕТКА ===== */
+  /* Рулетка */
   .roulette-wrapper {
     display: flex; flex-direction: column; align-items: center; width: 100%;
   }
@@ -180,7 +180,7 @@
     border: 4px solid #5d4037; border-radius: 16px; 
     padding: 10px; margin-bottom: 15px; 
     display: flex; flex-direction: column; align-items: center; 
-    width: 100%; max-width: 400px; /* Ограничиваем ширину */
+    width: 100%; max-width: 400px; 
   }
   .wheel-wrapper { width: 120px; height: 120px; margin: 0 auto 10px auto; position: relative; flex-shrink: 0; }
   #rouletteCanvas { width: 120px; height: 120px; display: block; border-radius: 50%; border: 4px solid #b8860b; box-shadow: 0 0 10px rgba(0,0,0,0.8); transition: transform 4s cubic-bezier(0.1, 0.8, 0.2, 1); transform: rotate(0deg); }
@@ -356,7 +356,7 @@
       </div>
     </div>
 
-    <!-- ЭКРАН: Рулетка (ИСПРАВЛЕНА) -->
+    <!-- ЭКРАН: Рулетка -->
     <div class="app-screen" id="app-roulette">
       <div class="app-header">
         <button class="back-btn" onclick="closeApp('roulette')">‹ Назад</button>
@@ -695,7 +695,7 @@
     if (id === 'tetris') setTimeout(initTetris, 100);
     if (id === 'race') setTimeout(initRace, 100);
     if (id === 'mechanic') resetMechanicApp();
-    if (id === 'roulette') drawWheel(); // Перерисовываем колесо при открытии
+    if (id === 'roulette') drawWheel(); 
     updateUI();
   }
 
@@ -903,14 +903,15 @@
     });
   }
 
-  // ================= СТО ВАЗ (ОБРАЗОВАТЕЛЬНЫЙ) =================
+  // ================= СТО ВАЗ (50 СЛОЖНЫХ ПРОБЛЕМ) =================
   const enginePartsData = [
     { id: 'spark', name: 'Свечи зажигания', icon: '⚡', desc: 'Отвечают за поджиг топлива. Если пробиты — двигатель "троит".' },
     { id: 'timing', name: 'Ремень ГРМ', icon: '⚙️', desc: 'Синхронизирует коленвал и распредвал. Если порвался — клапаны гнет.' },
     { id: 'battery', name: 'Аккумулятор', icon: '🔋', desc: 'Дает питание на стартер. Если разряжен — машина не заводится.' },
     { id: 'fuel', name: 'Бензонасос', icon: '⛽', desc: 'Качает бензин. Если сломан — топливо не поступает.' },
     { id: 'radiator', name: 'Радиатор', icon: '🌡️', desc: 'Охлаждает двигатель. Если забит — мотор кипит.' },
-    { id: 'sensor', name: 'Датчик ХХ', icon: '🛠️', desc: 'Регулирует холостые обороты. Если сломан — обороты плавают.' }
+    { id: 'sensor', name: 'Датчик ХХ', icon: '🛠️', desc: 'Регулирует холостые обороты. Если сломан — обороты плавают.' },
+    { id: 'generator', name: 'Генератор', icon: '🔌', desc: 'Заряжает аккумулятор. Если сломан — глохнет на ходу, гаснут фары.' }
   ];
 
   let currentClient = null;
@@ -927,7 +928,49 @@
     { symptoms: "Двигатель работает с перебоями, особенно в сырую погоду. Из выхлопной черный дым.", brokenId: 'spark', reward: 2100 },
     { symptoms: "После ночи на морозе не крутит стартер, щелкает реле.", brokenId: 'battery', reward: 1600 },
     { symptoms: "Запах бензина в салоне, двигатель глохнет при остановке.", brokenId: 'fuel', reward: 2300 },
-    { symptoms: "Машина дергается при движении, стрелка тахометра скачет.", brokenId: 'sensor', reward: 1900 }
+    { symptoms: "Машина дергается при движении, стрелка тахометра скачет.", brokenId: 'sensor', reward: 1900 },
+    { symptoms: "На ходу загорелась лампа аккумулятора, фары стали тусклыми, потом машина заглохла.", brokenId: 'generator', reward: 2600 },
+    { symptoms: "Свист под капотом, особенно при ускорении. Руль стал тяжелым.", brokenId: 'timing', reward: 2800 },
+    { symptoms: "Из выхлопной трубы белый густой дым, уровень антифриза падает.", brokenId: 'radiator', reward: 3200 },
+    { symptoms: "Машина заводится, но сразу глохнет. Слышен звук работающего насоса.", brokenId: 'sensor', reward: 1900 },
+    { symptoms: "При включении передачи — сильный толчок. Обороты двигателя растут, но машина не едет.", brokenId: 'timing', reward: 3500 },
+    { symptoms: "Печка дует холодным воздухом, двигатель перегревается.", brokenId: 'radiator', reward: 2400 },
+    { symptoms: "Стартер крутит, но не схватывает. Выкрутили свечу — она мокрая и пахнет бензином.", brokenId: 'spark', reward: 2000 },
+    { symptoms: "Лампа зарядки аккумулятора горит на приборке, но машина едет.", brokenId: 'generator', reward: 2200 },
+    { symptoms: "Слышен треск из-под капота, похожий на треск реле. Аккумулятор разрядился за ночь.", brokenId: 'battery', reward: 2100 },
+    { symptoms: "На холостых оборотах машина вибрирует, вибрация пропадает при добавлении газа.", brokenId: 'spark', reward: 2200 },
+    { symptoms: "Двигатель глохнет при резком нажатии на газ. На месте газует нормально.", brokenId: 'fuel', reward: 2400 },
+    { symptoms: "Из-под капота идет дым, пахнет горелой проводкой, но температура в норме.", brokenId: 'generator', reward: 2900 },
+    { symptoms: "Машина еле едет, запах гари от колес. Обороты высокие.", brokenId: 'timing', reward: 3000 },
+    { symptoms: "При движении по лужам двигатель начинает троить и глохнуть.", brokenId: 'spark', reward: 2100 },
+    { symptoms: "Аккумулятор постоянно садится, хотя ездили целый день.", brokenId: 'generator', reward: 2500 },
+    { symptoms: "Педаль газа проваливается, машина не реагирует на нажатие.", brokenId: 'fuel', reward: 2300 },
+    { symptoms: "Двигатель кипит, вентилятор крутится постоянно, а нижний патрубок радиатора холодный.", brokenId: 'radiator', reward: 2700 },
+    { symptoms: "При разгоне слышен сильный стук в двигателе, похожий на стук клапанов.", brokenId: 'timing', reward: 3400 },
+    { symptoms: "Обороты двигателя зависают на 2000 об/мин и не сбрасываются.", brokenId: 'sensor', reward: 2000 },
+    { symptoms: "Машина завелась, но из-под капота пошел едкий дым, клеммы аккумулятора сильно нагрелись.", brokenId: 'battery', reward: 1800 },
+    { symptoms: "Слышен звук, похожий на трение металла о металл, при нажатии на газ.", brokenId: 'timing', reward: 3100 },
+    { symptoms: "Двигатель глохнет на светофоре, ошибка на приборке — датчик коленвала.", brokenId: 'sensor', reward: 2100 },
+    { symptoms: "В салоне пахнет бензином, но луж под машиной нет.", brokenId: 'fuel', reward: 2200 },
+    { symptoms: "Руль крутится очень туго, но ремень на месте.", brokenId: 'generator', reward: 2500 },
+    { symptoms: "Машина дымит белым дымом, но антифриз на месте.", brokenId: 'sensor', reward: 2400 },
+    { symptoms: "При включении ближнего света машина начинает дергаться и глохнуть.", brokenId: 'generator', reward: 2700 },
+    { symptoms: "Слышен писк под капотом при холодном пуске, который исчезает через минуту.", brokenId: 'timing', reward: 2600 },
+    { symptoms: "Стрелка температуры поднимается к красной зоне только на ходу.", brokenId: 'radiator', reward: 2500 },
+    { symptoms: "При резком нажатии на газ из выхлопной трубы летят черные хлопья.", brokenId: 'spark', reward: 2300 },
+    { symptoms: "Машина не заводится в сырую погоду. Искры нет.", brokenId: 'battery', reward: 1900 },
+    { symptoms: "Двигатель троит только на холодную, после прогрева работает ровно.", brokenId: 'spark', reward: 2200 },
+    { symptoms: "Постоянный писк из-под капота, пропадает при снятии ремня генератора.", brokenId: 'generator', reward: 2400 },
+    { symptoms: "Педаль газа проваливается в пол, обороты не растут.", brokenId: 'fuel', reward: 2500 },
+    { symptoms: "При торможении двигателем слышны хлопки в выхлопной системе.", brokenId: 'sensor', reward: 2100 },
+    { symptoms: "Машина глохнет при повороте руля на месте.", brokenId: 'generator', reward: 2800 },
+    { symptoms: "Уровень антифриза падает, но луж нет. Из выхлопной белый дым.", brokenId: 'radiator', reward: 3300 },
+    { symptoms: "Слышен скрежет при попытке завестись, стартер не крутит.", brokenId: 'battery', reward: 2000 },
+    { symptoms: "Обороты плавают, но при отключении датчика ХХ проблема пропадает.", brokenId: 'sensor', reward: 1900 },
+    { symptoms: "Двигатель внезапно глохнет на ходу, стартер не крутит.", brokenId: 'battery', reward: 2100 },
+    { symptoms: "Свист под капотом, пропадает при нажатии на газ.", brokenId: 'generator', reward: 2300 },
+    { symptoms: "При нажатии на газ слышен звук, похожий на 'стрельбу' в глушителе.", brokenId: 'spark', reward: 2400 },
+    { symptoms: "Машина дёргается, будто кто-то держит её за зад.", brokenId: 'fuel', reward: 2500 }
   ];
 
   function resetMechanicApp() {

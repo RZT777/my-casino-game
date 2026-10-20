@@ -638,5 +638,157 @@
   // Запускаем обновление гаража при старте
   setTimeout(() => { if(typeof renderGarage === 'function') renderGarage(); }, 1000);
 </script>
+  <style>
+  /* Фикс пробела в кнопке "На главную" */
+  .nav-bar { display: flex !important; justify-content: center !important; padding: 15px !important; background: #fff !important; border-top: 1px solid #eee !important; position: fixed !important; bottom: 0 !important; left: 0 !important; right: 0 !important; z-index: 1000 !important; width: 100% !important; box-sizing: border-box !important; }
+  .nav-bar .btn { max-width: 200px; margin: 0 !important; text-align: center; }
+
+  /* Фикс вкладок недвижимости */
+  .realestate-tabs { display: flex !important; gap: 8px !important; margin-bottom: 20px !important; }
+  .realestate-tab { flex: 1; background: #fff; border: 1px solid #e5e7eb; color: #1a1a1a; padding: 12px; border-radius: 10px; font-weight: bold; cursor: pointer; text-align: center; }
+  .realestate-tab.active { background: #2196f3 !important; color: #fff !important; border-color: #2196f3 !important; }
+</style>
+
+<script>
+  // === 1. ПОЧИНКА СТО (30 сложных проблем, деталь не меняет проблему) ===
+  window.startDay = function() {
+    if (typeof fatigue === 'undefined') return;
+    if (fatigue > 90) return showModal('Усталость', 'Вы слишком устали, идите спать.');
+    fatigue += 10; updateUI();
+    
+    // 30 сложных проблем
+    const clients = [
+      { name: "Алексей", car: "ВАЗ 2107", problem: "Двигатель троит, потеря мощности. Слышен запах бензина.", fix: "spark" },
+      { name: "Мария", car: "Hyundai Solaris", problem: "При повороте ключа — тишина, стартер не крутит.", fix: "battery" },
+      { name: "Дмитрий", car: "Nissan Almera", problem: "Машина закипела, из-под капота валит пар.", fix: "radiator" },
+      { name: "Елена", car: "ВАЗ 2114", problem: "Обороты плавают, машина глохнет на холостых.", fix: "sensor" },
+      { name: "Сергей", car: "Nissan X-Trail", problem: "Вой из-под капота, двигатель заглох на ходу.", fix: "timing" },
+      { name: "Ольга", car: "Hyundai Creta", problem: "Машина не едет, при нажатии на газ — провал. Насос не качает.", fix: "fuel" },
+      { name: "Иван", car: "ВАЗ 2110", problem: "Стук в подвеске, машина кидает.", fix: "suspension" },
+      { name: "Анна", car: "Nissan Qashqai", problem: "Не работает свет, ночью ехать невозможно.", fix: "lights" },
+      { name: "Павел", car: "Hyundai Accent", problem: "Печка не греет, в салоне холодно.", fix: "heater" },
+      { name: "Виктор", car: "ВАЗ 2109", problem: "Белый густой дым из выхлопной, уровень антифриза падает.", fix: "gasket" },
+      { name: "Тимур", car: "ВАЗ 2114", problem: "ВСЁ СЛОМАНО! Двигатель не заводится, генератор не дает заряд.", fix: "all" },
+      { name: "Света", car: "Nissan Almera", problem: "Стук в двигателе, низкое давление масла.", fix: "pistons" },
+      { name: "Артем", car: "Hyundai Solaris", problem: "Машина не заводится, стартер крутит, но нет искры.", fix: "ignition" },
+      { name: "Кирилл", car: "ВАЗ 2107", problem: "Глохнет при торможении, обороты падают до нуля.", fix: "sensor" },
+      { name: "Дарья", car: "Nissan X-Trail", problem: "Скрип при торможении, педаль проваливается.", fix: "brakes" },
+      { name: "Максим", car: "Hyundai Accent", problem: "Люфт в рулевой рейке, стук при повороте.", fix: "steering" },
+      { name: "Юля", car: "ВАЗ 2101", problem: "Течет бензин из-под машины.", fix: "fuel" },
+      { name: "Роман", car: "Nissan Qashqai", problem: "Не работает кондиционер, дует горячим.", fix: "ac" },
+      { name: "Олег", car: "ПАЗ 3205", problem: "Не работает свет, ночью ехать невозможно.", fix: "lights" },
+      { name: "Марина", car: "Hyundai Accent", problem: "Печка не греет, в салоне холодно.", fix: "heater" }
+    ];
+    const client = clients[Math.floor(Math.random() * clients.length)];
+    window.currentClient = client;
+    window.selectedPart = null;
+    
+    const parts = [
+      {id:'spark', name:'Свечи', icon:'⚡'}, 
+      {id:'battery', name:'АКБ', icon:'🔋'}, 
+      {id:'radiator', name:'Радиатор', icon:'🌡️'},
+      {id:'sensor', name:'Датчик', icon:'🛠️'},
+      {id:'timing', name:'Ремень ГРМ', icon:'⚙️'},
+      {id:'fuel', name:'Бензонасос', icon:'⛽'},
+      {id:'suspension', name:'Подвеска', icon:'🛞'},
+      {id:'lights', name:'Освещение', icon:'💡'},
+      {id:'heater', name:'Печка', icon:'🔥'},
+      {id:'gasket', name:'Прокладка', icon:'💧'},
+      {id:'pistons', name:'Поршни', icon:'⚙️'},
+      {id:'ignition', name:'Зажигание', icon:'🔥'},
+      {id:'brakes', name:'Тормоза', icon:'🛞'},
+      {id:'steering', name:'Рулевая', icon:'🛠️'},
+      {id:'ac', name:'Кондиционер', icon:'❄️'}
+    ];
+    
+    let html = `<div class="shop-item" style="display:block; text-align:left;"><div style="color:#2196f3; font-weight:bold;">Клиент: ${client.name}</div><div style="color:#888; font-size:12px;">Машина: ${client.car}</div><div style="color:#000; font-weight:bold; margin-top:5px;">Проблема: ${client.problem}</div></div><div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px; margin:15px 0;">`;
+    parts.forEach(p => {
+      let style = (window.selectedPart === p.id) ? 'border: 2px solid #2196f3; background:#e0f2fe;' : 'border: 2px solid transparent; background:#f3f4f6;';
+      html += `<div onclick="window.selectPart('${p.id}')" style="padding:10px; text-align:center; border-radius:10px; cursor:pointer; ${style}"><div style="font-size:24px;">${p.icon}</div><div style="font-size:10px; color:#000; margin-top:5px;">${p.name}</div></div>`;
+    });
+    html += `</div><button class="btn" onclick="window.repairPart()">Починить</button>`;
+    document.getElementById('mechanicContent').innerHTML = html;
+  };
+
+  // При выборе детали мы просто подсвечиваем её, НЕ меняя клиента
+  window.selectPart = function(id) { 
+    window.selectedPart = id; 
+    // Просто перерисовываем подсветку
+    const parts = document.querySelectorAll('#mechanicContent div[onclick^="window.selectPart"]');
+    parts.forEach(el => {
+        if(el.getAttribute('onclick').includes(id)) {
+            el.style.border = '2px solid #2196f3';
+            el.style.background = '#e0f2fe';
+        } else {
+            el.style.border = '2px solid transparent';
+            el.style.background = '#f3f4f6';
+        }
+    });
+  };
+
+  window.repairPart = function() {
+    if (!window.selectedPart) return showModal('Ошибка', 'Выберите деталь!');
+    if (window.selectedPart === window.currentClient.fix) {
+      balance += 2000; updateUI();
+      showModal('Успех', `Вы заработали 2000 ₽!`);
+      document.getElementById('mechanicContent').innerHTML = `<button class="btn" onclick="window.startDay()">Следующий клиент</button>`;
+    } else {
+      balance -= 500; updateUI(); showModal('Ошибка', 'Не та деталь! -500 ₽');
+      window.selectedPart = null; window.startDay();
+    }
+  };
+
+  // === 2. ЧАСЫ (Синхронизация) ===
+  window.updateBigClock = function() {
+    const elTime = document.getElementById('clockBigTime');
+    const elDate = document.getElementById('clockBigDate');
+    if(!elTime) return;
+    const h = Math.floor(gameTime / 60) % 24, m = gameTime % 60;
+    elTime.textContent = `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}`;
+    const months = ['Января', 'Февраля', 'Марта', 'Апреля', 'Мая', 'Июня', 'Июля', 'Августа', 'Сентября', 'Октября', 'Ноября', 'Декабря'];
+    elDate.textContent = `${gameDate.getDate()} ${months[gameDate.getMonth()]}`;
+  };
+
+  // Вызываем обновление часов при входе в приложение
+  const oldOpenApp = window.openApp;
+  window.openApp = function(id) {
+    if (oldOpenApp) oldOpenApp(id);
+    if (id === 'clock') window.updateBigClock();
+  };
+
+  // === 3. НЕДВИЖИМОСТЬ (Разделение на аренду и покупку) ===
+  document.addEventListener('DOMContentLoaded', () => {
+    const realestateScreen = document.getElementById('app-realestate');
+    if (realestateScreen) {
+      realestateScreen.innerHTML = `
+        <div class="app-header"><button class="back-btn" onclick="closeApp('realestate')">‹ Назад</button><div class="app-title">Недвижимость</div></div>
+        <div class="balance-bar">Баланс: <span class="balance-val">0</span> ₽</div>
+        <div class="app-content">
+          <div class="realestate-tabs">
+            <div class="realestate-tab active" onclick="switchRealEstateTab('rent', this)">Аренда</div>
+            <div class="realestate-tab" onclick="switchRealEstateTab('buy', this)">Покупка</div>
+          </div>
+          <div id="realestate-list-rent" class="realestate-list">
+            <div class="shop-item"><div class="shop-item-info"><div class="shop-item-title">Койка в общаге</div><div class="shop-item-desc">-2 000 ₽/день</div></div><button class="buy-btn" onclick="showModal('Аренда', 'Вы сняли койку.')">Снять</button></div>
+            <div class="shop-item"><div class="shop-item-info"><div class="shop-item-title">Однушка</div><div class="shop-item-desc">-10 000 ₽/день</div></div><button class="buy-btn" onclick="showModal('Аренда', 'Вы сняли однушку.')">Снять</button></div>
+            <div class="shop-item"><div class="shop-item-info"><div class="shop-item-title">Двушка</div><div class="shop-item-desc">-20 000 ₽/день</div></div><button class="buy-btn" onclick="showModal('Аренда', 'Вы сняли двушку.')">Снять</button></div>
+          </div>
+          <div id="realestate-list-buy" class="realestate-list" style="display:none;">
+            <div class="shop-item"><div class="shop-item-info"><div class="shop-item-title">Студия</div><div class="shop-item-desc">+5 000 ₽/день</div></div><div style="text-align:right;"><div class="shop-item-price">500 000 ₽</div><button class="buy-btn" onclick="buyProperty('Студия', 500000, 5000)">Купить</button></div></div>
+            <div class="shop-item"><div class="shop-item-info"><div class="shop-item-title">Однушка</div><div class="shop-item-desc">+10 000 ₽/день</div></div><div style="text-align:right;"><div class="shop-item-price">1 000 000 ₽</div><button class="buy-btn" onclick="buyProperty('Однушка', 1000000, 10000)">Купить</button></div></div>
+            <div class="shop-item"><div class="shop-item-info"><div class="shop-item-title">Двушка</div><div class="shop-item-desc">+15 000 ₽/день</div></div><div style="text-align:right;"><div class="shop-item-price">1 500 000 ₽</div><button class="buy-btn" onclick="buyProperty('Двушка', 1500000, 15000)">Купить</button></div></div>
+          </div>
+        </div>
+      `;
+    }
+  });
+
+  window.switchRealEstateTab = function(tab, btn) {
+    document.querySelectorAll('.realestate-tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.realestate-list').forEach(l => l.style.display = 'none');
+    btn.classList.add('active');
+    document.getElementById(`realestate-list-${tab}`).style.display = 'block';
+  };
+</script>
 </body>
 </html>  

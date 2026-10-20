@@ -950,5 +950,81 @@
     border-radius: 20px !important;
   }
 </style>
+  <script>
+  // Удаляем иконку "Отношения" с рабочего стола
+  document.addEventListener('DOMContentLoaded', () => {
+    const icons = document.querySelectorAll('.app-icon');
+    icons.forEach(icon => {
+      if (icon.textContent.includes('Отношения')) {
+        icon.remove();
+      }
+    });
+  });
+</script>
+  <style>
+  /* Стили для нижней панели навигации как в Android */
+  .android-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 50px;
+    background: #d9d9d9; /* Серый фон как у системной панели */
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    z-index: 10000;
+    border-top: 1px solid #bbb;
+  }
+  .nav-btn-android {
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+  }
+  .nav-btn-android svg {
+    width: 24px;
+    height: 24px;
+    stroke: #fff;
+    fill: none;
+    stroke-width: 2.5;
+  }
+  
+  /* Скрываем старую кнопку "На главную" */
+  .nav-bar { display: none !important; }
+  
+  /* Отодвигаем контент телефона вверх, чтобы он не перекрывался панелью */
+  .phone { padding-bottom: 50px; height: calc(100vh - 50px); }
+</style>
+
+<script>
+  // Создаем нижнюю панель навигации
+  document.addEventListener('DOMContentLoaded', () => {
+    const nav = document.createElement('div');
+    nav.className = 'android-nav';
+    nav.innerHTML = `
+      <div class="nav-btn-android" onclick="closeAllApps()">
+        <svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2"/></svg>
+      </div>
+      <div class="nav-btn-android" onclick="closeAllApps()">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="7"/></svg>
+      </div>
+      <div class="nav-btn-android" onclick="goBack()">
+        <svg viewBox="0 0 24 24"><path d="M15 5 L7 12 L15 19 Z"/></svg>
+      </div>
+    `;
+    document.body.appendChild(nav);
+  });
+
+  // Функция "Назад" (закрывает текущее приложение)
+  window.goBack = function() {
+    const active = document.querySelector('.app-screen.active');
+    if (active) {
+      active.classList.remove('active');
+    }
+  };
+</script>
 </body>
 </html>  

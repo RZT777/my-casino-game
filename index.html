@@ -66,14 +66,18 @@
   .pin-btn:active { background: rgba(255,255,255,0.3); }
   .dot.active { background: #fff; }
 
-  .car-tabs, .realestate-tabs { display: flex !important; gap: 8px !important; margin-bottom: 20px !important; }
-  .car-tab, .realestate-tab { flex: 1; background: #fff; border: 1px solid var(--border); color: var(--text-main); padding: 12px 10px; border-radius: 10px; font-weight: bold; cursor: pointer; text-align: center; font-size: 14px; transition: 0.2s; }
-  .car-tab.active, .realestate-tab.active { background: var(--accent) !important; color: #fff !important; border-color: var(--accent) !important; }
+  /* Стили для вкладок (Авто, Недвижимость, Казино) */
+  .car-tabs, .realestate-tabs, .casino-tabs { display: flex !important; gap: 8px !important; margin-bottom: 20px !important; }
+  .car-tab, .realestate-tab, .casino-tab { flex: 1; background: #fff; border: 1px solid var(--border); color: var(--text-main); padding: 12px 10px; border-radius: 10px; font-weight: bold; cursor: pointer; text-align: center; font-size: 14px; transition: 0.2s; }
+  .car-tab.active, .realestate-tab.active, .casino-tab.active { background: var(--accent) !important; color: #fff !important; border-color: var(--accent) !important; }
+
+  /* Фикс кнопки "На главную" */
+  .nav-bar { display: flex !important; justify-content: center !important; padding: 15px !important; background: #fff !important; border-top: 1px solid #eee !important; position: relative !important; z-index: 100 !important; width: 100% !important; box-sizing: border-box !important; }
+  .nav-bar .btn { max-width: 200px; margin: 0 !important; }
 </style>
 </head>
 <body>
-
-<div id="lockScreen" style="position:absolute; top:0; left:0; right:0; bottom:0; background: linear-gradient(135deg, #2196f3, #0d47a1); z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #fff;">
+  <div id="lockScreen" style="position:absolute; top:0; left:0; right:0; bottom:0; background: linear-gradient(135deg, #2196f3, #0d47a1); z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #fff;">
   <div style="font-size: 80px; margin-bottom: 20px;" id="lockIcon">☀️</div>
   <div style="font-size: 48px; font-weight: bold;" id="lockTime">08:00</div>
   <div style="font-size: 16px; margin-bottom: 40px;" id="lockDate">19 Октября</div>
@@ -121,7 +125,7 @@
 
     <div class="app-screen" id="app-messages"><div class="app-header"><button class="back-btn" onclick="closeApp('messages')">‹ Назад</button><div class="app-title">Сообщения</div></div><div class="balance-bar">Баланс: <span class="balance-val">0</span> ₽</div><div class="app-content" id="messagesList"></div></div>
     <div class="app-screen" id="app-garage"><div class="app-header"><button class="back-btn" onclick="closeApp('garage')">‹ Назад</button><div class="app-title">Гараж</div></div><div class="balance-bar">Баланс: <span class="balance-val">0</span> ₽</div><div class="app-content" id="garageContent"></div></div>
-    <div class="app-screen" id="app-mechanic"><div class="app-header"><button class="back-btn" onclick="closeApp('mechanic')">‹ Назад</button><div class="app-title">СТО ВАЗ</div></div><div class="balance-bar"><span>Усталость: <span id="fatigueVal">0</span>%</span><span>Еда: <span id="foodVal">100</span>%</span></div><div class="app-content" id="mechanicContent"><button class="btn" onclick="startDay()">Встать и пойти на работу</button></div></div>
+        <div class="app-screen" id="app-mechanic"><div class="app-header"><button class="back-btn" onclick="closeApp('mechanic')">‹ Назад</button><div class="app-title">СТО ВАЗ</div></div><div class="balance-bar"><span>Усталость: <span id="fatigueVal">0</span>%</span><span>Еда: <span id="foodVal">100</span>%</span></div><div class="app-content" id="mechanicContent"><button class="btn" onclick="startDay()">Встать и пойти на работу</button></div></div>
     
     <div class="app-screen" id="app-casino">
       <div class="app-header"><button class="back-btn" onclick="closeApp('casino')">‹ Назад</button><div class="app-title">Казино</div></div>
@@ -219,10 +223,9 @@
 
     <div class="app-screen" id="app-jail"><div class="app-header"><div class="app-title">СИЗО</div></div><div class="app-content" style="justify-content:center; align-items:center; text-align:center;"><h2>⛓️ Вы в СИЗО</h2><p id="jailTimeDisplay" style="margin:20px 0;"></p><button class="btn" onclick="bribeJail()">Откупиться (50 000 ₽)</button></div></div>
   </div>
-  <div class="nav-bar" style="display:flex; justify-content:space-around; padding:15px; background:#fff; border-top:1px solid #eee;"><button class="btn" onclick="closeAllApps()">На главную</button></div>
+  <div class="nav-bar"><button class="btn" onclick="closeAllApps()">На главную</button></div>
 </div>
 <div class="modal" id="modal"><div class="modal-content"><div class="modal-title" id="modalTitle">Уведомление</div><div class="modal-text" id="modalText">Текст</div><button class="btn" onclick="closeModal()">ОК</button></div></div>
-
 <script>
   let gameTime = 480, gameDate = new Date(2026, 9, 19), balance = 5000, dirtyCash = 150000, playerName = "", fatigue = 0, food = 100, inJail = false, jailDays = 0, ownedCar = null, messages = [], chips = 0, CHIP_PRICE = 1000;
   let creditDebt = 0, creditMonthsLeft = 0, currentMonth = 9, currentYear = 2026, creditLevel = 0;
@@ -247,8 +250,7 @@
   function openApp(id) { const a = document.getElementById(`app-${id}`); if(a) a.classList.add('active'); if(id==='messages'){ renderMessages(); const b=document.getElementById('msgBadge'); if(b) b.style.display='none'; } if(id==='casino') { initRouletteGrid(); drawWheel(); } if(id==='calendar') renderCalendar(); if(id==='clock') updateBigClock(); if(id==='relations') renderRelations(); updateUI(); }
   function closeApp(id) { const a = document.getElementById(`app-${id}`); if(a) a.classList.remove('active'); }
   function closeAllApps() { document.querySelectorAll('.app-screen').forEach(el => el.classList.remove('active')); }
-
-  function startDay() { if (fatigue > 90) return showModal('Усталость', 'Вы слишком устали, идите спать.'); fatigue += 10; updateUI(); const clients = [{ name: "Алексей", car: "ВАЗ 2107", problem: "Двигатель троит.", fix: "spark", reward: 2000 }, { name: "Мария", car: "Hyundai Solaris", problem: "Не заводится.", fix: "battery", reward: 1500 }]; currentClient = clients[Math.floor(Math.random() * clients.length)]; selectedPart = null; const parts = [{id:'spark', name:'Свечи', icon:'⚡'}, {id:'battery', name:'АКБ', icon:'🔋'}]; let html = `<div class="shop-item" style="display:block; text-align:left;"><div style="color:var(--accent); font-weight:bold;">Клиент: ${currentClient.name}</div><div style="color:#888; font-size:12px;">Машина: ${currentClient.car}</div><div style="color:#000; font-weight:bold; margin-top:5px;">Проблема: ${currentClient.problem}</div></div><div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin:15px 0;">`; parts.forEach(p => { let style = selectedPart === p.id ? 'border: 2px solid var(--accent); background:#e0f2fe;' : 'border: 2px solid transparent; background:#f3f4f6;'; html += `<div onclick="selectPart('${p.id}')" style="padding:15px; text-align:center; border-radius:10px; cursor:pointer; ${style}"><div style="font-size:30px;">${p.icon}</div><div style="font-size:12px; color:#000; margin-top:5px;">${p.name}</div></div>`; }); html += `</div><button class="btn" onclick="repairPart()">Починить</button>`; document.getElementById('mechanicContent').innerHTML = html; }
+    function startDay() { if (fatigue > 90) return showModal('Усталость', 'Вы слишком устали, идите спать.'); fatigue += 10; updateUI(); const clients = [{ name: "Алексей", car: "ВАЗ 2107", problem: "Двигатель троит.", fix: "spark", reward: 2000 }, { name: "Мария", car: "Hyundai Solaris", problem: "Не заводится.", fix: "battery", reward: 1500 }]; currentClient = clients[Math.floor(Math.random() * clients.length)]; selectedPart = null; const parts = [{id:'spark', name:'Свечи', icon:'⚡'}, {id:'battery', name:'АКБ', icon:'🔋'}]; let html = `<div class="shop-item" style="display:block; text-align:left;"><div style="color:var(--accent); font-weight:bold;">Клиент: ${currentClient.name}</div><div style="color:#888; font-size:12px;">Машина: ${currentClient.car}</div><div style="color:#000; font-weight:bold; margin-top:5px;">Проблема: ${currentClient.problem}</div></div><div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin:15px 0;">`; parts.forEach(p => { let style = selectedPart === p.id ? 'border: 2px solid var(--accent); background:#e0f2fe;' : 'border: 2px solid transparent; background:#f3f4f6;'; html += `<div onclick="selectPart('${p.id}')" style="padding:15px; text-align:center; border-radius:10px; cursor:pointer; ${style}"><div style="font-size:30px;">${p.icon}</div><div style="font-size:12px; color:#000; margin-top:5px;">${p.name}</div></div>`; }); html += `</div><button class="btn" onclick="repairPart()">Починить</button>`; document.getElementById('mechanicContent').innerHTML = html; }
   function selectPart(id) { selectedPart = id; startDay(); }
   function repairPart() { if (!selectedPart) return showModal('Ошибка', 'Выберите деталь!'); if (selectedPart === currentClient.fix) { balance += currentClient.reward; updateUI(); showModal('Успех', `Вы заработали ${currentClient.reward} ₽!`); document.getElementById('mechanicContent').innerHTML = `<button class="btn" onclick="startDay()">Следующий клиент</button>`; } else { balance -= 500; updateUI(); showModal('Ошибка', 'Не та деталь! -500 ₽'); selectedPart = null; startDay(); } }
 
@@ -285,298 +287,7 @@
   function buyCar(name, price) { if (balance >= price) { balance -= price; ownedCar = name; updateUI(); showModal('Покупка', `Вы купили ${name}!`); } else { showModal('Ошибка', 'Мало денег!'); } }
   function buyProperty(name, price, income) { if (balance >= price) { balance -= price; updateUI(); showModal('Покупка', `Вы купили ${name}!`); } else { showModal('Ошибка', 'Мало денег!'); } }
   function changeMonth(dir) { currentMonth += dir; if (currentMonth > 11) { currentMonth = 0; currentYear++; } if (currentMonth < 0) { currentMonth = 11; currentYear--; } renderCalendar(); }
-  function renderCalendar() { const months = ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь']; const title = document.getElementById('calendarTitle'); if(title) title.textContent = `${months[currentMonth]} ${currentYear}`; const grid = document.getElementById('calendarGrid'); if(!grid) return; grid.innerHTML = ''; const days = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс']; days.forEach(d => { const el = document.createElement('div'); el.textContent = d; el.style.color = '#888'; el.style.fontWeight = 'bold'; grid.appendChild(el); }); const firstDay = new Date(currentYear, currentMonth, 1).getDay(); const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate(); let start = firstDay === 0 ? 6 : firstDay - 1; for (let i = 0; i < start; i++) { grid.appendChild(document.createElement('div')); } for (let i = 1; i <= daysInMonth; i++) { const el = document.createElement('div'); el.textContent = i; el.style.padding = '10px'; el.style.background = (i === gameDate.getDate() && currentMonth === gameDate.getMonth()) ? 'var(--accent)' : '#fff'; el.style.color = (i === gameDate.getDate() && currentMonth === gameDate.getMonth()) ? '#fff' : '#000'; el.style.borderRadius = '50%'; el.style.border = '1px solid #eee'; grid.appendChild(el); } }
-
-  updateUI(); updateClock(); updateCreditUI();
-</script>
-<style>
-  /* Фикс кнопки "На главную", которая вылезала сбоку */
-  .nav-bar { display: flex !important; justify-content: center !important; padding: 15px !important; background: #fff !important; border-top: 1px solid #eee !important; position: relative !important; z-index: 100 !important; width: 100% !important; box-sizing: border-box !important; }
-  .nav-bar .btn { max-width: 200px; margin: 0 !important; }
-
-  /* Фикс вкладок казино */
-  .casino-tabs { display: flex !important; gap: 8px !important; margin-bottom: 20px !important; }
-  .casino-tab { flex: 1; background: #fff !important; border: 1px solid #e5e7eb !important; color: #1a1a1a !important; padding: 12px 10px !important; border-radius: 10px !important; font-weight: bold !important; cursor: pointer !important; text-align: center !important; font-size: 14px !important; }
-  .casino-tab.active { background: #2196f3 !important; color: #fff !important; border-color: #2196f3 !important; }
-</style>
-
-<script>
-  // === 1. ИСПРАВЛЕНИЕ КНОПКИ "НА ГЛАВНУЮ" ===
-  document.addEventListener('DOMContentLoaded', () => {
-    const navBar = document.querySelector('.nav-bar');
-    if (navBar) navBar.style.cssText = 'display:flex; justify-content:center; padding:15px; background:#fff; border-top:1px solid #eee; position:relative; z-index:100; width:100%;';
-  });
-
-  // === 2. ИСПРАВЛЕНИЕ СЧЕТЧИКА СООБЩЕНИЙ ===
-  const originalAddMessage = window.addMessage;
-  window.addMessage = function(sender, text) {
-    if (typeof messages !== 'undefined') {
-      messages.push({sender, text});
-      if (typeof renderMessages === 'function') renderMessages();
-      const badge = document.getElementById('msgBadge');
-      if (badge) {
-        badge.style.display = 'flex';
-        badge.textContent = messages.length; // Показываем реальное количество
-      }
-    }
-  };
-
-  // === 3. УСЛОЖНЕНИЕ РАБОТЫ (СТО) ===
-  window.startDay = function() {
-    if (typeof fatigue === 'undefined') return;
-    if (fatigue > 90) return showModal('Усталость', 'Вы слишком устали, идите спать.');
-    fatigue += 10; updateUI();
-    
-    const clients = [
-      { name: "Алексей", car: "ВАЗ 2107", problem: "Двигатель троит, потеря мощности.", fix: "spark", reward: 2000 },
-      { name: "Мария", car: "Hyundai Solaris", problem: "Не заводится, стартер щелкает.", fix: "battery", reward: 1500 },
-      { name: "Дмитрий", car: "Nissan Almera", problem: "Закипела, валит пар.", fix: "radiator", reward: 2500 },
-      { name: "Елена", car: "ВАЗ 2114", problem: "Обороты плавают, глохнет.", fix: "sensor", reward: 1800 }
-    ];
-    const client = clients[Math.floor(Math.random() * clients.length)];
-    window.currentClient = client;
-    window.selectedPart = null;
-    
-    const parts = [
-      {id:'spark', name:'Свечи', icon:'⚡'}, 
-      {id:'battery', name:'АКБ', icon:'🔋'}, 
-      {id:'radiator', name:'Радиатор', icon:'🌡️'},
-      {id:'sensor', name:'Датчик', icon:'🛠️'}
-    ];
-    
-    let html = `<div class="shop-item" style="display:block; text-align:left;"><div style="color:#2196f3; font-weight:bold;">Клиент: ${client.name}</div><div style="color:#888; font-size:12px;">Машина: ${client.car}</div><div style="color:#000; font-weight:bold; margin-top:5px;">Проблема: ${client.problem}</div></div><div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin:15px 0;">`;
-    parts.forEach(p => {
-      let style = (window.selectedPart === p.id) ? 'border: 2px solid #2196f3; background:#e0f2fe;' : 'border: 2px solid transparent; background:#f3f4f6;';
-      html += `<div onclick="window.selectPart('${p.id}')" style="padding:15px; text-align:center; border-radius:10px; cursor:pointer; ${style}"><div style="font-size:30px;">${p.icon}</div><div style="font-size:12px; color:#000; margin-top:5px;">${p.name}</div></div>`;
-    });
-    html += `</div><button class="btn" onclick="window.repairPart()">Починить</button>`;
-    document.getElementById('mechanicContent').innerHTML = html;
-  };
-
-  window.selectPart = function(id) { window.selectedPart = id; window.startDay(); };
-  window.repairPart = function() {
-    if (!window.selectedPart) return showModal('Ошибка', 'Выберите деталь!');
-    if (window.selectedPart === window.currentClient.fix) {
-      balance += window.currentClient.reward; updateUI();
-      showModal('Успех', `Вы заработали ${window.currentClient.reward} ₽!`);
-      document.getElementById('mechanicContent').innerHTML = `<button class="btn" onclick="window.startDay()">Следующий клиент</button>`;
-    } else {
-      balance -= 500; updateUI(); showModal('Ошибка', 'Не та деталь! -500 ₽');
-      window.selectedPart = null; window.startDay();
-    }
-  };
-
-  // === 4. СЮЖЕТ В ОТНОШЕНИЯХ ===
-  window.renderRelations = function() {
-    const container = document.getElementById('relationsList');
-    if (!container) return;
-    const npcs = [
-      { name: 'Аня', role: 'Медсестра', avatar: '👩‍⚕️', level: 0 },
-      { name: 'Марина', role: 'Продавщица', avatar: '👩‍🍳', level: 0 }
-    ];
-    container.innerHTML = npcs.map((n, i) => `
-      <div class="shop-item" style="display:flex; flex-direction:column; align-items:flex-start; gap:10px;">
-        <div style="display:flex; align-items:center; gap:15px; width:100%;">
-          <div style="width:50px; height:50px; border-radius:50%; background:#fce7f3; display:flex; align-items:center; justify-content:center; font-size:24px;">${n.avatar}</div>
-          <div style="flex:1;"><div class="shop-item-title">${n.name}</div><div class="shop-item-desc">${n.role} | Уровень: ${n.level}/100</div></div>
-        </div>
-        <div style="width:100%; height:8px; background:#eee; border-radius:4px; overflow:hidden;"><div style="width:${n.level}%; height:100%; background:#ff6b6b;"></div></div>
-        <button class="buy-btn" style="width:100%;" onclick="window.dateNpc(${i})">Позвать на свидание (500 ₽)</button>
-      </div>
-    `).join('');
-  };
-
-  window.dateNpc = function(index) {
-    if (balance < 500) return showModal('Ошибка', 'Недостаточно денег для свидания!');
-    balance -= 500; updateUI();
-    const texts = [
-      "Вы сходили с Аней в кафе. Она улыбнулась и сказала, что ей понравилось.",
-      "Вы подарили Марине цветы. Она покраснела и пригласила вас на ужин."
-    ];
-    showModal('Свидание', texts[index] || 'Вы хорошо провели время.');
-    // Здесь можно добавить логику повышения уровня
-  };
-
-  // === 5. ПОЧИНКА КАЗИНО (ВИЗУАЛЬНАЯ РУЛЕТКА) ===
-  window.switchCasinoTab = function(tab, btn) {
-    document.querySelectorAll('.casino-tab').forEach(t => t.classList.remove('active'));
-    if(btn) btn.classList.add('active');
-    document.querySelectorAll('.casino-panel').forEach(p => p.style.display = 'none');
-    const panel = document.getElementById(`casino-panel-${tab}`);
-    if(panel) panel.style.display = 'block';
-    
-    if (tab === 'roulette') {
-      if (typeof drawWheel === 'function') drawWheel();
-      if (typeof initRouletteGrid === 'function') initRouletteGrid();
-    }
-  };
-
-  // Запускаем отрисовку при открытии приложений
-  const originalOpenApp = window.openApp;
-  window.openApp = function(id) {
-    originalOpenApp(id);
-    if (id === 'relations') window.renderRelations();
-    if (id === 'mechanic') {
-       const content = document.getElementById('mechanicContent');
-       if(content && !content.innerHTML.includes('Починить')) {
-           content.innerHTML = `<button class="btn" onclick="window.startDay()">Встать и пойти на работу</button>`;
-       }
-    }
-  };
-</script>
-</body>
-</html>
-    <div class="app-screen" id="app-bank">
-      <div class="app-header" style="background:#f6d365; border:none; padding: 15px 16px;">
-        <button class="back-btn" onclick="closeApp('bank')" style="color:#000;">‹ Назад</button>
-        <div class="app-title" style="color:#000; padding-right:0; text-align:left; display:flex; align-items:center; gap:10px;">
-           <div style="background:#000; color:#f6d365; width:40px; height:40px; border-radius:10px; display:flex; align-items:center; justify-content:center; font-weight:bold; font-size:16px;">PF</div>
-           <div><div style="font-size:16px; font-weight:bold;">PlameFinance</div><div style="font-size:12px; color:#555; font-weight:normal;">Кредиты, займы и субсидии</div></div>
-        </div>
-      </div>
-      <div class="app-content" style="background:#fff; padding: 0;">
-        <div style="display:flex; background:#f9f9f9; border-bottom:1px solid #eee;">
-          <div style="flex:1; text-align:center; padding:15px 0; font-weight:bold; font-size:14px; color:var(--accent); border-bottom:3px solid var(--accent); cursor:pointer;" onclick="switchBankTab('credit')">Кредиты</div>
-          <div style="flex:1; text-align:center; padding:15px 0; font-weight:bold; font-size:14px; color:#888; cursor:pointer;" onclick="switchBankTab('micro')">Микрозаймы</div>
-          <div style="flex:1; text-align:center; padding:15px 0; font-weight:bold; font-size:14px; color:#888; cursor:pointer;">Субсидии</div>
-        </div>
-        <div style="padding: 15px;">
-          <div id="creditBlock">
-            <div class="credit-debt-box"><div style="font-size:13px; color:#aaa; margin-bottom:5px;">Долг по кредитам</div><div class="credit-amount" id="creditDebtDisplay">0 ₽</div><div style="display:flex; justify-content:space-between; align-items:center; margin-top:15px; font-size:12px;"><div id="creditStatusText" style="color:#fff;">У вас нет активных кредитов.</div><div id="creditMonthsDisplay" style="background:rgba(255,255,255,0.2); padding:4px 8px; border-radius:5px;">Уровень 0</div></div><div style="width:100%; height:4px; background:rgba(255,255,255,0.1); border-radius:2px; margin-top:10px; overflow:hidden;"><div id="creditProgressBar" style="height:100%; background:#f6d365; width:0%; transition:0.3s;"></div></div></div>
-            <div style="font-size:16px; font-weight:bold; margin: 20px 0 10px 0;">Тарифы</div>
-            <div id="creditLevelsGrid" style="display:grid; grid-template-columns:1fr 1fr; gap:10px;"></div>
-            <div id="creditActions" style="margin-top:20px; display:none;"><button class="btn" onclick="payCredit()" style="background:#f6d365; color:#000; font-size:16px; padding:15px;">Погасить весь долг</button></div>
-          </div>
-          
-          <div id="microBlock" style="display:none;">
-            <div style="font-weight:bold; font-size:16px; margin-bottom:5px;">Деньги за 5 минут</div>
-            <div style="font-size:12px; color:#888; margin-bottom:15px;">Без проверки кредитной истории. 1% в день.</div>
-            <div style="background:#fff; border:1px solid #eee; border-radius:16px; padding:20px; text-align:center; box-shadow:0 4px 15px rgba(0,0,0,0.05);">
-               <div style="font-size:28px; font-weight:bold; margin-bottom:15px;" id="microAmountDisplay">10 000 ₽</div>
-               <input type="range" min="1000" max="50000" step="1000" value="10000" id="microSlider" style="width:100%; accent-color:#ffc107; margin-bottom:15px;" oninput="updateMicroLoan()">
-               <div style="display:flex; gap:5px; margin-bottom:15px;">
-                 <button class="btn" style="background:#fff; border:1px solid #eee; color:#000; flex:1; font-size:12px; padding:10px;" onclick="setMicroTerm(3, this)">3 дня</button>
-                 <button class="btn" style="background:#ffc107; border:1px solid #ffc107; color:#000; flex:1; font-size:12px; padding:10px;" onclick="setMicroTerm(7, this)">✓ 7 дней</button>
-                 <button class="btn" style="background:#fff; border:1px solid #eee; color:#000; flex:1; font-size:12px; padding:10px;" onclick="setMicroTerm(14, this)">14 дней</button>
-               </div>
-               <div style="display:flex; justify-content:space-between; font-size:14px; margin-bottom:10px; border-top:1px solid #eee; padding-top:10px;"><span style="color:#888;">Вернуть до:</span><span style="font-weight:bold;" id="microReturnDate">04.03.2024</span></div>
-               <div style="display:flex; justify-content:space-between; font-size:14px; margin-bottom:15px;"><span style="color:#888;">К возврату:</span><span style="font-weight:bold;" id="microReturnAmount">10 700 ₽</span></div>
-               <div style="font-size:11px; color:#f44336; margin-bottom:15px; text-align:left;">Просрочка: пени 2% в день.</div>
-               <button class="btn" style="background:#ffc107; color:#000; font-size:16px; padding:12px;" onclick="takeMicroLoan()">Получить <span id="microBtnAmount">10 000</span> ₽</button>
-            </div>
-          </div>
-          <div style="font-size:16px; font-weight:bold; margin: 30px 0 10px 0;">Вклады</div>
-          <div class="shop-item"><div class="shop-item-info"><div class="shop-item-title">Вклад под 10%</div><div class="shop-item-desc">Прибыль начисляется каждый день.</div></div><div style="text-align:right;"><div class="shop-item-price">От 1 000 ₽</div><button class="buy-btn" onclick="openDeposit()">Открыть</button></div></div>
-        </div>
-      </div>
-    </div>
-
-    <div class="app-screen" id="app-darknet"><div class="app-header"><button class="back-btn" onclick="closeApp('darknet')">‹ Назад</button><div class="app-title">Даркнет</div></div><div class="balance-bar">Баланс: <span class="balance-val">0</span> ₽ | Наличка: <span id="dirtyCash">0</span> ₽</div><div class="app-content"><div class="shop-item" style="display:block;"><div class="shop-item-title">ВАЗ 2107 (Угнан)</div><div class="shop-item-desc">Шанс спалиться: 30%.</div><div class="shop-item-price">100 000 ₽</div><button class="btn" onclick="buyStolenCar('ВАЗ 2107', 100000)">Купить</button></div><div class="shop-item" style="display:block;"><div class="shop-item-title">Пакет «Весёлый»</div><div class="shop-item-desc">Продать в розницу (доход x3).</div><div class="shop-item-price">50 000 ₽</div><button class="btn" onclick="buyDrugs(50000)">Купить</button></div><div class="shop-item" style="display:block;"><div class="shop-item-title">Отжать хату</div><div class="shop-item-desc">Быстрое бабло. Шанс 30%.</div><div class="shop-item-price">+50 000 ₽</div><button class="btn" onclick="extortProperty()">Отжать</button></div></div></div>
-    <div class="app-screen" id="app-sleep"><div class="app-header"><button class="back-btn" onclick="closeApp('sleep')">‹ Назад</button><div class="app-title">Сон</div></div><div class="app-content" style="justify-content: center; align-items: center;"><button class="btn" onclick="goToSleep()">Лечь спать</button></div></div>
-    <div class="app-screen" id="app-shop"><div class="app-header"><button class="back-btn" onclick="closeApp('shop')">‹ Назад</button><div class="app-title">Магазин</div></div><div class="app-content"><div class="shop-item"><div class="shop-item-info"><div class="shop-item-title">Шаурма</div><div class="shop-item-desc">Восстанавливает 30% еды.</div></div><div style="text-align:right;"><div class="shop-item-price">300 ₽</div><button class="buy-btn" onclick="buyFood(300, 30)">Купить</button></div></div><div class="shop-item"><div class="shop-item-info"><div class="shop-item-title">Пельмени</div><div class="shop-item-desc">Восстанавливает 50% еды.</div></div><div style="text-align:right;"><div class="shop-item-price">500 ₽</div><button class="buy-btn" onclick="buyFood(500, 50)">Купить</button></div></div></div></div>
-    
-    <div class="app-screen" id="app-cars">
-      <div class="app-header"><button class="back-btn" onclick="closeApp('cars')">‹ Назад</button><div class="app-title">Автосалон</div></div>
-      <div class="balance-bar">Баланс: <span class="balance-val">0</span> ₽</div>
-      <div class="app-content">
-        <div class="car-tabs"><div class="car-tab active" onclick="switchCarTab('vaz', this)">ВАЗ (Lada)</div><div class="car-tab" onclick="switchCarTab('hyundai', this)">Hyundai</div><div class="car-tab" onclick="switchCarTab('nissan', this)">Nissan</div></div>
-        <div id="car-list-vaz" class="car-list">
-          <div class="shop-item"><div class="shop-item-info"><div class="shop-item-title">ВАЗ-2101</div><div class="shop-item-desc">Легенда.</div></div><div style="text-align:right;"><div class="shop-item-price">50 000 ₽</div><button class="buy-btn" onclick="buyCar('ВАЗ-2101', 50000)">Купить</button></div></div>
-          <div class="shop-item"><div class="shop-item-info"><div class="shop-item-title">ВАЗ-2107</div><div class="shop-item-desc">Жрет бензин.</div></div><div style="text-align:right;"><div class="shop-item-price">150 000 ₽</div><button class="buy-btn" onclick="buyCar('ВАЗ-2107', 150000)">Купить</button></div></div>
-          <div class="shop-item"><div class="shop-item-info"><div class="shop-item-title">ВАЗ-2109</div><div class="shop-item-desc">Ржавеет.</div></div><div style="text-align:right;"><div class="shop-item-price">200 000 ₽</div><button class="buy-btn" onclick="buyCar('ВАЗ-2109', 200000)">Купить</button></div></div>
-          <div class="shop-item"><div class="shop-item-info"><div class="shop-item-title">ВАЗ-2114</div><div class="shop-item-desc">Сыпется.</div></div><div style="text-align:right;"><div class="shop-item-price">300 000 ₽</div><button class="buy-btn" onclick="buyCar('ВАЗ-2114', 300000)">Купить</button></div></div>
-        </div>
-        <div id="car-list-hyundai" class="car-list" style="display:none;">
-          <div class="shop-item"><div class="shop-item-info"><div class="shop-item-title">Hyundai Accent</div><div class="shop-item-desc">На каждый день.</div></div><div style="text-align:right;"><div class="shop-item-price">400 000 ₽</div><button class="buy-btn" onclick="buyCar('Hyundai Accent', 400000)">Купить</button></div></div>
-          <div class="shop-item"><div class="shop-item-info"><div class="shop-item-title">Hyundai Solaris</div><div class="shop-item-desc">Современный.</div></div><div style="text-align:right;"><div class="shop-item-price">700 000 ₽</div><button class="buy-btn" onclick="buyCar('Hyundai Solaris', 700000)">Купить</button></div></div>
-        </div>
-        <div id="car-list-nissan" class="car-list" style="display:none;">
-          <div class="shop-item"><div class="shop-item-info"><div class="shop-item-title">Nissan Almera</div><div class="shop-item-desc">Надежный.</div></div><div style="text-align:right;"><div class="shop-item-price">500 000 ₽</div><button class="buy-btn" onclick="buyCar('Nissan Almera', 500000)">Купить</button></div></div>
-          <div class="shop-item"><div class="shop-item-info"><div class="shop-item-title">Nissan X-Trail</div><div class="shop-item-desc">Кроссовер.</div></div><div style="text-align:right;"><div class="shop-item-price">2 000 000 ₽</div><button class="buy-btn" onclick="buyCar('Nissan X-Trail', 2000000)">Купить</button></div></div>
-        </div>
-      </div>
-    </div>
-    
-    <div class="app-screen" id="app-realestate"><div class="app-header"><button class="back-btn" onclick="closeApp('realestate')">‹ Назад</button><div class="app-title">Недвижимость</div></div><div class="balance-bar">Баланс: <span class="balance-val">0</span> ₽</div><div class="app-content"><div class="shop-item"><div class="shop-item-info"><div class="shop-item-title">Койка в общаге (Аренда)</div><div class="shop-item-desc">-2 000 ₽/день</div></div><button class="buy-btn" onclick="showModal('Аренда', 'Вы сняли койку.')">Снять</button></div><div class="shop-item"><div class="shop-item-info"><div class="shop-item-title">Однушка (Покупка)</div><div class="shop-item-desc">+10 000 ₽/день</div></div><div style="text-align:right;"><div class="shop-item-price">1 000 000 ₽</div><button class="buy-btn" onclick="buyProperty('Однушка', 1000000, 10000)">Купить</button></div></div></div></div>
-    
-    <div class="app-screen" id="app-relations"><div class="app-header"><button class="back-btn" onclick="closeApp('relations')">‹ Назад</button><div class="app-title">Отношения</div></div><div class="app-content" id="relationsList"></div></div>
-    
-    <div class="app-screen" id="app-calendar"><div class="app-header"><button class="back-btn" onclick="closeApp('calendar')">‹ Назад</button><div class="app-title">Календарь</div></div><div class="app-content"><div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;"><button class="btn" style="width:auto; padding:10px 20px;" onclick="changeMonth(-1)">‹</button><div id="calendarTitle" style="font-size:20px; font-weight:bold;">Октябрь 2026</div><button class="btn" style="width:auto; padding:10px 20px;" onclick="changeMonth(1)">›</button></div><div id="calendarGrid" style="display:grid; grid-template-columns:repeat(7,1fr); gap:5px; text-align:center;"></div></div></div>
-
-    <div class="app-screen" id="app-calc"><div class="app-header"><button class="back-btn" onclick="closeApp('calc')">‹ Назад</button><div class="app-title">Калькулятор</div></div><div class="app-content" style="padding:20px; background:#f9f9f9;"><div id="calcDisplay" style="background:#fff; padding:20px; text-align:right; font-size:40px; border-radius:10px; margin-bottom:20px; border:1px solid #eee;">0</div><div style="display:grid; grid-template-columns:repeat(4,1fr); gap:10px;"><button class="btn" style="background:#e5e7eb; color:#000;" onclick="calcInput('C')">C</button><button class="btn" style="background:#e5e7eb; color:#000;" onclick="calcInput('+/-')">±</button><button class="btn" style="background:#e5e7eb; color:#000;" onclick="calcInput('%')">%</button><button class="btn" style="background:var(--accent); color:#fff;" onclick="calcInput('/')">÷</button><button class="btn" style="background:#fff; color:#000; border:1px solid #eee;" onclick="calcInput('7')">7</button><button class="btn" style="background:#fff; color:#000; border:1px solid #eee;" onclick="calcInput('8')">8</button><button class="btn" style="background:#fff; color:#000; border:1px solid #eee;" onclick="calcInput('9')">9</button><button class="btn" style="background:var(--accent); color:#fff;" onclick="calcInput('*')">×</button><button class="btn" style="background:#fff; color:#000; border:1px solid #eee;" onclick="calcInput('4')">4</button><button class="btn" style="background:#fff; color:#000; border:1px solid #eee;" onclick="calcInput('5')">5</button><button class="btn" style="background:#fff; color:#000; border:1px solid #eee;" onclick="calcInput('6')">6</button><button class="btn" style="background:var(--accent); color:#fff;" onclick="calcInput('-')">−</button><button class="btn" style="background:#fff; color:#000; border:1px solid #eee;" onclick="calcInput('1')">1</button><button class="btn" style="background:#fff; color:#000; border:1px solid #eee;" onclick="calcInput('2')">2</button><button class="btn" style="background:#fff; color:#000; border:1px solid #eee;" onclick="calcInput('3')">3</button><button class="btn" style="background:var(--accent); color:#fff;" onclick="calcInput('+')">+</button><button class="btn" style="background:#fff; color:#000; border:1px solid #eee; grid-column:span 2;" onclick="calcInput('0')">0</button><button class="btn" style="background:#fff; color:#000; border:1px solid #eee;" onclick="calcInput(',')">,</button><button class="btn" style="background:var(--accent); color:#fff;" onclick="calcInput('=')">=</button></div></div></div>
-
-    <div class="app-screen" id="app-numbers"><div class="app-header"><button class="back-btn" onclick="closeApp('numbers')">‹ Назад</button><div class="app-title">Рынок номеров</div></div><div class="app-content"><div style="text-align:center; margin-bottom:20px;"><p style="color:#888; font-size:14px;">Крутите рулетку, чтобы выбить красивый номер!</p></div><div style="background:#fff; border:2px solid var(--border); border-radius:16px; padding:20px; text-align:center; box-shadow:0 4px 15px rgba(0,0,0,0.05);"><div id="numberDisplay" style="font-size:36px; font-weight:bold; margin-bottom:20px; letter-spacing:2px; color:var(--accent);">А000АА</div><button class="btn" onclick="spinNumbers()" id="spinNumberBtn" style="font-size:18px; padding:15px;">Крутить (1 000 ₽)</button><div id="numberResult" style="margin-top:15px; font-weight:bold; font-size:16px;"></div></div></div></div>
-
-    <div class="app-screen" id="app-clock"><div class="app-header"><button class="back-btn" onclick="closeApp('clock')">‹ Назад</button><div class="app-title">Часы</div></div><div class="app-content" style="justify-content:center; align-items:center; background:#fff;"><div id="clockBigTime" style="font-size:80px; font-weight:bold; color:#000;">11:44</div><div id="clockBigDate" style="font-size:20px; color:#888; margin-top:10px;">Понедельник, 26 Октября</div></div></div>
-
-    <div class="app-screen" id="app-jail"><div class="app-header"><div class="app-title">СИЗО</div></div><div class="app-content" style="justify-content:center; align-items:center; text-align:center;"><h2>⛓️ Вы в СИЗО</h2><p id="jailTimeDisplay" style="margin:20px 0;"></p><button class="btn" onclick="bribeJail()">Откупиться (50 000 ₽)</button></div></div>
-  </div>
-  <div class="nav-bar" style="display:flex; justify-content:space-around; padding:15px; background:#fff; border-top:1px solid #eee;"><button class="btn" onclick="closeAllApps()">На главную</button></div>
-</div>
-<div class="modal" id="modal"><div class="modal-content"><div class="modal-title" id="modalTitle">Уведомление</div><div class="modal-text" id="modalText">Текст</div><button class="btn" onclick="closeModal()">ОК</button></div></div>
-<script>
-  let gameTime = 480, gameDate = new Date(2026, 9, 19), balance = 5000, dirtyCash = 150000, playerName = "", fatigue = 0, food = 100, inJail = false, jailDays = 0, ownedCar = null, messages = [], chips = 0, CHIP_PRICE = 1000;
-  let creditDebt = 0, creditMonthsLeft = 0, currentMonth = 9, currentYear = 2026, creditLevel = 0;
-  let selectedPart = null, currentClient = null;
-  let isLocked = true, pinCode = "", isSettingPassword = false;
-  let savedPin = localStorage.getItem('userPin') || null;
-  let calcValue = "0", ownedNumbers = [];
-
-  function updateLockTime() { const h = Math.floor(gameTime / 60) % 24, m = gameTime % 60; const timeStr = `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}`; const lockTimeEl = document.getElementById('lockTime'), lockDateEl = document.getElementById('lockDate'), lockIconEl = document.getElementById('lockIcon'); if(lockTimeEl) lockTimeEl.textContent = timeStr; if(lockDateEl) lockDateEl.textContent = `${gameDate.getDate()} Октября`; if(lockIconEl) { if (h >= 6 && h < 20) { lockIconEl.textContent = '☀️'; lockIconEl.style.color = '#ffeb3b'; } else { lockIconEl.textContent = '🌙'; lockIconEl.style.color = '#e0e0e0'; } } }
-  function inputPin(num) { if (num === 'del') pinCode = pinCode.slice(0, -1); else pinCode += num; const dots = document.querySelectorAll('.dot'); dots.forEach((dot, i) => { if (i < pinCode.length) dot.classList.add('active'); else dot.classList.remove('active'); }); if (pinCode.length === 4) { if (isSettingPassword) { savedPin = pinCode; localStorage.setItem('userPin', savedPin); showModal('Успех', 'Пароль установлен!'); isSettingPassword = false; pinCode = ""; dots.forEach(d => d.classList.remove('active')); } else { if (savedPin && pinCode === savedPin) { document.getElementById('lockScreen').style.display = 'none'; isLocked = false; } else { showModal('Ошибка', 'Неверный пароль!'); pinCode = ""; dots.forEach(d => d.classList.remove('active')); } } } }
-  function startSetupPassword() { isSettingPassword = true; pinCode = ""; document.querySelectorAll('.dot').forEach(d => d.classList.remove('active')); showModal('Настройка', 'Придумайте пароль (4 цифры).'); }
-
-  function updateClock() { const h = Math.floor(gameTime/60)%24, m = gameTime%60; document.getElementById('clockDisplay').textContent = `День ${gameDate.getDate()-18} | ${gameDate.getDate()} Окт | ${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}`; updateLockTime(); }
-  setInterval(() => { gameTime++; if(gameTime>=1440){ gameTime=0; gameDate.setDate(gameDate.getDate()+1); if (creditDebt > 0) { creditDebt = Math.floor(creditDebt * 1.1); creditMonthsLeft--; updateCreditUI(); } } updateClock(); }, 1000);
-  
-  function updateUI() { document.querySelectorAll('.balance-val').forEach(el => el.textContent = balance.toLocaleString('ru-RU')); if(document.getElementById('dirtyCash')) document.getElementById('dirtyCash').textContent = dirtyCash.toLocaleString('ru-RU'); if(document.getElementById('fatigueVal')) document.getElementById('fatigueVal').textContent = fatigue; if(document.getElementById('foodVal')) document.getElementById('foodVal').textContent = food; if(document.getElementById('exChips')) document.getElementById('exChips').textContent = chips.toLocaleString('ru-RU'); }
-  function showModal(title, text) { document.getElementById('modalTitle').textContent = title; document.getElementById('modalText').textContent = text; document.getElementById('modal').classList.add('show'); }
-  function closeModal() { document.getElementById('modal').classList.remove('show'); }
-  function startGame() { playerName = document.getElementById('playerNameInput').value.trim(); if(!playerName) return alert('Введите имя!'); document.getElementById('startupModal').classList.remove('show'); addMessage("Палыч", "Здарова, новенький. Завтра в 8 утра чтобы был как штык."); updateUI(); updateClock(); renderCalendar(); }
-  function addMessage(sender, text) { messages.push({sender, text}); renderMessages(); const b = document.getElementById('msgBadge'); if(b){ b.style.display='flex'; b.textContent = parseInt(b.textContent||0)+1; } }
-  function renderMessages() { const c = document.getElementById('messagesList'); if(!c) return; c.innerHTML = messages.map(m => `<div class="message-item"><div class="message-avatar">${m.sender[0]}</div><div class="message-content"><div class="message-sender">${m.sender}</div><div class="message-text">${m.text}</div></div></div>`).join(''); }
-  function openApp(id) { const a = document.getElementById(`app-${id}`); if(a) a.classList.add('active'); if(id==='messages'){ renderMessages(); const b=document.getElementById('msgBadge'); if(b) b.style.display='none'; } if(id==='casino') { initRouletteGrid(); drawWheel(); } if(id==='calendar') renderCalendar(); if(id==='clock') updateBigClock(); if(id==='relations') renderRelations(); updateUI(); }
-  function closeApp(id) { const a = document.getElementById(`app-${id}`); if(a) a.classList.remove('active'); }
-  function closeAllApps() { document.querySelectorAll('.app-screen').forEach(el => el.classList.remove('active')); }
-
-  function startDay() { if (fatigue > 90) return showModal('Усталость', 'Вы слишком устали, идите спать.'); fatigue += 10; updateUI(); const clients = [{ name: "Алексей", car: "ВАЗ 2107", problem: "Двигатель троит.", fix: "spark", reward: 2000 }, { name: "Мария", car: "Hyundai Solaris", problem: "Не заводится.", fix: "battery", reward: 1500 }]; currentClient = clients[Math.floor(Math.random() * clients.length)]; selectedPart = null; const parts = [{id:'spark', name:'Свечи', icon:'⚡'}, {id:'battery', name:'АКБ', icon:'🔋'}]; let html = `<div class="shop-item" style="display:block; text-align:left;"><div style="color:var(--accent); font-weight:bold;">Клиент: ${currentClient.name}</div><div style="color:#888; font-size:12px;">Машина: ${currentClient.car}</div><div style="color:#000; font-weight:bold; margin-top:5px;">Проблема: ${currentClient.problem}</div></div><div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin:15px 0;">`; parts.forEach(p => { let style = selectedPart === p.id ? 'border: 2px solid var(--accent); background:#e0f2fe;' : 'border: 2px solid transparent; background:#f3f4f6;'; html += `<div onclick="selectPart('${p.id}')" style="padding:15px; text-align:center; border-radius:10px; cursor:pointer; ${style}"><div style="font-size:30px;">${p.icon}</div><div style="font-size:12px; color:#000; margin-top:5px;">${p.name}</div></div>`; }); html += `</div><button class="btn" onclick="repairPart()">Починить</button>`; document.getElementById('mechanicContent').innerHTML = html; }
-  function selectPart(id) { selectedPart = id; startDay(); }
-  function repairPart() { if (!selectedPart) return showModal('Ошибка', 'Выберите деталь!'); if (selectedPart === currentClient.fix) { balance += currentClient.reward; updateUI(); showModal('Успех', `Вы заработали ${currentClient.reward} ₽!`); document.getElementById('mechanicContent').innerHTML = `<button class="btn" onclick="startDay()">Следующий клиент</button>`; } else { balance -= 500; updateUI(); showModal('Ошибка', 'Не та деталь! -500 ₽'); selectedPart = null; startDay(); } }
-
-  const CREDIT_LEVELS = [{ amount: 50000, reqLevel: 0 }, { amount: 100000, reqLevel: 1 }, { amount: 250000, reqLevel: 2 }, { amount: 500000, reqLevel: 3 }, { amount: 1000000, reqLevel: 4 }, { amount: 2500000, reqLevel: 5 }, { amount: 5000000, reqLevel: 6 }, { amount: 10000000, reqLevel: 7 }];
-  function updateCreditUI() { const debtDisplay = document.getElementById('creditDebtDisplay'), statusText = document.getElementById('creditStatusText'), monthsDisplay = document.getElementById('creditMonthsDisplay'), actionsBlock = document.getElementById('creditActions'), grid = document.getElementById('creditLevelsGrid'), progressBar = document.getElementById('creditProgressBar'); if (creditDebt > 0) { debtDisplay.textContent = creditDebt.toLocaleString('ru-RU') + ' ₽'; statusText.textContent = 'Долг растет на 10% каждый месяц!'; monthsDisplay.textContent = creditMonthsLeft + ' мес'; actionsBlock.style.display = 'block'; progressBar.style.width = '50%'; } else { debtDisplay.textContent = '0 ₽'; statusText.textContent = 'У вас нет активных кредитов.'; monthsDisplay.textContent = 'Уровень ' + creditLevel; actionsBlock.style.display = 'none'; progressBar.style.width = (creditLevel * 14) + '%'; } grid.innerHTML = ''; CREDIT_LEVELS.forEach((lvl, index) => { const isLocked = creditLevel < lvl.reqLevel; const isCurrent = creditDebt > 0; let card = document.createElement('div'); card.className = 'shop-item'; card.style.display = 'block'; card.style.padding = '15px'; card.style.opacity = isLocked ? '0.5' : '1'; if (isLocked) { card.innerHTML = `<div style="font-size:20px; color:#888; margin-bottom:5px;">🔒</div><div style="font-weight:bold; font-size:16px;">${lvl.amount.toLocaleString('ru-RU')} ₽</div><div style="font-size:12px; color:#888;">Нужен уровень ${lvl.reqLevel}</div>`; } else { card.style.cursor = isCurrent ? 'not-allowed' : 'pointer'; card.innerHTML = `<div style="font-size:20px; color:#f6d365; margin-bottom:5px;">💰</div><div style="font-weight:bold; font-size:16px;">${lvl.amount.toLocaleString('ru-RU')} ₽</div><div style="font-size:12px; color:#888;">Уровень ${lvl.reqLevel}</div>`; if (!isCurrent) card.onclick = () => takeCredit(lvl.amount); } grid.appendChild(card); }); }
-  function takeCredit(amount) { if (creditDebt > 0) return showModal('Ошибка', 'Сначала погасите текущий кредит!'); creditDebt = amount; creditMonthsLeft = 3; balance += amount; updateUI(); updateCreditUI(); showModal('Кредит', `Вы взяли ${amount.toLocaleString('ru-RU')} ₽.`); }
-  function payCredit() { if (balance < creditDebt) return showModal('Ошибка', 'Недостаточно денег!'); balance -= creditDebt; creditDebt = 0; if (creditLevel < 7) creditLevel++; updateUI(); updateCreditUI(); showModal('Успех', `Кредит погашен! Уровень: ${creditLevel}.`); }
-  
-  let microAmount = 10000, microTerm = 7;
-  function switchBankTab(tab) { if(tab === 'credit') { document.getElementById('creditBlock').style.display = 'block'; document.getElementById('microBlock').style.display = 'none'; } else { document.getElementById('creditBlock').style.display = 'none'; document.getElementById('microBlock').style.display = 'block'; updateMicroLoan(); } }
-  function updateMicroLoan() { const slider = document.getElementById('microSlider'); if(!slider) return; microAmount = parseInt(slider.value); document.getElementById('microAmountDisplay').textContent = microAmount.toLocaleString('ru-RU') + ' ₽'; document.getElementById('microBtnAmount').textContent = microAmount.toLocaleString('ru-RU'); const returnAmount = Math.floor(microAmount * (1 + (0.01 * microTerm))); document.getElementById('microReturnAmount').textContent = returnAmount.toLocaleString('ru-RU') + ' ₽'; const d = new Date(gameDate); d.setDate(d.getDate() + microTerm); document.getElementById('microReturnDate').textContent = `${d.getDate().toString().padStart(2,'0')}.${(d.getMonth()+1).toString().padStart(2,'0')}.${d.getFullYear()}`; }
-  function setMicroTerm(days, btn) { microTerm = days; document.querySelectorAll('#microBlock .btn').forEach(b => { if(b.textContent.includes('дн')) { b.style.background = '#fff'; b.style.color = '#000'; } }); btn.style.background = '#ffc107'; btn.style.color = '#000'; updateMicroLoan(); }
-  function takeMicroLoan() { const returnAmount = Math.floor(microAmount * (1 + (0.01 * microTerm))); balance += microAmount; updateUI(); showModal('Микрозайм', `Вы получили ${microAmount.toLocaleString('ru-RU')} ₽. К возврату: ${returnAmount.toLocaleString('ru-RU')} ₽.`); }
-
-  function openDeposit() { const amount = parseInt(document.getElementById('depositInput').value); if (!amount || amount < 1000) return showModal('Ошибка', 'Мин. 1000 ₽'); if (balance < amount) return showModal('Ошибка', 'Мало денег'); balance -= amount; showModal('Банк', `Вклад на ${amount} ₽ открыт.`); updateUI(); }
-
-  const coolNumbers = [{ code: "А777АА", price: 50000, chance: 1 }, { code: "Е777КХ", price: 30000, chance: 5 }, { code: "О001ОО", price: 20000, chance: 10 }, { code: "М555ММ", price: 15000, chance: 15 }, { code: "К123КК", price: 10000, chance: 20 }, { code: "В999ВВ", price: 8000, chance: 25 }];
-  function spinNumbers() { if (balance < 1000) return showModal('Ошибка', 'Недостаточно денег! Нужно 1000 ₽'); balance -= 1000; updateUI(); const display = document.getElementById('numberDisplay'), resDiv = document.getElementById('numberResult'), btn = document.getElementById('spinNumberBtn'); btn.disabled = true; resDiv.textContent = "Крутим..."; resDiv.style.color = '#888'; let ticks = 0; const interval = setInterval(() => { const randomLetter = String.fromCharCode(1040 + Math.floor(Math.random() * 32)); const randomNum = Math.floor(Math.random() * 1000).toString().padStart(3, '0'); display.textContent = `${randomLetter}${randomNum}${randomLetter}${randomLetter}`; ticks++; if (ticks > 20) { clearInterval(interval); btn.disabled = false; let roll = Math.random() * 100; let cumulativeChance = 0; let wonNumber = null; for (let num of coolNumbers) { cumulativeChance += num.chance; if (roll <= cumulativeChance) { wonNumber = num; break; } } if (wonNumber) { display.textContent = wonNumber.code; resDiv.textContent = `🎉 Вы выбили номер ${wonNumber.code}!`; resDiv.style.color = '#4caf50'; display.innerHTML += `<div style="display:flex; gap:5px; margin-top:10px;"><button class="btn" style="background:#22c55e; color:#fff; padding:10px; font-size:13px; flex:1;" onclick="sellNumber(${wonNumber.price})">Продать за ${wonNumber.price} ₽</button><button class="btn" style="background:var(--accent); color:#fff; padding:10px; font-size:13px; flex:1;" onclick="keepNumber('${wonNumber.code}')">Оставить</button></div>`; } else { const letter = String.fromCharCode(1040 + Math.floor(Math.random() * 32)); const num = Math.floor(Math.random() * 1000).toString().padStart(3, '0'); const regularNum = `${letter}${num}${letter}${letter}`; display.textContent = regularNum; resDiv.textContent = `Увы, обычный номер.`; resDiv.style.color = '#f44336'; display.innerHTML += `<div style="display:flex; gap:5px; margin-top:10px;"><button class="btn" style="background:#22c55e; color:#fff; padding:10px; font-size:13px; flex:1;" onclick="sellNumber(2000)">Продать за 2 000 ₽</button><button class="btn" style="background:var(--accent); color:#fff; padding:10px; font-size:13px; flex:1;" onclick="keepNumber('${regularNum}')">Оставить</button></div>`; } } }, 100); }
-  function sellNumber(price) { balance += price; updateUI(); showModal('Продажа', `Вы продали номер за ${price.toLocaleString('ru-RU')} ₽!`); document.getElementById('numberDisplay').textContent = "А000АА"; document.getElementById('numberResult').textContent = ""; }
-  function keepNumber(code) { ownedNumbers.push(code); showModal('Успех', `Номер ${code} сохранен в гараж!`); document.getElementById('numberDisplay').textContent = "А000АА"; document.getElementById('numberResult').textContent = ""; }
-
-  function updateBigClock() { const elTime = document.getElementById('clockBigTime'); const elDate = document.getElementById('clockBigDate'); if(!elTime) return; const h = Math.floor(gameTime / 60) % 24, m = gameTime % 60; elTime.textContent = `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}`; const months = ['Января', 'Февраля', 'Марта', 'Апреля', 'Мая', 'Июня', 'Июля', 'Августа', 'Сентября', 'Октября', 'Ноября', 'Декабря']; elDate.textContent = `${gameDate.getDate()} ${months[gameDate.getMonth()]}`; }
-
-  function calcInput(val) { const display = document.getElementById('calcDisplay'); if (!display) return; if (val === 'C') { calcValue = "0"; } else if (val === '=') { try { calcValue = eval(calcValue.replace(/,/g, '.')).toString(); } catch { calcValue = "Ошибка"; } } else if (val === '+/-') { calcValue = (parseFloat(calcValue) * -1).toString(); } else if (val === '%') { calcValue = (parseFloat(calcValue) / 100).toString(); } else { if (calcValue === "0" && val !== ',') calcValue = val; else calcValue += val; } display.textContent = calcValue; }
-
-  function renderRelations() { const container = document.getElementById('relationsList'); if (!container) return; const npcs = [ { name: 'Аня', role: 'Медсестра', avatar: '👩‍⚕️' }, { name: 'Марина', role: 'Продавщица', avatar: '👩‍🍳' } ]; container.innerHTML = npcs.map(n => `<div class="shop-item" style="display:flex; align-items:center; gap:15px;"><div style="width:50px; height:50px; border-radius:50%; background:#fce7f3; display:flex; align-items:center; justify-content:center; font-size:24px;">${n.avatar}</div><div style="flex:1;"><div class="shop-item-title">${n.name}</div><div class="shop-item-desc">${n.role}</div></div><button class="buy-btn" onclick="showModal('Свидание', 'Вы пригласили ${n.name} в кафе. (+10 к отношениям)')">Позвать</button></div>`).join(''); }
-
-  function goToSleep() { gameDate.setDate(gameDate.getDate()+1); gameTime=480; fatigue=0; food=100; updateUI(); updateClock(); closeApp('sleep'); showModal('Утро', 'Вы проснулись!'); }
-  function buyFood(price, amount) { if (balance >= price) { balance -= price; food += amount; if (food > 100) food = 100; updateUI(); showModal('Успех', `Сытость: ${food}%`); } else { showModal('Ошибка', 'Мало денег!'); } }
-  function buyStolenCar(name, price) { if (balance + dirtyCash >= price) { if (balance >= price) { balance -= price; } else { let rem = price - balance; balance = 0; dirtyCash -= rem; } ownedCar = name; updateUI(); showModal('Даркнет', `Вы купили ${name}!`); } else { showModal('Ошибка', 'Мало денег!'); } }
-  function buyDrugs(price) { if (balance >= price) { balance -= price; dirtyCash += 150000; updateUI(); showModal('Даркнет', 'Вы купили товар и продали его! +150 000 ₽ налички.'); } else { showModal('Ошибка', 'Мало денег!'); } }
-  function extortProperty() { dirtyCash += 50000; updateUI(); showModal('Даркнет', 'Вы отжали хату! +50 000 ₽ налички.'); }
-  function bribeJail() { if(balance>=50000){ balance-=50000; inJail=false; closeApp('jail'); updateUI(); showModal('Успех','Вы откупились!'); } }
-  function buyCar(name, price) { if (balance >= price) { balance -= price; ownedCar = name; updateUI(); showModal('Покупка', `Вы купили ${name}!`); } else { showModal('Ошибка', 'Мало денег!'); } }
-  function buyProperty(name, price, income) { if (balance >= price) { balance -= price; updateUI(); showModal('Покупка', `Вы купили ${name}!`); } else { showModal('Ошибка', 'Мало денег!'); } }
-  function changeMonth(dir) { currentMonth += dir; if (currentMonth > 11) { currentMonth = 0; currentYear++; } if (currentMonth < 0) { currentMonth = 11; currentYear--; } renderCalendar(); }
-  function renderCalendar() { const months = ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь']; const title = document.getElementById('calendarTitle'); if(title) title.textContent = `${months[currentMonth]} ${currentYear}`; const grid = document.getElementById('calendarGrid'); if(!grid) return; grid.innerHTML = ''; const days = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс']; days.forEach(d => { const el = document.createElement('div'); el.textContent = d; el.style.color = '#888'; el.style.fontWeight = 'bold'; grid.appendChild(el); }); const firstDay = new Date(currentYear, currentMonth, 1).getDay(); const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate(); let start = firstDay === 0 ? 6 : firstDay - 1; for (let i = 0; i < start; i++) { grid.appendChild(document.createElement('div')); } for (let i = 1; i <= daysInMonth; i++) { const el = document.createElement('div'); el.textContent = i; el.style.padding = '10px'; el.style.background = (i === gameDate.getDate() && currentMonth === gameDate.getMonth()) ? 'var(--accent)' : '#fff'; el.style.color = (i === gameDate.getDate() && currentMonth === gameDate.getMonth()) ? '#fff' : '#000'; el.style.borderRadius = '50%'; el.style.border = '1px solid #eee'; grid.appendChild(el); } }
+  function renderCalendar() { const months = ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь']; const title = document.getElementById('calendarTitle'); if(title) title.textContent = `${months[currentMonth]} ${currentYear}`; const grid = document.getElementById('calendarGrid'); if(!grid) return; grid.innerHTML = ''; const days = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс']; days.forEach(d => { const el = document.createElement('div'); el.textContent = d; el.style.color = '#888'; el.style.fontWeight = 'bold'; grid.appendChild(el); }); const firstDay = new Date(currentYear, currentMonth, 1).getDay(); const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate(); let start = firstDay === 0 ? 6 : firstDay - 1; for (let i = 0; i < start; i++) { grid.appendChild(document.createElement('div')); } for (let i = 1; i <= daysInMonth; i++) { const el = document.createElement('div'); el.textContent = i; el.style.padding = '10px'; el.style.background = (i === gameDate.getDate() && currentMonth === gameDate.getMonth()) ? 'var(--accent)' : '#fff'; el.style.color = (i === gameDate.getDate() && currentMonth === gameDate.getMonth()) ? '#fff' : '#000'; el.style.borderRadius = '50%'; el.style.border = '1px solid #eee'; el.style.cursor = 'pointer'; el.onclick = () => { showModal('Календарь', `Вы выбрали ${i} ${months[currentMonth]}. На этот день пока нет запланированных встреч.`); }; grid.appendChild(el); } }
 
   updateUI(); updateClock(); updateCreditUI();
 </script>

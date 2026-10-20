@@ -20,7 +20,6 @@
   
   .icon-messages { background: #e0f2fe; color: #0284c7; }
   .icon-mechanic { background: #fef08a; color: #854d0e; }
-  .icon-relations { background: #fce7f3; color: #be185d; }
   .icon-casino { background: #fee2e2; color: #b91c1c; }
   .icon-bank { background: #dcfce7; color: #15803d; }
   .icon-darknet { background: #f3e8ff; color: #6b21a8; }
@@ -63,10 +62,6 @@
   .credit-debt-box::before { content: ''; position: absolute; top: -50%; right: -20%; width: 150px; height: 150px; background: rgba(255,255,255,0.05); border-radius: 50%; }
   .credit-amount { color: #ffc107; font-size: 32px; font-weight: bold; }
 
-  .pin-btn { width: 70px; height: 70px; border-radius: 50%; border: 2px solid rgba(255,255,255,0.5); background: rgba(255,255,255,0.1); color: #fff; font-size: 24px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: 0.1s;}
-  .pin-btn:active { background: rgba(255,255,255,0.3); }
-  .dot.active { background: #fff; }
-
   .car-tabs, .realestate-tabs, .casino-tabs { display: flex !important; gap: 8px !important; margin-bottom: 20px !important; }
   .car-tab, .realestate-tab, .casino-tab { flex: 1; background: #fff; border: 1px solid var(--border); color: var(--text-main); padding: 12px 10px; border-radius: 10px; font-weight: bold; cursor: pointer; text-align: center; font-size: 14px; transition: 0.2s; }
   .car-tab.active, .realestate-tab.active, .casino-tab.active { background: var(--accent) !important; color: #fff !important; border-color: var(--accent) !important; }
@@ -79,27 +74,24 @@
 </style>
 </head>
 <body>
-  <div id="lockScreen" style="position:absolute; top:0; left:0; right:0; bottom:0; background: linear-gradient(135deg, #2196f3, #0d47a1); z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #fff;">
-  <div style="font-size: 80px; margin-bottom: 20px;" id="lockIcon">☀️</div>
-  <div style="font-size: 48px; font-weight: bold;" id="lockTime">08:00</div>
-  <div style="font-size: 16px; margin-bottom: 40px;" id="lockDate">19 Октября</div>
-  <button onclick="startSetupPassword()" style="background:#fff; color:#0d47a1; border:none; padding:10px 20px; border-radius:20px; font-weight:bold; margin-bottom:20px; cursor:pointer;">Настроить пароль</button>
-  <div id="pinPad" style="display: flex; flex-direction: column; align-items: center;">
-    <div id="pinDots" style="display:flex; gap:10px; margin-bottom:20px;">
-      <div class="dot" style="width:15px; height:15px; border:2px solid #fff; border-radius:50%;"></div><div class="dot" style="width:15px; height:15px; border:2px solid #fff; border-radius:50%;"></div><div class="dot" style="width:15px; height:15px; border:2px solid #fff; border-radius:50%;"></div><div class="dot" style="width:15px; height:15px; border:2px solid #fff; border-radius:50%;"></div>
-    </div>
-    <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap: 15px;">
-      <button class="pin-btn" onclick="inputPin('1')">1</button><button class="pin-btn" onclick="inputPin('2')">2</button><button class="pin-btn" onclick="inputPin('3')">3</button><button class="pin-btn" onclick="inputPin('4')">4</button><button class="pin-btn" onclick="inputPin('5')">5</button><button class="pin-btn" onclick="inputPin('6')">6</button><button class="pin-btn" onclick="inputPin('7')">7</button><button class="pin-btn" onclick="inputPin('8')">8</button><button class="pin-btn" onclick="inputPin('9')">9</button><button class="pin-btn" style="opacity:0; pointer-events:none;">*</button><button class="pin-btn" onclick="inputPin('0')">0</button><button class="pin-btn" onclick="inputPin('del')">⌫</button>
-    </div>
-  </div>
-</div>
 
 <div class="modal show" id="startupModal" style="background: var(--bg-main);">
   <div class="modal-content" style="max-width: 400px; text-align: left; padding: 30px;">
     <div style="font-size: 24px; font-weight: bold; margin-bottom: 5px; color: var(--text-main);">Добро пожаловать!</div>
     <div style="font-size: 14px; color: var(--text-muted); margin-bottom: 25px;">Представьтесь и выберите город.</div>
     <div style="display: flex; align-items: center; background: #f3f4f6; padding: 12px; border-radius: 12px; margin-bottom: 15px;"><span style="font-size: 20px; margin-right: 10px;">👤</span><input type="text" id="playerNameInput" placeholder="Ваше имя" style="border: none; background: transparent; outline: none; font-size: 16px; width: 100%; color: var(--text-main);"></div>
-    <div style="display: flex; align-items: center; background: #f3f4f6; padding: 12px; border-radius: 12px; margin-bottom: 20px;"><span style="font-size: 20px; margin-right: 10px;">🏙️</span><select id="playerCityInput" style="border: none; background: transparent; outline: none; font-size: 16px; width: 100%; color: var(--text-main);"><option value="Москва">Москва</option><option value="Санкт-Петербург">Санкт-Петербург</option><option value="Тюмень">Тюмень</option><option value="Казань">Казань</option></select></div>
+    <div style="display: flex; align-items: center; background: #f3f4f6; padding: 12px; border-radius: 12px; margin-bottom: 20px;"><span style="font-size: 20px; margin-right: 10px;">🏙️</span>
+      <select id="playerCityInput" style="border: none; background: transparent; outline: none; font-size: 16px; width: 100%; color: var(--text-main);">
+        <option value="Москва">Москва — Высокие цены, много работы и пробок.</option>
+        <option value="Санкт-Петербург">Санкт-Петербург — Культурная столица, дождливо, но красиво.</option>
+        <option value="Тюмень">Тюмень — Родной город, дешевая жизнь и много нефти.</option>
+        <option value="Казань">Казань — Комфортный город, хорошая инфраструктура.</option>
+        <option value="Новосибирск">Новосибирск — Суровый край, много снега и науки.</option>
+        <option value="Екатеринбург">Екатеринбург — Промышленный гигант, контрасты.</option>
+        <option value="Краснодар">Краснодар — Тепло, уютно и много южан.</option>
+        <option value="Омск">Омск — Сибирский город с суровым характером и дешевым жильем.</option>
+      </select>
+    </div>
     <button class="btn" onclick="startGame()">Начать игру</button>
   </div>
 </div>
@@ -125,20 +117,125 @@
       <div class="app-icon" onclick="openApp('clock')"><div class="icon-box icon-clock">🕒</div><span>Часы</span></div>
       <div class="app-icon" onclick="openApp('settings')"><div class="icon-box icon-settings">⚙️</div><span>Настройки</span></div>
     </div>
-
-    <div class="app-screen" id="app-messages"><div class="app-header"><button class="back-btn" onclick="closeApp('messages')">‹ Назад</button><div class="app-title">Сообщения</div></div><div class="balance-bar">Баланс: <span class="balance-val">0</span> ₽</div><div class="app-content" id="messagesList"></div></div>
+        <div class="app-screen" id="app-messages"><div class="app-header"><button class="back-btn" onclick="closeApp('messages')">‹ Назад</button><div class="app-title">Сообщения</div></div><div class="balance-bar">Баланс: <span class="balance-val">0</span> ₽</div><div class="app-content" id="messagesList"></div></div>
     <div class="app-screen" id="app-garage"><div class="app-header"><button class="back-btn" onclick="closeApp('garage')">‹ Назад</button><div class="app-title">Гараж</div></div><div class="balance-bar">Баланс: <span class="balance-val">0</span> ₽</div><div class="app-content" id="garageContent"></div></div>
     <div class="app-screen" id="app-mechanic"><div class="app-header"><button class="back-btn" onclick="closeApp('mechanic')">‹ Назад</button><div class="app-title">СТО ВАЗ</div></div><div class="balance-bar"><span>Еда: <span id="foodVal">100</span>%</span></div><div class="app-content" id="mechanicContent"><button class="btn" onclick="startDay()">Встать и пойти на работу</button></div></div>
     
     <div class="app-screen" id="app-casino">
       <div class="app-header"><button class="back-btn" onclick="closeApp('casino')">‹ Назад</button><div class="app-title">Казино</div></div>
       <div class="balance-bar">Баланс: <span class="balance-val">0</span> ₽ | Фишек: <span id="exChips">0</span></div>
-      <div class="app-content">
-        <div class="casino-tabs"><div class="casino-tab active" onclick="switchCasinoTab('guess', this)">Угадай</div><div class="casino-tab" onclick="switchCasinoTab('roulette', this)">Рулетка</div><div class="casino-tab" onclick="switchCasinoTab('slots', this)">Слоты</div><div class="casino-tab" onclick="switchCasinoTab('mines', this)">Мины</div></div>
-        <div id="casino-panel-guess" class="casino-panel"><h2 style="text-align:center;">Угадай число</h2><p style="text-align:center; color:#888; margin-bottom:10px;">От 1 до 10. Выигрыш ×5.</p><div class="bet-control-box"><div class="bet-row"><button class="bet-minus-plus" onclick="changeGuessBet(-500)">−</button><div class="bet-amount-display" id="guessBetDisplay">1 000 ₽</div><button class="bet-minus-plus" onclick="changeGuessBet(500)">+</button></div><div class="quick-bets-row"><button class="quick-btn" onclick="setGuessBet(500)">500</button><button class="quick-btn active" onclick="setGuessBet(1000)">1 000</button><button class="quick-btn" onclick="setGuessBet(5000)">5 000</button><button class="quick-btn" onclick="setGuessBet('max')">МАКС</button></div></div><div style="display:flex; gap:5px; justify-content:center; margin-bottom:20px;"><button class="btn" style="background:#1c222e; color:#fff; padding:15px; font-size:16px;" onclick="playGuess(1)">1</button><button class="btn" style="background:#1c222e; color:#fff; padding:15px; font-size:16px;" onclick="playGuess(2)">2</button><button class="btn" style="background:#1c222e; color:#fff; padding:15px; font-size:16px;" onclick="playGuess(3)">3</button><button class="btn" style="background:#1c222e; color:#fff; padding:15px; font-size:16px;" onclick="playGuess(4)">4</button><button class="btn" style="background:#1c222e; color:#fff; padding:15px; font-size:16px;" onclick="playGuess(5)">5</button></div><div style="display:flex; gap:5px; justify-content:center;"><button class="btn" style="background:#1c222e; color:#fff; padding:15px; font-size:16px;" onclick="playGuess(6)">6</button><button class="btn" style="background:#1c222e; color:#fff; padding:15px; font-size:16px;" onclick="playGuess(7)">7</button><button class="btn" style="background:#1c222e; color:#fff; padding:15px; font-size:16px;" onclick="playGuess(8)">8</button><button class="btn" style="background:#1c222e; color:#fff; padding:15px; font-size:16px;" onclick="playGuess(9)">9</button><button class="btn" style="background:#1c222e; color:#fff; padding:15px; font-size:16px;" onclick="playGuess(10)">10</button></div><div id="guessResult" style="text-align:center; margin-top:20px; font-weight:bold;"></div></div>
-        <div id="casino-panel-roulette" class="casino-panel" style="display:none;"><div class="exchange-box"><div class="exchange-btns"><button class="btn-red" onclick="buyChips(1)">Купить 1К</button><button class="btn-purple" onclick="buyChips(5)">Купить 5К</button><button class="btn-blue" onclick="buyChips(10)">Купить 10К</button></div><div style="display:flex; gap:5px; margin-top:5px;"><button class="btn btn-secondary" style="font-size:12px; padding:10px; flex:1;" onclick="sellChips()">Продать все фишки</button></div></div><div class="roulette-table"><div class="wheel-wrapper"><div class="wheel-pointer"></div><canvas id="rouletteCanvas" width="320" height="320"></canvas><div class="wheel-center" id="wheelCenter">?</div></div><div class="betting-grid" id="bettingGrid"></div></div><div class="chip-selector"><button class="chip-btn chip-1 active" data-val="1">1</button><button class="chip-btn chip-5" data-val="5">5</button><button class="chip-btn chip-10" data-val="10">10</button></div><div style="display:flex; gap:10px; margin-top:15px; width: 100%; max-width: 400px;"><button id="clearBetsBtn" class="btn btn-secondary" style="flex:1; padding: 12px; font-size: 14px;">Очистить</button><button id="spinRouletteBtn" class="btn" style="flex:2; padding: 12px; font-size: 14px;">Крутить!</button></div><div class="result" id="rouletteResult" style="text-align:center; font-weight:bold; margin-top:10px;"></div></div>
-        <div id="casino-panel-slots" class="casino-panel" style="display:none;"><h2 style="text-align:center;">Слоты</h2><div class="slots"><div class="slot" id="slot0">🍒</div><div class="slot" id="slot1">🍋</div><div class="slot" id="slot2">⭐</div></div><div class="bet-control-box"><div class="bet-row"><button class="bet-minus-plus" onclick="changeSlotsBet(-500)">−</button><div class="bet-amount-display" id="slotsBetDisplay">1 000 ₽</div><button class="bet-minus-plus" onclick="changeSlotsBet(500)">+</button></div><div class="quick-bets-row"><button class="quick-btn" onclick="setSlotsBet(500)">500</button><button class="quick-btn active" onclick="setSlotsBet(1000)">1 000</button><button class="quick-btn" onclick="setSlotsBet(5000)">5 000</button><button class="quick-btn" onclick="setSlotsBet('max')">МАКС</button></div></div><button class="main-play-btn" id="slotsBtn">Крутить</button><div id="slotsResult" style="text-align:center; margin-top:15px; font-weight:bold;"></div></div>
-        <div id="casino-panel-mines" class="casino-panel" style="display:none;"><div class="mines-stats"><div class="stat-box"><div class="stat-title">Сейчас</div><div class="stat-value" id="minesCurrentMult">—</div></div><div class="stat-box"><div class="stat-title">Следующая</div><div class="stat-value" id="minesNextMult">×1,02</div></div><div class="stat-box"><div class="stat-title">Шанс</div><div class="stat-value" id="minesChance">88 %</div></div></div><div class="mines-grid-new" id="minesGrid"></div><div class="bet-control-box"><div class="bet-row"><button class="bet-minus-plus" onclick="changeMinesBet(-1000)">−</button><div class="bet-amount-display" id="minesBetDisplay">1 000 ₽</div><button class="bet-minus-plus" onclick="changeMinesBet(1000)">+</button></div><div class="quick-bets-row"><button class="quick-btn" onclick="setMinesBet(100)">100</button><button class="quick-btn active" onclick="setMinesBet(1000)">1 000</button><button class="quick-btn" onclick="setMinesBet(10000)">10 000</button><button class="quick-btn" onclick="setMinesBet('max')">МАКС</button></div></div><div class="mines-select-box"><div class="mines-select-header"><div class="mines-select-title">Мин на поле</div><div class="mines-select-controls"><button class="bet-minus-plus" onclick="changeMinesCount(-1)">−</button><span id="minesCountDisplay">3</span><button class="bet-minus-plus" onclick="changeMinesCount(1)">+</button></div></div><div class="mines-options-row"><button class="mine-opt-btn" onclick="setMinesCount(1)">1</button><button class="mine-opt-btn active" onclick="setMinesCount(3)">3</button><button class="mine-opt-btn" onclick="setMinesCount(5)">5</button><button class="mine-opt-btn" onclick="setMinesCount(10)">10</button><button class="mine-opt-btn" onclick="setMinesCount(24)">24</button></div></div><button class="main-play-btn" id="minesStartBtn" onclick="startMines()">Играть</button><button class="main-play-btn" id="minesCashoutBtn" style="display: none; background: var(--success);" onclick="cashoutMines()">Забрать выигрыш</button><div id="minesResult" style="text-align:center; margin-top:10px; font-weight:bold;"></div></div>
+      <div class="app-content" style="background: #111;">
+        <div class="casino-tabs" style="background: #000; padding: 10px; border-radius: 10px;">
+          <div class="casino-tab active" onclick="switchCasinoTab('roulette', this)">Рулетка</div>
+          <div class="casino-tab" onclick="switchCasinoTab('mines', this)">Мины</div>
+        </div>
+
+        <!-- РУЛЕТКА -->
+        <div id="casino-panel-roulette" class="casino-panel">
+          <div style="background: #1b5e20; border: 4px solid #5d4037; border-radius: 16px; padding: 15px; text-align: center;">
+            <h3 style="color: #fff; margin-bottom: 15px;">Рулетка (Фишки)</h3>
+            <div style="background: rgba(0,0,0,0.3); padding: 10px; border-radius: 10px; margin-bottom: 15px;">
+              <div style="color: #ffc107; font-weight: bold; margin-bottom: 10px;">У тебя фишек: <span id="rouletteChipsDisplay">0</span></div>
+              <div style="display: flex; gap: 5px; justify-content: center; margin-bottom: 10px;">
+                <button class="btn" style="background: #e74c3c; padding: 8px; font-size: 12px;" onclick="buyChips(1)">Купить 1К</button>
+                <button class="btn" style="background: #8e44ad; padding: 8px; font-size: 12px;" onclick="buyChips(5)">Купить 5К</button>
+                <button class="btn" style="background: #2980b9; padding: 8px; font-size: 12px;" onclick="buyChips(10)">Купить 10К</button>
+              </div>
+              <button class="btn" style="background: #4a148c; padding: 8px; font-size: 12px;" onclick="sellChips()">Продать все фишки</button>
+            </div>
+
+            <!-- Колесо -->
+            <div style="position: relative; width: 200px; height: 200px; margin: 0 auto 15px auto;">
+              <canvas id="rouletteCanvas" width="200" height="200" style="border-radius: 50%; border: 4px solid #b8860b; box-shadow: 0 0 15px rgba(0,0,0,0.8);"></canvas>
+              <div style="position: absolute; top: -10px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 10px solid transparent; border-right: 10px solid transparent; border-top: 20px solid #ffc107;"></div>
+            </div>
+
+            <!-- Сетка ставок -->
+            <div style="display: grid; grid-template-columns: repeat(13, 1fr); gap: 2px; margin-bottom: 15px;">
+              <div style="grid-row: span 3; background: #27ae60; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 12px; cursor: pointer;" onclick="addChipToCell(this, '0')">0</div>
+              <div style="grid-row: span 3; background: #27ae60; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 12px; cursor: pointer;" onclick="addChipToCell(this, '00')">00</div>
+              <div style="background: #c0392b; color: #fff; padding: 5px; cursor: pointer;" onclick="addChipToCell(this, '1')">1</div>
+              <div style="background: #1a1a1a; color: #fff; padding: 5px; cursor: pointer;" onclick="addChipToCell(this, '2')">2</div>
+              <div style="background: #c0392b; color: #fff; padding: 5px; cursor: pointer;" onclick="addChipToCell(this, '3')">3</div>
+              <div style="background: #1a1a1a; color: #fff; padding: 5px; cursor: pointer;" onclick="addChipToCell(this, '4')">4</div>
+              <div style="background: #c0392b; color: #fff; padding: 5px; cursor: pointer;" onclick="addChipToCell(this, '5')">5</div>
+              <div style="background: #1a1a1a; color: #fff; padding: 5px; cursor: pointer;" onclick="addChipToCell(this, '6')">6</div>
+              <div style="background: #c0392b; color: #fff; padding: 5px; cursor: pointer;" onclick="addChipToCell(this, '7')">7</div>
+              <div style="background: #1a1a1a; color: #fff; padding: 5px; cursor: pointer;" onclick="addChipToCell(this, '8')">8</div>
+              <div style="background: #c0392b; color: #fff; padding: 5px; cursor: pointer;" onclick="addChipToCell(this, '9')">9</div>
+              <div style="background: #1a1a1a; color: #fff; padding: 5px; cursor: pointer;" onclick="addChipToCell(this, '10')">10</div>
+              <div style="background: #c0392b; color: #fff; padding: 5px; cursor: pointer;" onclick="addChipToCell(this, '11')">11</div>
+              <div style="background: #1a1a1a; color: #fff; padding: 5px; cursor: pointer;" onclick="addChipToCell(this, '12')">12</div>
+              <div style="grid-column: span 4; background: #2c3e50; color: #fff; padding: 5px; cursor: pointer;" onclick="addChipToCell(this, '1st12')">1st 12</div>
+              <div style="grid-column: span 4; background: #2c3e50; color: #fff; padding: 5px; cursor: pointer;" onclick="addChipToCell(this, '2nd12')">2nd 12</div>
+              <div style="grid-column: span 4; background: #2c3e50; color: #fff; padding: 5px; cursor: pointer;" onclick="addChipToCell(this, '3rd12')">3rd 12</div>
+              <div style="grid-column: span 2; background: #2c3e50; color: #fff; padding: 5px; cursor: pointer;" onclick="addChipToCell(this, '1-18')">1-18</div>
+              <div style="grid-column: span 2; background: #c0392b; color: #fff; padding: 5px; cursor: pointer;" onclick="addChipToCell(this, 'EVEN')">EVEN</div>
+              <div style="grid-column: span 2; background: #c0392b; color: #fff; padding: 5px; cursor: pointer;" onclick="addChipToCell(this, 'RED')">RED</div>
+              <div style="grid-column: span 2; background: #1a1a1a; color: #fff; padding: 5px; cursor: pointer;" onclick="addChipToCell(this, 'BLACK')">BLACK</div>
+              <div style="grid-column: span 2; background: #2c3e50; color: #fff; padding: 5px; cursor: pointer;" onclick="addChipToCell(this, 'ODD')">ODD</div>
+              <div style="grid-column: span 2; background: #2c3e50; color: #fff; padding: 5px; cursor: pointer;" onclick="addChipToCell(this, '19-36')">19-36</div>
+            </div>
+
+            <div style="display: flex; justify-content: center; gap: 10px; margin-bottom: 15px;">
+              <button class="chip-btn" style="background: #e74c3c; width: 40px; height: 40px; border-radius: 50%; border: 2px solid #fff; color: #fff; font-weight: bold;" onclick="setCurrentChip(1)">1</button>
+              <button class="chip-btn" style="background: #8e44ad; width: 40px; height: 40px; border-radius: 50%; border: 2px solid #fff; color: #fff; font-weight: bold;" onclick="setCurrentChip(5)">5</button>
+              <button class="chip-btn" style="background: #2980b9; width: 40px; height: 40px; border-radius: 50%; border: 2px solid #fff; color: #fff; font-weight: bold;" onclick="setCurrentChip(10)">10</button>
+            </div>
+
+            <div style="display: flex; gap: 10px;">
+              <button class="btn" style="background: #4caf50; flex: 1;" onclick="clearBets()">Очистить</button>
+              <button class="btn" style="background: #ffc107; color: #000; flex: 2;" onclick="spinRoulette()">Крутить!</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- МИНЫ -->
+        <div id="casino-panel-mines" class="casino-panel" style="display: none;">
+          <div style="background: #1a1e29; border-radius: 16px; padding: 15px; border: 1px solid #2a2e39;">
+            <div style="display: flex; justify-content: space-between; margin-bottom: 15px;">
+              <div style="background: #222736; padding: 10px; border-radius: 10px; text-align: center; flex: 1; margin-right: 5px;"><div style="color: #888; font-size: 12px;">Сейчас</div><div style="color: #fff; font-weight: bold;" id="minesCurrentMult">—</div></div>
+              <div style="background: #222736; padding: 10px; border-radius: 10px; text-align: center; flex: 1; margin-right: 5px;"><div style="color: #888; font-size: 12px;">Следующая</div><div style="color: #ffc107; font-weight: bold;" id="minesNextMult">×1,02</div></div>
+              <div style="background: #222736; padding: 10px; border-radius: 10px; text-align: center; flex: 1;"><div style="color: #888; font-size: 12px;">Шанс</div><div style="color: #fff; font-weight: bold;" id="minesChance">88 %</div></div>
+            </div>
+
+            <div id="minesGrid" style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin-bottom: 15px;"></div>
+
+            <div style="background: #222736; border-radius: 16px; padding: 15px;">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                <button class="bet-minus-plus" style="background: transparent; border: 2px solid #ffc107; color: #ffc107; width: 40px; height: 40px; border-radius: 50%; font-size: 20px;" onclick="changeMinesBet(-1000)">−</button>
+                <div style="color: #fff; font-size: 24px; font-weight: bold;" id="minesBetDisplay">1 000 ₽</div>
+                <button class="bet-minus-plus" style="background: transparent; border: 2px solid #ffc107; color: #ffc107; width: 40px; height: 40px; border-radius: 50%; font-size: 20px;" onclick="changeMinesBet(1000)">+</button>
+              </div>
+              <div style="display: flex; gap: 5px; margin-bottom: 15px;">
+                <button class="btn" style="background: #222736; color: #888; flex: 1; padding: 10px; font-size: 12px;" onclick="setMinesBet(100)">100</button>
+                <button class="btn" style="background: #ffc107; color: #000; flex: 1; padding: 10px; font-size: 12px;" onclick="setMinesBet(1000)">1 000</button>
+                <button class="btn" style="background: #222736; color: #888; flex: 1; padding: 10px; font-size: 12px;" onclick="setMinesBet(10000)">10 000</button>
+                <button class="btn" style="background: #222736; color: #888; flex: 1; padding: 10px; font-size: 12px;" onclick="setMinesBet('max')">МАКС</button>
+              </div>
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                <span style="color: #888;">Мин на поле</span>
+                <div style="display: flex; align-items: center; gap: 10px;">
+                  <button class="bet-minus-plus" style="background: #222736; border: none; color: #fff; width: 30px; height: 30px; border-radius: 50%;" onclick="changeMinesCount(-1)">−</button>
+                  <span id="minesCountDisplay" style="color: #fff; font-weight: bold;">3</span>
+                  <button class="bet-minus-plus" style="background: #222736; border: none; color: #fff; width: 30px; height: 30px; border-radius: 50%;" onclick="changeMinesCount(1)">+</button>
+                </div>
+              </div>
+              <div style="display: flex; gap: 5px; margin-bottom: 15px;">
+                <button class="btn" style="background: #222736; color: #888; flex: 1; padding: 8px; font-size: 12px;" onclick="setMinesCount(1)">1</button>
+                <button class="btn" style="background: #ffc107; color: #000; flex: 1; padding: 8px; font-size: 12px;" onclick="setMinesCount(3)">3</button>
+                <button class="btn" style="background: #222736; color: #888; flex: 1; padding: 8px; font-size: 12px;" onclick="setMinesCount(5)">5</button>
+                <button class="btn" style="background: #222736; color: #888; flex: 1; padding: 8px; font-size: 12px;" onclick="setMinesCount(10)">10</button>
+                <button class="btn" style="background: #222736; color: #888; flex: 1; padding: 8px; font-size: 12px;" onclick="setMinesCount(24)">24</button>
+              </div>
+              <button class="btn" id="minesStartBtn" style="background: #ffc107; color: #000; font-size: 18px; padding: 15px; width: 100%;" onclick="startMines()">Играть за 1 000 ₽</button>
+              <button class="btn" id="minesCashoutBtn" style="background: #22c55e; color: #fff; font-size: 18px; padding: 15px; width: 100%; display: none;" onclick="cashoutMines()">Забрать выигрыш</button>
+            </div>
+            <div style="color: #888; font-size: 12px; margin-top: 15px; text-align: left;">
+              Под клетками прячутся мины. Каждая открытая пустая клетка поднимает множитель — забрать выигрыш можно в любой момент. Мина — ставка сгорела. Чем больше мин, тем быстрее растёт множитель.
+            </div>
+          </div>
+        </div>
       </div>
     </div>
         <div class="app-screen" id="app-bank">
@@ -276,21 +373,29 @@
   let gameTime = 480, gameDate = new Date(2026, 9, 19), balance = 5000, dirtyCash = 150000, playerName = "", fatigue = 0, food = 100, inJail = false, jailDays = 0, ownedCar = null, messages = [], chips = 0, CHIP_PRICE = 1000;
   let creditDebt = 0, creditMonthsLeft = 0, currentMonth = 9, currentYear = 2026, creditLevel = 0;
   let selectedPart = null, currentClient = null;
-  let isLocked = true, pinCode = "", isSettingPassword = false;
-  let savedPin = localStorage.getItem('userPin') || null;
   let calcValue = "0", ownedNumbers = [];
 
-  function updateLockTime() { const h = Math.floor(gameTime / 60) % 24, m = gameTime % 60; const timeStr = `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}`; const lockTimeEl = document.getElementById('lockTime'), lockDateEl = document.getElementById('lockDate'), lockIconEl = document.getElementById('lockIcon'); if(lockTimeEl) lockTimeEl.textContent = timeStr; if(lockDateEl) lockDateEl.textContent = `${gameDate.getDate()} Октября`; if(lockIconEl) { if (h >= 6 && h < 20) { lockIconEl.textContent = '☀️'; lockIconEl.style.color = '#ffeb3b'; } else { lockIconEl.textContent = '🌙'; lockIconEl.style.color = '#e0e0e0'; } } }
-  function inputPin(num) { if (num === 'del') pinCode = pinCode.slice(0, -1); else pinCode += num; const dots = document.querySelectorAll('.dot'); dots.forEach((dot, i) => { if (i < pinCode.length) dot.classList.add('active'); else dot.classList.remove('active'); }); if (pinCode.length === 4) { if (isSettingPassword) { savedPin = pinCode; localStorage.setItem('userPin', savedPin); showModal('Успех', 'Пароль установлен!'); isSettingPassword = false; pinCode = ""; dots.forEach(d => d.classList.remove('active')); } else { if (savedPin && pinCode === savedPin) { document.getElementById('lockScreen').style.display = 'none'; isLocked = false; } else { showModal('Ошибка', 'Неверный пароль!'); pinCode = ""; dots.forEach(d => d.classList.remove('active')); } } } }
-  function startSetupPassword() { isSettingPassword = true; pinCode = ""; document.querySelectorAll('.dot').forEach(d => d.classList.remove('active')); showModal('Настройка', 'Придумайте пароль (4 цифры).'); }
-
-  function updateClock() { const h = Math.floor(gameTime/60)%24, m = gameTime%60; document.getElementById('clockDisplay').textContent = `День ${gameDate.getDate()-18} | ${gameDate.getDate()} Окт | ${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}`; updateLockTime(); }
+  function updateClock() { const h = Math.floor(gameTime/60)%24, m = gameTime%60; document.getElementById('clockDisplay').textContent = `День ${gameDate.getDate()-18} | ${gameDate.getDate()} Окт | ${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}`; }
   setInterval(() => { gameTime++; if(gameTime>=1440){ gameTime=0; gameDate.setDate(gameDate.getDate()+1); if (creditDebt > 0) { creditDebt = Math.floor(creditDebt * 1.1); creditMonthsLeft--; updateCreditUI(); } } updateClock(); }, 1000);
   
-  function updateUI() { document.querySelectorAll('.balance-val').forEach(el => el.textContent = balance.toLocaleString('ru-RU')); if(document.getElementById('dirtyCash')) document.getElementById('dirtyCash').textContent = dirtyCash.toLocaleString('ru-RU'); if(document.getElementById('exchangeDirty')) document.getElementById('exchangeDirty').textContent = dirtyCash.toLocaleString('ru-RU'); if(document.getElementById('fatigueVal')) document.getElementById('fatigueVal').textContent = fatigue; if(document.getElementById('foodVal')) document.getElementById('foodVal').textContent = food; if(document.getElementById('exChips')) document.getElementById('exChips').textContent = chips.toLocaleString('ru-RU'); }
+  function updateUI() { document.querySelectorAll('.balance-val').forEach(el => el.textContent = balance.toLocaleString('ru-RU')); if(document.getElementById('dirtyCash')) document.getElementById('dirtyCash').textContent = dirtyCash.toLocaleString('ru-RU'); if(document.getElementById('exchangeDirty')) document.getElementById('exchangeDirty').textContent = dirtyCash.toLocaleString('ru-RU'); if(document.getElementById('fatigueVal')) document.getElementById('fatigueVal').textContent = fatigue; if(document.getElementById('foodVal')) document.getElementById('foodVal').textContent = food; if(document.getElementById('exChips')) document.getElementById('exChips').textContent = chips.toLocaleString('ru-RU'); if(document.getElementById('rouletteChipsDisplay')) document.getElementById('rouletteChipsDisplay').textContent = chips.toLocaleString('ru-RU'); }
   function showModal(title, text) { document.getElementById('modalTitle').textContent = title; document.getElementById('modalText').textContent = text; document.getElementById('modal').classList.add('show'); }
   function closeModal() { document.getElementById('modal').classList.remove('show'); }
-  function startGame() { playerName = document.getElementById('playerNameInput').value.trim(); if(!playerName) return alert('Введите имя!'); document.getElementById('startupModal').classList.remove('show'); addMessage("Палыч", "Здарова, новенький. Завтра в 8 утра чтобы был как штык."); updateUI(); updateClock(); renderCalendar(); }
+  function startGame() { 
+    playerName = document.getElementById('playerNameInput').value.trim(); 
+    if(!playerName) return alert('Введите имя!'); 
+    document.getElementById('startupModal').classList.remove('show'); 
+    
+    // Сюжетное сообщение
+    addMessage("Палыч", "Здарова, новенький. Ты че, опять проспал? Я тебе говорил в 8 утра быть как штык! Опоздаешь еще раз — вычту из зарплаты. И да, машины у тебя нет, так что топай пешком.");
+    setTimeout(() => {
+      showModal('Начало игры', `Вы только что отучились на механика в Тюмени и вернулись в родной поселок. У вас есть только этот старый дом, разбитое СТО и строгий начальник Палыч. Ходите вы пешком, поэтому просыпать нельзя. В любой день может прийти повестка.`);
+    }, 1000);
+
+    updateUI(); 
+    updateClock(); 
+    renderCalendar(); 
+  }
   function addMessage(sender, text) { messages.push({sender, text}); renderMessages(); const b = document.getElementById('msgBadge'); if(b){ b.style.display='flex'; b.textContent = messages.length; } }
   function renderMessages() { const c = document.getElementById('messagesList'); if(!c) return; c.innerHTML = messages.map(m => `<div class="message-item"><div class="message-avatar">${m.sender[0]}</div><div class="message-content"><div class="message-sender">${m.sender}</div><div class="message-text">${m.text}</div></div></div>`).join(''); }
   function openApp(id) { const a = document.getElementById(`app-${id}`); if(a) a.classList.add('active'); if(id==='messages'){ renderMessages(); const b=document.getElementById('msgBadge'); if(b) b.style.display='none'; } if(id==='casino') { initRouletteGrid(); drawWheel(); } if(id==='calendar') renderCalendar(); if(id==='clock') updateBigClock(); updateUI(); }
@@ -298,7 +403,7 @@
   function closeAllApps() { document.querySelectorAll('.app-screen').forEach(el => el.classList.remove('active')); }
   function goBack() { const active = document.querySelector('.app-screen.active'); if (active) active.classList.remove('active'); }
 
-  // ==== БЛОКИРОВКА И НАВИГАЦИЯ ====
+  // ==== НАВИГАЦИЯ ====
   document.addEventListener('DOMContentLoaded', () => {
     const nav = document.createElement('div');
     nav.className = 'android-nav';
@@ -310,10 +415,67 @@
     document.body.appendChild(nav);
   });
 
-  // ==== СТО ====
-  function startDay() { if (fatigue > 90) return showModal('Усталость', 'Вы слишком устали, идите спать.'); fatigue += 10; updateUI(); const clients = [{ name: "Алексей", car: "ВАЗ 2107", problem: "Двигатель троит.", fix: "spark", reward: 2000 }, { name: "Мария", car: "Hyundai Solaris", problem: "Не заводится.", fix: "battery", reward: 1500 }]; currentClient = clients[Math.floor(Math.random() * clients.length)]; selectedPart = null; const parts = [{id:'spark', name:'Свечи', icon:'⚡'}, {id:'battery', name:'АКБ', icon:'🔋'}]; let html = `<div class="shop-item" style="display:block; text-align:left;"><div style="color:var(--accent); font-weight:bold;">Клиент: ${currentClient.name}</div><div style="color:#888; font-size:12px;">Машина: ${currentClient.car}</div><div style="color:#000; font-weight:bold; margin-top:5px;">Проблема: ${currentClient.problem}</div></div><div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin:15px 0;">`; parts.forEach(p => { let style = selectedPart === p.id ? 'border: 2px solid var(--accent); background:#e0f2fe;' : 'border: 2px solid transparent; background:#f3f4f6;'; html += `<div onclick="selectPart('${p.id}')" style="padding:15px; text-align:center; border-radius:10px; cursor:pointer; ${style}"><div style="font-size:30px;">${p.icon}</div><div style="font-size:12px; color:#000; margin-top:5px;">${p.name}</div></div>`; }); html += `</div><button class="btn" onclick="repairPart()">Починить</button>`; document.getElementById('mechanicContent').innerHTML = html; }
+  // ==== СТО (СЛОЖНОЕ) ====
+  function startDay() { 
+    if (fatigue > 90) return showModal('Усталость', 'Вы слишком устали, идите спать.'); 
+    fatigue += 10; updateUI(); 
+    
+    const clients = [
+      { name: "Алексей", car: "ВАЗ 2107", problem: "Двигатель троит, потеря мощности. Слышен запах бензина.", fix: "spark", reward: 2500 },
+      { name: "Мария", car: "Hyundai Solaris", problem: "При повороте ключа — тишина, стартер не крутит.", fix: "battery", reward: 1500 },
+      { name: "Дмитрий", car: "Nissan Almera", problem: "Машина закипела, из-под капота валит пар.", fix: "radiator", reward: 3000 },
+      { name: "Елена", car: "ВАЗ 2114", problem: "Обороты плавают, машина глохнет на холостых.", fix: "sensor", reward: 2000 },
+      { name: "Сергей", car: "Nissan X-Trail", problem: "Вой из-под капота, двигатель заглох на ходу.", fix: "timing", reward: 4500 },
+      { name: "Ольга", car: "Hyundai Creta", problem: "Машина не едет, при нажатии на газ — провал. Насос не качает.", fix: "fuel", reward: 2200 },
+      { name: "Иван", car: "ВАЗ 2110", problem: "Стук в подвеске, машина кидает на кочках.", fix: "suspension", reward: 2800 },
+      { name: "Анна", car: "Nissan Qashqai", problem: "Не работает свет, ночью ехать невозможно.", fix: "lights", reward: 1800 },
+      { name: "Павел", car: "Hyundai Accent", problem: "Печка не греет, в салоне холодно.", fix: "heater", reward: 2000 },
+      { name: "Виктор", car: "ВАЗ 2109", problem: "Белый густой дым из выхлопной, уровень антифриза падает.", fix: "gasket", reward: 5000 },
+      { name: "Тимур", car: "ВАЗ 2114", problem: "ВСЁ СЛОМАНО! Двигатель не заводится, генератор не дает заряд, стартер щелкает.", fix: "all", reward: 15000 },
+      { name: "Света", car: "Nissan Almera", problem: "Стук в двигателе, низкое давление масла.", fix: "pistons", reward: 6000 },
+      { name: "Артем", car: "Hyundai Solaris", problem: "Машина не заводится, стартер крутит, но нет искры.", fix: "ignition", reward: 2500 },
+      { name: "Кирилл", car: "ВАЗ 2107", problem: "Глохнет при торможении, обороты падают до нуля.", fix: "sensor", reward: 1800 },
+      { name: "Дарья", car: "Nissan X-Trail", problem: "Скрип при торможении, педаль проваливается.", fix: "brakes", reward: 3000 },
+      { name: "Максим", car: "Hyundai Accent", problem: "Люфт в рулевой рейке, стук при повороте.", fix: "steering", reward: 3500 },
+      { name: "Юля", car: "ВАЗ 2101", problem: "Течет бензин из-под машины.", fix: "fuel", reward: 2000 },
+      { name: "Роман", car: "Nissan Qashqai", problem: "Не работает кондиционер, дует горячим.", fix: "ac", reward: 2500 },
+      { name: "Олег", car: "ПАЗ 3205", problem: "Не работает свет, ночью ехать невозможно.", fix: "lights", reward: 3000 },
+      { name: "Марина", car: "Hyundai Accent", problem: "Печка не греет, в салоне холодно.", fix: "heater", reward: 2000 }
+    ]; 
+    currentClient = clients[Math.floor(Math.random() * clients.length)]; 
+    selectedPart = null; 
+    
+    const parts = [
+      {id:'spark', name:'Свечи', icon:'⚡'}, {id:'battery', name:'АКБ', icon:'🔋'}, 
+      {id:'radiator', name:'Радиатор', icon:'🌡️'}, {id:'sensor', name:'Датчик', icon:'🛠️'},
+      {id:'timing', name:'Ремень ГРМ', icon:'⚙️'}, {id:'fuel', name:'Бензонасос', icon:'⛽'},
+      {id:'suspension', name:'Подвеска', icon:'🛞'}, {id:'lights', name:'Освещение', icon:'💡'},
+      {id:'heater', name:'Печка', icon:'🔥'}, {id:'gasket', name:'Прокладка ГБЦ', icon:'💧'},
+      {id:'pistons', name:'Поршни', icon:'⚙️'}, {id:'ignition', name:'Зажигание', icon:'🔥'},
+      {id:'brakes', name:'Тормоза', icon:'🛞'}, {id:'steering', name:'Рулевая рейка', icon:'🛠️'},
+      {id:'ac', name:'Кондиционер', icon:'❄️'}
+    ]; 
+    
+    let html = `<div class="shop-item" style="display:block; text-align:left;"><div style="color:var(--accent); font-weight:bold;">Клиент: ${currentClient.name}</div><div style="color:#888; font-size:12px;">Машина: ${currentClient.car}</div><div style="color:#000; font-weight:bold; margin-top:5px;">Проблема: ${currentClient.problem}</div></div><div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px; margin:15px 0;">`; 
+    parts.forEach(p => { let style = selectedPart === p.id ? 'border: 2px solid var(--accent); background:#e0f2fe;' : 'border: 2px solid transparent; background:#f3f4f6;'; html += `<div onclick="selectPart('${p.id}')" style="padding:10px; text-align:center; border-radius:10px; cursor:pointer; ${style}"><div style="font-size:24px;">${p.icon}</div><div style="font-size:10px; color:#000; margin-top:5px;">${p.name}</div></div>`; }); 
+    html += `</div><button class="btn" onclick="repairPart()">Починить</button>`; 
+    document.getElementById('mechanicContent').innerHTML = html; 
+  }
+  
   function selectPart(id) { selectedPart = id; startDay(); }
-  function repairPart() { if (!selectedPart) return showModal('Ошибка', 'Выберите деталь!'); if (selectedPart === currentClient.fix) { balance += currentClient.reward; updateUI(); showModal('Успех', `Вы заработали ${currentClient.reward} ₽!`); document.getElementById('mechanicContent').innerHTML = `<button class="btn" onclick="startDay()">Следующий клиент</button>`; } else { balance -= 500; updateUI(); showModal('Ошибка', 'Не та деталь! -500 ₽'); selectedPart = null; startDay(); } }
+  
+  function repairPart() { 
+    if (!selectedPart) return showModal('Ошибка', 'Выберите деталь!'); 
+    if (selectedPart === currentClient.fix) { 
+      balance += currentClient.reward; updateUI(); 
+      showModal('Успех', `Вы заработали ${currentClient.reward} ₽!`); 
+      document.getElementById('mechanicContent').innerHTML = `<button class="btn" onclick="startDay()">Следующий клиент</button>`; 
+    } else { 
+      balance -= 1000; updateUI(); 
+      showModal('Ошибка', 'Палыч: "Ты че, дурак? Не та деталь! Клиент недоволен, штраф 1000 ₽."'); 
+      selectedPart = null; startDay(); 
+    } 
+  }
 
   // ==== БАНК ====
   const CREDIT_LEVELS = [{ amount: 50000, reqLevel: 0 }, { amount: 100000, reqLevel: 1 }, { amount: 250000, reqLevel: 2 }, { amount: 500000, reqLevel: 3 }, { amount: 1000000, reqLevel: 4 }, { amount: 2500000, reqLevel: 5 }, { amount: 5000000, reqLevel: 6 }, { amount: 10000000, reqLevel: 7 }];
@@ -346,24 +508,26 @@
   function buyCar(name, price) { if (balance >= price) { balance -= price; ownedCar = name; updateUI(); showModal('Покупка', `Вы купили ${name}!`); } else { showModal('Ошибка', 'Мало денег!'); } }
   function buyProperty(name, price, income) { if (balance >= price) { balance -= price; updateUI(); showModal('Покупка', `Вы купили ${name}!`); } else { showModal('Ошибка', 'Мало денег!'); } }
   function changeMonth(dir) { currentMonth += dir; if (currentMonth > 11) { currentMonth = 0; currentYear++; } if (currentMonth < 0) { currentMonth = 11; currentYear--; } renderCalendar(); }
-  function renderCalendar() { const months = ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь']; const title = document.getElementById('calendarTitle'); if(title) title.textContent = `${months[currentMonth]} ${currentYear}`; const grid = document.getElementById('calendarGrid'); if(!grid) return; grid.innerHTML = ''; const days = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс']; days.forEach(d => { const el = document.createElement('div'); el.textContent = d; el.style.color = '#888'; el.style.fontWeight = 'bold'; grid.appendChild(el); }); const firstDay = new Date(currentYear, currentMonth, 1).getDay(); const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate(); let start = firstDay === 0 ? 6 : firstDay - 1; for (let i = 0; i < start; i++) { grid.appendChild(document.createElement('div')); } for (let i = 1; i <= daysInMonth; i++) { const el = document.createElement('div'); el.textContent = i; el.style.padding = '10px'; el.style.background = (i === gameDate.getDate() && currentMonth === gameDate.getMonth()) ? 'var(--accent)' : '#fff'; el.style.color = (i === gameDate.getDate() && currentMonth === gameDate.getMonth()) ? '#fff' : '#000'; el.style.borderRadius = '50%'; el.style.border = '1px solid #eee'; grid.appendChild(el); } }
+  function renderCalendar() { const months = ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь']; const title = document.getElementById('calendarTitle'); if(title) title.textContent = `${months[currentMonth]} ${currentYear}`; const grid = document.getElementById('calendarGrid'); if(!grid) return; grid.innerHTML = ''; const days = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс']; days.forEach(d => { const el = document.createElement('div'); el.textContent = d; el.style.color = '#888'; el.style.fontWeight = 'bold'; grid.appendChild(el); }); const firstDay = new Date(currentYear, currentMonth, 1).getDay(); const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate(); let start = firstDay === 0 ? 6 : firstDay - 1; for (let i = 0; i < start; i++) { grid.appendChild(document.createElement('div')); } for (let i = 1; i <= daysInMonth; i++) { const el = document.createElement('div'); el.textContent = i; el.style.padding = '10px'; el.style.background = (i === gameDate.getDate() && currentMonth === gameDate.getMonth()) ? 'var(--accent)' : '#fff'; el.style.color = (i === gameDate.getDate() && currentMonth === gameDate.getMonth()) ? '#fff' : '#000'; el.style.borderRadius = '50%'; el.style.border = '1px solid #eee'; el.style.cursor = 'pointer'; el.onclick = () => { showModal('Календарь', `Вы выбрали ${i} ${months[currentMonth]}. На этот день пока нет запланированных встреч.`); }; grid.appendChild(el); } }
 
-  let guessBet = 1000, slotsBet = 1000, minesBet = 1000, minesCount = 3, isPlayingMines = false, currentGems = 0, currentMult = 1.0;
-  function switchCasinoTab(tab, btn) { document.querySelectorAll('.casino-tab').forEach(t => t.classList.remove('active')); if(btn) btn.classList.add('active'); document.querySelectorAll('.casino-panel').forEach(p => p.style.display = 'none'); const panel = document.getElementById(`casino-panel-${tab}`); if(panel) panel.style.display = 'block'; if(tab === 'mines' && !isPlayingMines) renderEmptyMinesGrid(); if(tab === 'roulette') { drawWheel(); initRouletteGrid(); } }
-  function changeGuessBet(amount) { if (guessBet + amount >= 100) { guessBet += amount; document.getElementById('guessBetDisplay').textContent = guessBet.toLocaleString('ru-RU') + ' ₽'; } }
-  function setGuessBet(val) { if (val === 'max') guessBet = balance; else guessBet = val; document.getElementById('guessBetDisplay').textContent = guessBet.toLocaleString('ru-RU') + ' ₽'; }
-  function playGuess(num) { if (guessBet > balance) return showModal('Ошибка', 'Мало денег!'); if (guessBet < 100) return showModal('Ошибка', 'Мин. 100 ₽'); balance -= guessBet; const secret = Math.floor(Math.random() * 10) + 1; const res = document.getElementById('guessResult'); if (num === secret) { const win = guessBet * 5; balance += win; res.style.color = '#4caf50'; res.textContent = `🎉 Верно! Было ${secret}. +${win.toLocaleString('ru-RU')} ₽`; } else { res.style.color = '#f44336'; res.textContent = `❌ Не угадал. Было ${secret}. -${guessBet.toLocaleString('ru-RU')} ₽`; } updateUI(); }
-  function changeSlotsBet(amount) { if (slotsBet + amount >= 100) { slotsBet += amount; document.getElementById('slotsBetDisplay').textContent = slotsBet.toLocaleString('ru-RU') + ' ₽'; } }
-  function setSlotsBet(val) { if (val === 'max') slotsBet = balance; else slotsBet = val; document.getElementById('slotsBetDisplay').textContent = slotsBet.toLocaleString('ru-RU') + ' ₽'; }
-  document.getElementById('slotsBtn').addEventListener('click', () => { if (slotsBet > balance) return showModal('Ошибка', 'Мало денег!'); if (slotsBet < 100) return showModal('Ошибка', 'Мин. 100 ₽'); balance -= slotsBet; updateUI(); const slots = [0, 1, 2].map(i => document.getElementById('slot' + i)); slots.forEach(s => s.classList.add('spin')); document.getElementById('slotsBtn').disabled = true; let ticks = 0; const interval = setInterval(() => { const syms = ['🍒', '🍋', '⭐', '💎', '🔔', '🍀']; slots.forEach(s => s.textContent = syms[Math.floor(Math.random() * syms.length)]); ticks++; if (ticks > 15) { clearInterval(interval); slots.forEach(s => s.classList.remove('spin')); document.getElementById('slotsBtn').disabled = false; const result = slots.map(s => s.textContent); const res = document.getElementById('slotsResult'); if (result[0] === result[1] && result[1] === result[2]) { const win = slotsBet * 10; balance += win; res.textContent = `🎉 ДЖЕКПОТ! +${win.toLocaleString('ru-RU')} ₽`; res.style.color = '#4caf50'; } else if (result[0] === result[1] || result[1] === result[2] || result[0] === result[2]) { const win = slotsBet * 2; balance += win; res.textContent = `✅ Два совпадения! +${win.toLocaleString('ru-RU')} ₽`; res.style.color = '#4caf50'; } else { res.textContent = `❌ Проигрыш. -${slotsBet.toLocaleString('ru-RU')} ₽`; res.style.color = '#f44336'; } updateUI(); } }, 100); });
+  // ==== КАЗИНО ====
+  let currentChip = 1, bets = {}, isSpinning = false;
+  let minesBet = 1000, minesCount = 3, isPlayingMines = false, currentGems = 0, currentMult = 1.0, mineGridArray = [];
+
+  function switchCasinoTab(tab, btn) { document.querySelectorAll('.casino-tab').forEach(t => t.classList.remove('active')); if(btn) btn.classList.add('active'); document.querySelectorAll('.casino-panel').forEach(p => p.style.display = 'none'); const panel = document.getElementById(`casino-panel-${tab}`); if(panel) panel.style.display = 'block'; if (tab === 'mines') { updateMinesUI(); } }
+  function setCurrentChip(val) { currentChip = val; showModal('Фишка', `Выбрана фишка ${val} ₽`); }
+  function addChipToCell(cell, id) { if (isSpinning) return; if (chips < currentChip) return showModal('Ошибка', 'Мало фишек! Купите фишки.'); chips -= currentChip; bets[id] = (bets[id] || 0) + currentChip; cell.textContent = `${id} (${bets[id]})`; updateUI(); }
+  function clearBets() { if (isSpinning) return; let total = 0; for (let id in bets) total += bets[id]; chips += total; bets = {}; document.querySelectorAll('#casino-panel-roulette div[onclick^="addChipToCell"]').forEach(el => {}); updateUI(); }
+  function spinRoulette() { if (isSpinning) return; let totalBets = 0; for (let id in bets) totalBets += bets[id]; if (totalBets === 0) return showModal('Ошибка', 'Сделайте ставку!'); isSpinning = true; const canvas = document.getElementById('rouletteCanvas'); if (canvas) { canvas.style.transition = 'transform 3s ease-out'; canvas.style.transform = `rotate(${Math.random() * 360 + 720}deg)`; } setTimeout(() => { isSpinning = false; chips += totalBets; bets = {}; showModal('Рулетка', 'Колесо крутилось! (Логика выигрыша в разработке)'); updateUI(); }, 3000); }
+  function buyChips(amount) { const cost = amount * 1000; if (balance < cost) return showModal('Ошибка', 'Мало денег'); balance -= cost; chips += amount; updateUI(); }
+  function sellChips() { if (chips < 1) return; balance += chips * 1000; chips = 0; updateUI(); }
   function changeMinesBet(amount) { if (minesBet + amount >= 100) { minesBet += amount; updateMinesUI(); } }
   function setMinesBet(val) { if (val === 'max') minesBet = balance; else minesBet = val; updateMinesUI(); }
   function changeMinesCount(amount) { minesCount += amount; if (minesCount < 1) minesCount = 1; if (minesCount > 24) minesCount = 24; updateMinesUI(); }
   function setMinesCount(val) { minesCount = val; updateMinesUI(); }
-  function renderEmptyMinesGrid() { const g = document.getElementById('minesGrid'); if(!g) return; g.innerHTML = ''; for (let i = 0; i < 25; i++) { const c = document.createElement('div'); c.className = 'mine-cell-new'; g.appendChild(c); } }
-  function updateMinesUI() { if(document.getElementById('minesBetDisplay')) document.getElementById('minesBetDisplay').textContent = minesBet.toLocaleString('ru-RU') + ' ₽'; if(document.getElementById('minesCountDisplay')) document.getElementById('minesCountDisplay').textContent = minesCount; if(document.getElementById('minesChance')) document.getElementById('minesChance').textContent = Math.floor(((25-minesCount)/25)*100) + ' %'; }
-  function startMines() { if (balance < minesBet) return showModal('Ошибка', 'Мало денег'); balance -= minesBet; isPlayingMines = true; currentGems = 0; currentMult = 1.0; let mineGridArray = new Array(25).fill(false); let placed = 0; while (placed < minesCount) { let idx = Math.floor(Math.random() * 25); if (!mineGridArray[idx]) { mineGridArray[idx] = true; placed++; } } document.getElementById('minesStartBtn').style.display = 'none'; document.getElementById('minesCashoutBtn').style.display = 'block'; const g = document.getElementById('minesGrid'); g.innerHTML = ''; for (let i = 0; i < 25; i++) { const c = document.createElement('div'); c.className = 'mine-cell-new'; c.onclick = () => { if (!isPlayingMines) return; c.classList.add('revealed'); if (mineGridArray[i]) { c.textContent = '💥'; c.classList.add('bomb'); isPlayingMines = false; showModal('БУМ', 'Вы проиграли'); document.getElementById('minesCashoutBtn').style.display = 'none'; document.getElementById('minesStartBtn').style.display = 'block'; } else { c.textContent = '💎'; c.classList.add('gem'); currentGems++; currentMult = currentMult * (25 - currentGems) / (25 - minesCount); document.getElementById('minesCurrentMult').textContent = '×' + currentMult.toFixed(2); } }; g.appendChild(c); } updateUI(); }
-  function cashoutMines() { if (!isPlayingMines) return; const win = Math.floor(minesBet * currentMult); balance += win; isPlayingMines = false; showModal('Выигрыш', `Забрано ${win} ₽`); document.getElementById('minesCashoutBtn').style.display = 'none'; document.getElementById('minesStartBtn').style.display = 'block'; renderEmptyMinesGrid(); updateUI(); }
+  function updateMinesUI() { if(document.getElementById('minesBetDisplay')) document.getElementById('minesBetDisplay').textContent = minesBet.toLocaleString('ru-RU') + ' ₽'; if(document.getElementById('minesCountDisplay')) document.getElementById('minesCountDisplay').textContent = minesCount; if(document.getElementById('minesChance')) document.getElementById('minesChance').textContent = Math.floor(((25-minesCount)/25)*100) + ' %'; if(document.getElementById('minesStartBtn')) document.getElementById('minesStartBtn').textContent = `Играть за ${minesBet.toLocaleString('ru-RU')} ₽`; }
+  function startMines() { if (balance < minesBet) return showModal('Ошибка', 'Мало денег'); balance -= minesBet; isPlayingMines = true; currentGems = 0; currentMult = 1.0; mineGridArray = new Array(25).fill(false); let placed = 0; while (placed < minesCount) { let idx = Math.floor(Math.random() * 25); if (!mineGridArray[idx]) { mineGridArray[idx] = true; placed++; } } document.getElementById('minesStartBtn').style.display = 'none'; document.getElementById('minesCashoutBtn').style.display = 'block'; const g = document.getElementById('minesGrid'); g.innerHTML = ''; for (let i = 0; i < 25; i++) { const c = document.createElement('div'); c.style.cssText = 'aspect-ratio: 1; background: #222736; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 24px; cursor: pointer;'; c.onclick = () => { if (!isPlayingMines) return; c.style.background = '#111'; if (mineGridArray[i]) { c.textContent = '💥'; isPlayingMines = false; showModal('БУМ', 'Вы проиграли'); document.getElementById('minesCashoutBtn').style.display = 'none'; document.getElementById('minesStartBtn').style.display = 'block'; } else { c.textContent = '💎'; currentGems++; currentMult = currentMult * (25 - currentGems) / (25 - minesCount); document.getElementById('minesCurrentMult').textContent = '×' + currentMult.toFixed(2); } }; g.appendChild(c); } updateUI(); }
+  function cashoutMines() { if (!isPlayingMines) return; const win = Math.floor(minesBet * currentMult); balance += win; isPlayingMines = false; showModal('Выигрыш', `Забрано ${win.toLocaleString('ru-RU')} ₽`); document.getElementById('minesCashoutBtn').style.display = 'none'; document.getElementById('minesStartBtn').style.display = 'block'; document.getElementById('minesGrid').innerHTML = ''; updateUI(); }
 
   updateUI(); updateClock(); updateCreditUI();
 </script>

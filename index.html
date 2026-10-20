@@ -289,6 +289,141 @@
 
   updateUI(); updateClock(); updateCreditUI();
 </script>
+<style>
+  /* Фикс кнопки "На главную", которая вылезала сбоку */
+  .nav-bar { display: flex !important; justify-content: center !important; padding: 15px !important; background: #fff !important; border-top: 1px solid #eee !important; position: relative !important; z-index: 100 !important; width: 100% !important; box-sizing: border-box !important; }
+  .nav-bar .btn { max-width: 200px; margin: 0 !important; }
+
+  /* Фикс вкладок казино */
+  .casino-tabs { display: flex !important; gap: 8px !important; margin-bottom: 20px !important; }
+  .casino-tab { flex: 1; background: #fff !important; border: 1px solid #e5e7eb !important; color: #1a1a1a !important; padding: 12px 10px !important; border-radius: 10px !important; font-weight: bold !important; cursor: pointer !important; text-align: center !important; font-size: 14px !important; }
+  .casino-tab.active { background: #2196f3 !important; color: #fff !important; border-color: #2196f3 !important; }
+</style>
+
+<script>
+  // === 1. ИСПРАВЛЕНИЕ КНОПКИ "НА ГЛАВНУЮ" ===
+  document.addEventListener('DOMContentLoaded', () => {
+    const navBar = document.querySelector('.nav-bar');
+    if (navBar) navBar.style.cssText = 'display:flex; justify-content:center; padding:15px; background:#fff; border-top:1px solid #eee; position:relative; z-index:100; width:100%;';
+  });
+
+  // === 2. ИСПРАВЛЕНИЕ СЧЕТЧИКА СООБЩЕНИЙ ===
+  const originalAddMessage = window.addMessage;
+  window.addMessage = function(sender, text) {
+    if (typeof messages !== 'undefined') {
+      messages.push({sender, text});
+      if (typeof renderMessages === 'function') renderMessages();
+      const badge = document.getElementById('msgBadge');
+      if (badge) {
+        badge.style.display = 'flex';
+        badge.textContent = messages.length; // Показываем реальное количество
+      }
+    }
+  };
+
+  // === 3. УСЛОЖНЕНИЕ РАБОТЫ (СТО) ===
+  window.startDay = function() {
+    if (typeof fatigue === 'undefined') return;
+    if (fatigue > 90) return showModal('Усталость', 'Вы слишком устали, идите спать.');
+    fatigue += 10; updateUI();
+    
+    const clients = [
+      { name: "Алексей", car: "ВАЗ 2107", problem: "Двигатель троит, потеря мощности.", fix: "spark", reward: 2000 },
+      { name: "Мария", car: "Hyundai Solaris", problem: "Не заводится, стартер щелкает.", fix: "battery", reward: 1500 },
+      { name: "Дмитрий", car: "Nissan Almera", problem: "Закипела, валит пар.", fix: "radiator", reward: 2500 },
+      { name: "Елена", car: "ВАЗ 2114", problem: "Обороты плавают, глохнет.", fix: "sensor", reward: 1800 }
+    ];
+    const client = clients[Math.floor(Math.random() * clients.length)];
+    window.currentClient = client;
+    window.selectedPart = null;
+    
+    const parts = [
+      {id:'spark', name:'Свечи', icon:'⚡'}, 
+      {id:'battery', name:'АКБ', icon:'🔋'}, 
+      {id:'radiator', name:'Радиатор', icon:'🌡️'},
+      {id:'sensor', name:'Датчик', icon:'🛠️'}
+    ];
+    
+    let html = `<div class="shop-item" style="display:block; text-align:left;"><div style="color:#2196f3; font-weight:bold;">Клиент: ${client.name}</div><div style="color:#888; font-size:12px;">Машина: ${client.car}</div><div style="color:#000; font-weight:bold; margin-top:5px;">Проблема: ${client.problem}</div></div><div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin:15px 0;">`;
+    parts.forEach(p => {
+      let style = (window.selectedPart === p.id) ? 'border: 2px solid #2196f3; background:#e0f2fe;' : 'border: 2px solid transparent; background:#f3f4f6;';
+      html += `<div onclick="window.selectPart('${p.id}')" style="padding:15px; text-align:center; border-radius:10px; cursor:pointer; ${style}"><div style="font-size:30px;">${p.icon}</div><div style="font-size:12px; color:#000; margin-top:5px;">${p.name}</div></div>`;
+    });
+    html += `</div><button class="btn" onclick="window.repairPart()">Починить</button>`;
+    document.getElementById('mechanicContent').innerHTML = html;
+  };
+
+  window.selectPart = function(id) { window.selectedPart = id; window.startDay(); };
+  window.repairPart = function() {
+    if (!window.selectedPart) return showModal('Ошибка', 'Выберите деталь!');
+    if (window.selectedPart === window.currentClient.fix) {
+      balance += window.currentClient.reward; updateUI();
+      showModal('Успех', `Вы заработали ${window.currentClient.reward} ₽!`);
+      document.getElementById('mechanicContent').innerHTML = `<button class="btn" onclick="window.startDay()">Следующий клиент</button>`;
+    } else {
+      balance -= 500; updateUI(); showModal('Ошибка', 'Не та деталь! -500 ₽');
+      window.selectedPart = null; window.startDay();
+    }
+  };
+
+  // === 4. СЮЖЕТ В ОТНОШЕНИЯХ ===
+  window.renderRelations = function() {
+    const container = document.getElementById('relationsList');
+    if (!container) return;
+    const npcs = [
+      { name: 'Аня', role: 'Медсестра', avatar: '👩‍⚕️', level: 0 },
+      { name: 'Марина', role: 'Продавщица', avatar: '👩‍🍳', level: 0 }
+    ];
+    container.innerHTML = npcs.map((n, i) => `
+      <div class="shop-item" style="display:flex; flex-direction:column; align-items:flex-start; gap:10px;">
+        <div style="display:flex; align-items:center; gap:15px; width:100%;">
+          <div style="width:50px; height:50px; border-radius:50%; background:#fce7f3; display:flex; align-items:center; justify-content:center; font-size:24px;">${n.avatar}</div>
+          <div style="flex:1;"><div class="shop-item-title">${n.name}</div><div class="shop-item-desc">${n.role} | Уровень: ${n.level}/100</div></div>
+        </div>
+        <div style="width:100%; height:8px; background:#eee; border-radius:4px; overflow:hidden;"><div style="width:${n.level}%; height:100%; background:#ff6b6b;"></div></div>
+        <button class="buy-btn" style="width:100%;" onclick="window.dateNpc(${i})">Позвать на свидание (500 ₽)</button>
+      </div>
+    `).join('');
+  };
+
+  window.dateNpc = function(index) {
+    if (balance < 500) return showModal('Ошибка', 'Недостаточно денег для свидания!');
+    balance -= 500; updateUI();
+    const texts = [
+      "Вы сходили с Аней в кафе. Она улыбнулась и сказала, что ей понравилось.",
+      "Вы подарили Марине цветы. Она покраснела и пригласила вас на ужин."
+    ];
+    showModal('Свидание', texts[index] || 'Вы хорошо провели время.');
+    // Здесь можно добавить логику повышения уровня
+  };
+
+  // === 5. ПОЧИНКА КАЗИНО (ВИЗУАЛЬНАЯ РУЛЕТКА) ===
+  window.switchCasinoTab = function(tab, btn) {
+    document.querySelectorAll('.casino-tab').forEach(t => t.classList.remove('active'));
+    if(btn) btn.classList.add('active');
+    document.querySelectorAll('.casino-panel').forEach(p => p.style.display = 'none');
+    const panel = document.getElementById(`casino-panel-${tab}`);
+    if(panel) panel.style.display = 'block';
+    
+    if (tab === 'roulette') {
+      if (typeof drawWheel === 'function') drawWheel();
+      if (typeof initRouletteGrid === 'function') initRouletteGrid();
+    }
+  };
+
+  // Запускаем отрисовку при открытии приложений
+  const originalOpenApp = window.openApp;
+  window.openApp = function(id) {
+    originalOpenApp(id);
+    if (id === 'relations') window.renderRelations();
+    if (id === 'mechanic') {
+       const content = document.getElementById('mechanicContent');
+       if(content && !content.innerHTML.includes('Починить')) {
+           content.innerHTML = `<button class="btn" onclick="window.startDay()">Встать и пойти на работу</button>`;
+       }
+    }
+  };
+</script>
 </body>
 </html>
     <div class="app-screen" id="app-bank">

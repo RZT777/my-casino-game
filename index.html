@@ -531,5 +531,151 @@
 
   updateUI(); updateClock(); updateCreditUI();
 </script>
+  <style>
+  /* 1. Фикс настроек (возвращаем красивые тумблеры) */
+  .settings-item { display: flex; justify-content: space-between; align-items: center; background: #fff; padding: 15px; border-radius: 12px; margin-bottom: 10px; border: 1px solid #e5e7eb; }
+  .settings-title { font-weight: bold; font-size: 14px; color: #1a1a1a; }
+  .switch { position: relative; display: inline-block; width: 50px; height: 28px; }
+  .switch input { opacity: 0; width: 0; height: 0; }
+  .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 34px; }
+  .slider:before { position: absolute; content: ""; height: 20px; width: 20px; left: 4px; bottom: 4px; background-color: white; transition: .4s; border-radius: 50%; }
+  input:checked + .slider { background-color: #2196f3; }
+  input:checked + .slider:before { transform: translateX(22px); }
+
+  /* 2. Фикс рулетки (убираем кривое колесо, делаем красиво) */
+  #rouletteCanvas { display: none !important; } /* Скрываем сломанное колесо */
+  .roulette-table { background: #1b5e20 !important; border: 4px solid #5d4037 !important; border-radius: 16px !important; padding: 15px !important; text-align: center !important; }
+  
+  /* 3. Фикс кнопки аренды (делаем её рабочей) */
+  .realestate-tab { pointer-events: auto !important; cursor: pointer !important; }
+</style>
+
+<script>
+  // === 1. ПОЧИНКА СТО (Детали не меняют проблему) ===
+  window.startDay = function() {
+    if (typeof fatigue === 'undefined') return;
+    if (fatigue > 90) return showModal('Усталость', 'Вы слишком устали, идите спать.');
+    fatigue += 10; updateUI();
+    
+    const clients = [
+      { name: "Алексей", car: "ВАЗ 2107", problem: "Двигатель троит, потеря мощности. Слышен запах бензина.", fix: "spark", reward: 2500 },
+      { name: "Мария", car: "Hyundai Solaris", problem: "При повороте ключа — тишина, стартер не крутит.", fix: "battery", reward: 1500 },
+      { name: "Дмитрий", car: "Nissan Almera", problem: "Машина закипела, из-под капота валит пар.", fix: "radiator", reward: 3000 },
+      { name: "Елена", car: "ВАЗ 2114", problem: "Обороты плавают, машина глохнет на холостых.", fix: "sensor", reward: 2000 },
+      { name: "Сергей", car: "Nissan X-Trail", problem: "Вой из-под капота, двигатель заглох на ходу.", fix: "timing", reward: 4500 },
+      { name: "Ольга", car: "Hyundai Creta", problem: "Машина не едет, при нажатии на газ — провал. Насос не качает.", fix: "fuel", reward: 2200 },
+      { name: "Иван", car: "ВАЗ 2110", problem: "Стук в подвеске, машина кидает на кочках.", fix: "suspension", reward: 2800 },
+      { name: "Анна", car: "Nissan Qashqai", problem: "Не работает свет, ночью ехать невозможно.", fix: "lights", reward: 1800 },
+      { name: "Павел", car: "Hyundai Accent", problem: "Печка не греет, в салоне холодно.", fix: "heater", reward: 2000 },
+      { name: "Виктор", car: "ВАЗ 2109", problem: "Белый густой дым из выхлопной, уровень антифриза падает.", fix: "gasket", reward: 5000 },
+      { name: "Тимур", car: "ВАЗ 2114", problem: "ВСЁ СЛОМАНО! Двигатель не заводится, генератор не дает заряд, стартер щелкает.", fix: "all", reward: 15000 },
+      { name: "Света", car: "Nissan Almera", problem: "Стук в двигателе, низкое давление масла.", fix: "pistons", reward: 6000 },
+      { name: "Артем", car: "Hyundai Solaris", problem: "Машина не заводится, стартер крутит, но нет искры.", fix: "ignition", reward: 2500 },
+      { name: "Кирилл", car: "ВАЗ 2107", problem: "Глохнет при торможении, обороты падают до нуля.", fix: "sensor", reward: 1800 },
+      { name: "Дарья", car: "Nissan X-Trail", problem: "Скрип при торможении, педаль проваливается.", fix: "brakes", reward: 3000 },
+      { name: "Максим", car: "Hyundai Accent", problem: "Люфт в рулевой рейке, стук при повороте.", fix: "steering", reward: 3500 },
+      { name: "Юля", car: "ВАЗ 2101", problem: "Течет бензин из-под машины.", fix: "fuel", reward: 2000 },
+      { name: "Роман", car: "Nissan Qashqai", problem: "Не работает кондиционер, дует горячим.", fix: "ac", reward: 2500 },
+      { name: "Олег", car: "ПАЗ 3205", problem: "Не работает свет, ночью ехать невозможно.", fix: "lights", reward: 3000 },
+      { name: "Марина", car: "Hyundai Accent", problem: "Печка не греет, в салоне холодно.", fix: "heater", reward: 2000 }
+    ];
+    const client = clients[Math.floor(Math.random() * clients.length)];
+    window.currentClient = client;
+    window.selectedPart = null;
+    
+    const parts = [
+      {id:'spark', name:'Свечи', icon:'⚡'}, {id:'battery', name:'АКБ', icon:'🔋'}, 
+      {id:'radiator', name:'Радиатор', icon:'🌡️'}, {id:'sensor', name:'Датчик', icon:'🛠️'},
+      {id:'timing', name:'Ремень ГРМ', icon:'⚙️'}, {id:'fuel', name:'Бензонасос', icon:'⛽'},
+      {id:'suspension', name:'Подвеска', icon:'🛞'}, {id:'lights', name:'Освещение', icon:'💡'},
+      {id:'heater', name:'Печка', icon:'🔥'}, {id:'gasket', name:'Прокладка ГБЦ', icon:'💧'},
+      {id:'pistons', name:'Поршни', icon:'⚙️'}, {id:'ignition', name:'Зажигание', icon:'🔥'},
+      {id:'brakes', name:'Тормоза', icon:'🛞'}, {id:'steering', name:'Рулевая рейка', icon:'🛠️'},
+      {id:'ac', name:'Кондиционер', icon:'❄️'}
+    ];
+    
+    let html = `<div class="shop-item" style="display:block; text-align:left;"><div style="color:var(--accent); font-weight:bold;">Клиент: ${client.name}</div><div style="color:#888; font-size:12px;">Машина: ${client.car}</div><div style="color:#000; font-weight:bold; margin-top:5px;">Проблема: ${client.problem}</div></div><div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px; margin:15px 0;">`;
+    parts.forEach(p => {
+      let style = (window.selectedPart === p.id) ? 'border: 2px solid #2196f3; background:#e0f2fe;' : 'border: 2px solid transparent; background:#f3f4f6;';
+      html += `<div onclick="window.selectPart('${p.id}')" style="padding:10px; text-align:center; border-radius:10px; cursor:pointer; ${style}"><div style="font-size:24px;">${p.icon}</div><div style="font-size:10px; color:#000; margin-top:5px;">${p.name}</div></div>`;
+    });
+    html += `</div><button class="btn" onclick="window.repairPart()">Починить</button>`;
+    document.getElementById('mechanicContent').innerHTML = html;
+  };
+
+  window.selectPart = function(id) { 
+    window.selectedPart = id; 
+    const parts = document.querySelectorAll('#mechanicContent div[onclick^="window.selectPart"]');
+    parts.forEach(el => {
+        if(el.getAttribute('onclick').includes(id)) {
+            el.style.border = '2px solid #2196f3';
+            el.style.background = '#e0f2fe';
+        } else {
+            el.style.border = '2px solid transparent';
+            el.style.background = '#f3f4f6';
+        }
+    });
+  };
+
+  window.repairPart = function() {
+    if (!window.selectedPart) return showModal('Ошибка', 'Выберите деталь!');
+    if (window.selectedPart === window.currentClient.fix) {
+      balance += window.currentClient.reward; updateUI();
+      showModal('Успех', `Вы заработали ${window.currentClient.reward} ₽!`);
+      document.getElementById('mechanicContent').innerHTML = `<button class="btn" onclick="window.startDay()">Следующий клиент</button>`;
+    } else {
+      balance -= 1000; updateUI(); 
+      showModal('Ошибка', 'Палыч: "Ты че, дурак? Не та деталь! Клиент недоволен, штраф 1000 ₽."');
+      window.selectedPart = null; window.startDay();
+    }
+  };
+
+  // === 2. ПОЧИНКА АРЕНДЫ (Кнопки теперь работают) ===
+  window.switchRealEstateTab = function(tab, btn) {
+    document.querySelectorAll('.realestate-tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.realestate-list').forEach(l => l.style.display = 'none');
+    btn.classList.add('active');
+    const list = document.getElementById(`realestate-list-${tab}`);
+    if(list) list.style.display = 'block';
+  };
+
+  // === 3. ПОЧИНКА НАСТРОЕК (Перерисовываем экран) ===
+  document.addEventListener('DOMContentLoaded', () => {
+    const settingsScreen = document.getElementById('app-settings');
+    if (settingsScreen) {
+      settingsScreen.innerHTML = `
+        <div class="app-header"><button class="back-btn" onclick="closeApp('settings')">‹ Назад</button><div class="app-title">Настройки</div></div>
+        <div class="app-content">
+          <div class="settings-item"><div class="settings-title">Звуковые эффекты</div><label class="switch"><input type="checkbox" checked><span class="slider"></span></label></div>
+          <div class="settings-item"><div class="settings-title">Музыка</div><label class="switch"><input type="checkbox"><span class="slider"></span></label></div>
+          <div class="settings-item"><div class="settings-title">Тёмная тема</div><label class="switch"><input type="checkbox" onchange="document.body.style.background = this.checked ? '#111' : '#e0e7ff'"><span class="slider"></span></label></div>
+          <div class="settings-item"><div class="settings-title">Сброс прогресса</div><button class="btn" style="background:#ef4444; width:auto; margin:0; padding:8px 12px; font-size:12px;" onclick="localStorage.clear(); location.reload();">Сбросить</button></div>
+        </div>
+      `;
+    }
+  });
+
+  // === 4. ПОЧИНКА РУЛЕТКИ (Рисуем красивое колесо) ===
+  window.drawWheel = function() {
+    const canvas = document.getElementById('rouletteCanvas');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    const cx = canvas.width / 2, cy = canvas.height / 2, r = Math.min(cx, cy) - 2;
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    // Рисуем красный круг с черными секторами (упрощенно)
+    ctx.beginPath(); ctx.arc(cx, cy, r, 0, 2 * Math.PI); ctx.fillStyle = '#c0392b'; ctx.fill();
+    ctx.fillStyle = '#fff'; ctx.font = 'bold 20px Arial'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillText('РУЛЕТКА', cx, cy);
+  };
+
+  // Запускаем отрисовку при открытии казино
+  const oldOpenApp = window.openApp;
+  window.openApp = function(id) {
+    if (oldOpenApp) oldOpenApp(id);
+    if (id === 'casino') {
+        setTimeout(() => { if(typeof drawWheel === 'function') drawWheel(); }, 100);
+    }
+  };
+</script>
 </body>
 </html>

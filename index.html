@@ -790,5 +790,138 @@
     document.getElementById(`realestate-list-${tab}`).style.display = 'block';
   };
 </script>
+  <style>
+  /* 1. ЖЕСТКИЙ ФИКС КНОПКИ "НА ГЛАВНУЮ" (всегда внизу по центру) */
+  .nav-bar { 
+    display: flex !important; 
+    justify-content: center !important; 
+    align-items: center !important;
+    padding: 15px !important; 
+    background: #fff !important; 
+    border-top: 1px solid #eee !important; 
+    position: fixed !important; 
+    bottom: 0 !important; 
+    left: 0 !important; 
+    right: 0 !important; 
+    z-index: 9999 !important; 
+    width: 100% !important; 
+    box-sizing: border-box !important; 
+  }
+  .nav-bar .btn { 
+    max-width: 200px !important; 
+    margin: 0 !important; 
+    text-align: center !important;
+  }
+  
+  /* 2. Убираем усталость из шапки СТО (скрываем) */
+  #fatigueVal { display: none !important; }
+  #fatigueVal + span { display: none !important; }
+  
+  /* 3. Стили для казино, чтобы всё было красиво */
+  .casino-tab { flex: 1; background: #fff !important; border: 1px solid #e5e7eb !important; color: #1a1a1a !important; padding: 12px 10px !important; border-radius: 10px !important; font-weight: bold !important; cursor: pointer !important; text-align: center !important; font-size: 14px !important; }
+  .casino-tab.active { background: #2196f3 !important; color: #fff !important; border-color: #2196f3 !important; }
+  .bet-control-box { background: #fff; border-radius: 16px; padding: 16px; border: 1px solid #e5e7eb; margin-bottom: 16px; }
+  .bet-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+  .bet-minus-plus { width: 40px; height: 40px; border-radius: 50%; background: transparent; border: 2px solid #2196f3; color: #2196f3; font-size: 22px; font-weight: bold; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+  .bet-amount-display { font-size: 24px; font-weight: bold; color: #1a1a1a; }
+  .quick-btn { flex: 1; background: #f3f4f6; border: 1px solid transparent; color: #6b7280; padding: 10px 0; border-radius: 8px; font-size: 14px; font-weight: bold; cursor: pointer; }
+  .quick-btn.active { background: #2196f3; color: #fff; }
+  .main-play-btn { width: 100%; padding: 18px; background: #2196f3; color: #fff; border: none; border-radius: 12px; font-size: 18px; font-weight: bold; cursor: pointer; }
+</style>
+
+<script>
+  // === 1. ФИКС КАЗИНО (Простая рулетка и рабочие игры) ===
+  window.switchCasinoTab = function(tab, btn) {
+    document.querySelectorAll('.casino-tab').forEach(t => t.classList.remove('active'));
+    if(btn) btn.classList.add('active');
+    document.querySelectorAll('.casino-panel').forEach(p => p.style.display = 'none');
+    const panel = document.getElementById(`casino-panel-${tab}`);
+    if(panel) {
+        panel.style.display = 'block';
+        // Если рулетка - рисуем простое колесо
+        if (tab === 'roulette') {
+            if (typeof drawWheel === 'function') drawWheel();
+            if (typeof initRouletteGrid === 'function') initRouletteGrid();
+        }
+        // Если мины - рисуем сетку
+        if (tab === 'mines') {
+            if (typeof renderEmptyMinesGrid === 'function') renderEmptyMinesGrid();
+        }
+    }
+  };
+
+  // Перерисовываем рулетку, чтобы она не висла
+  window.drawWheel = function() {
+    const canvas = document.getElementById('rouletteCanvas');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    const cx = canvas.width / 2, cy = canvas.height / 2, r = Math.min(cx, cy) - 2;
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    // Просто рисуем красный круг с цифрами (упрощенно)
+    ctx.beginPath(); ctx.arc(cx, cy, r, 0, 2 * Math.PI); ctx.fillStyle = '#c0392b'; ctx.fill();
+    ctx.fillStyle = '#fff'; ctx.font = 'bold 20px Arial'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillText('РУЛЕТКА', cx, cy);
+  };
+
+  // === 2. ФИКС СТО (Убираем усталость из текста) ===
+  window.startDay = function() {
+    // Убираем проверку на усталость, чтобы всегда можно было работать
+    // fatigue > 90 return...
+    
+    const clients = [
+      { name: "Алексей", car: "ВАЗ 2107", problem: "Двигатель троит, потеря мощности. Слышен запах бензина.", fix: "spark" },
+      { name: "Мария", car: "Hyundai Solaris", problem: "При повороте ключа — тишина, стартер не крутит.", fix: "battery" },
+      { name: "Дмитрий", car: "Nissan Almera", problem: "Машина закипела, из-под капота валит пар.", fix: "radiator" }
+    ];
+    const client = clients[Math.floor(Math.random() * clients.length)];
+    window.currentClient = client;
+    window.selectedPart = null;
+    
+    const parts = [
+      {id:'spark', name:'Свечи', icon:'⚡'}, 
+      {id:'battery', name:'АКБ', icon:'🔋'}, 
+      {id:'radiator', name:'Радиатор', icon:'🌡️'}
+    ];
+    
+    let html = `<div class="shop-item" style="display:block; text-align:left;"><div style="color:#2196f3; font-weight:bold;">Клиент: ${client.name}</div><div style="color:#888; font-size:12px;">Машина: ${client.car}</div><div style="color:#000; font-weight:bold; margin-top:5px;">Проблема: ${client.problem}</div></div><div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin:15px 0;">`;
+    parts.forEach(p => {
+      let style = (window.selectedPart === p.id) ? 'border: 2px solid #2196f3; background:#e0f2fe;' : 'border: 2px solid transparent; background:#f3f4f6;';
+      html += `<div onclick="window.selectPart('${p.id}')" style="padding:15px; text-align:center; border-radius:10px; cursor:pointer; ${style}"><div style="font-size:30px;">${p.icon}</div><div style="font-size:12px; color:#000; margin-top:5px;">${p.name}</div></div>`;
+    });
+    html += `</div><button class="btn" onclick="window.repairPart()">Починить</button>`;
+    document.getElementById('mechanicContent').innerHTML = html;
+  };
+
+  // При выборе детали мы просто подсвечиваем её, НЕ меняя клиента
+  window.selectPart = function(id) { 
+    window.selectedPart = id; 
+    // Просто перерисовываем подсветку
+    const parts = document.querySelectorAll('#mechanicContent div[onclick^="window.selectPart"]');
+    parts.forEach(el => {
+        if(el.getAttribute('onclick').includes(id)) {
+            el.style.border = '2px solid #2196f3';
+            el.style.background = '#e0f2fe';
+        } else {
+            el.style.border = '2px solid transparent';
+            el.style.background = '#f3f4f6';
+        }
+    });
+  };
+
+  window.repairPart = function() {
+    if (!window.selectedPart) return showModal('Ошибка', 'Выберите деталь!');
+    if (window.selectedPart === window.currentClient.fix) {
+      balance += 2000; updateUI();
+      showModal('Успех', `Вы заработали 2000 ₽!`);
+      document.getElementById('mechanicContent').innerHTML = `<button class="btn" onclick="window.startDay()">Следующий клиент</button>`;
+    } else {
+      balance -= 500; updateUI(); showModal('Ошибка', 'Не та деталь! -500 ₽');
+      window.selectedPart = null; window.startDay();
+    }
+  };
+
+  // Запускаем обновление гаража при старте
+  setTimeout(() => { if(typeof renderGarage === 'function') renderGarage(); }, 1000);
+</script>
 </body>
 </html>  

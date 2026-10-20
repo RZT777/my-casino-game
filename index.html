@@ -112,104 +112,131 @@
       <div class="app-header"><button class="back-btn" onclick="closeApp('casino')">‹ Назад</button><div class="app-title">Казино</div></div>
       <div class="balance-bar">Баланс: <span class="balance-val">0</span> ₽ | Фишек: <span id="exChips">0</span></div>
       <div class="app-content" style="background: #111;">
-        <div class="casino-tabs" style="background: #000; padding: 10px; border-radius: 10px;">
-          <div class="casino-tab active" onclick="switchCasinoTab('roulette', this)">Рулетка</div>
-          <div class="casino-tab" onclick="switchCasinoTab('mines', this)">Мины</div>
+        
+        <!-- ВКЛАДКИ КАЗИНО -->
+        <div style="display: flex; gap: 5px; margin-bottom: 15px; background: #111; padding: 10px; border-radius: 10px;">
+          <div class="casino-tab active" style="flex: 1; text-align: center; padding: 10px; border-radius: 8px; font-weight: bold; cursor: pointer; background: #ffc107; color: #000;" onclick="switchCasinoTab('roulette', this)">Рулетка</div>
+          <div class="casino-tab" style="flex: 1; text-align: center; padding: 10px; border-radius: 8px; font-weight: bold; cursor: pointer; background: #333; color: #fff;" onclick="switchCasinoTab('mines', this)">Мины</div>
         </div>
 
-        <!-- РУЛЕТКА -->
+        <!-- РУЛЕТКА (КАЗИНО) -->
         <div id="casino-panel-roulette" class="casino-panel">
-          <div style="background: #1b5e20; border: 4px solid #5d4037; border-radius: 16px; padding: 15px; text-align: center;">
-            <h3 style="color: #fff; margin-bottom: 15px;">Рулетка (Фишки)</h3>
-            <div style="background: rgba(0,0,0,0.3); padding: 10px; border-radius: 10px; margin-bottom: 15px;">
+          <div style="background: #1b5e20; border: 4px solid #5d4037; border-radius: 16px; padding: 15px; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.5);">
+            <h3 style="color: #fff; margin-bottom: 15px; text-shadow: 0 0 10px #ffc107;">Рулетка</h3>
+            
+            <!-- Блок с фишками -->
+            <div style="background: rgba(0,0,0,0.4); padding: 10px; border-radius: 10px; margin-bottom: 15px; border: 1px solid #b8860b;">
               <div style="color: #ffc107; font-weight: bold; margin-bottom: 10px;">У тебя фишек: <span id="rouletteChipsDisplay">0</span></div>
               <div style="display: flex; gap: 5px; justify-content: center; margin-bottom: 10px;">
-                <button class="btn" style="background: #e74c3c; padding: 8px; font-size: 12px;" onclick="buyChips(1)">Купить 1К</button>
-                <button class="btn" style="background: #8e44ad; padding: 8px; font-size: 12px;" onclick="buyChips(5)">Купить 5К</button>
-                <button class="btn" style="background: #2980b9; padding: 8px; font-size: 12px;" onclick="buyChips(10)">Купить 10К</button>
+                <button class="btn" style="background: #e74c3c; padding: 8px; font-size: 12px; border: 1px solid #fff;" onclick="buyChips(1)">Купить 1К</button>
+                <button class="btn" style="background: #8e44ad; padding: 8px; font-size: 12px; border: 1px solid #fff;" onclick="buyChips(5)">Купить 5К</button>
+                <button class="btn" style="background: #2980b9; padding: 8px; font-size: 12px; border: 1px solid #fff;" onclick="buyChips(10)">Купить 10К</button>
               </div>
-              <button class="btn" style="background: #4a148c; padding: 8px; font-size: 12px;" onclick="sellChips()">Продать все фишки</button>
+              <button class="btn" style="background: #4a148c; padding: 8px; font-size: 12px; border: 1px solid #b8860b;" onclick="sellChips()">Продать все фишки</button>
             </div>
 
-            <!-- Колесо -->
-            <div style="position: relative; width: 220px; height: 220px; margin: 0 auto 15px auto;">
-              <div style="width: 100%; height: 100%; border-radius: 50%; border: 6px solid #b8860b; background: conic-gradient(#c0392b 0deg 10deg, #1a1a1a 10deg 20deg, #c0392b 20deg 30deg, #1a1a1a 30deg 40deg, #c0392b 40deg 50deg, #1a1a1a 50deg 60deg, #c0392b 60deg 70deg, #1a1a1a 70deg 80deg, #c0392b 80deg 90deg, #1a1a1a 90deg 100deg, #c0392b 100deg 110deg, #1a1a1a 110deg 120deg, #c0392b 120deg 130deg, #1a1a1a 130deg 140deg, #c0392b 140deg 150deg, #1a1a1a 150deg 160deg, #c0392b 160deg 170deg, #1a1a1a 170deg 180deg, #c0392b 180deg 190deg, #1a1a1a 190deg 200deg, #c0392b 200deg 210deg, #1a1a1a 210deg 220deg, #c0392b 220deg 230deg, #1a1a1a 230deg 240deg, #c0392b 240deg 250deg, #1a1a1a 250deg 260deg, #c0392b 260deg 270deg, #1a1a1a 270deg 280deg, #c0392b 280deg 290deg, #1a1a1a 290deg 300deg, #c0392b 300deg 310deg, #1a1a1a 310deg 320deg, #c0392b 320deg 330deg, #1a1a1a 330deg 340deg, #c0392b 340deg 350deg, #1a1a1a 350deg 360deg); box-shadow: 0 0 15px rgba(0,0,0,0.8); position: relative; display: flex; align-items: center; justify-content: center;">
-                 <div style="width: 40px; height: 40px; background: #fff; border: 4px solid #b8860b; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; color: #000; z-index: 10;">?</div>
+            <!-- Колесо рулетки -->
+            <div style="position: relative; width: 200px; height: 200px; margin: 0 auto 20px auto;">
+              <div style="width: 100%; height: 100%; border-radius: 50%; border: 8px solid #b8860b; background: #000; box-shadow: 0 0 20px rgba(0,0,0,0.8), inset 0 0 20px #000; position: relative; display: flex; align-items: center; justify-content: center; overflow: hidden;">
+                <div style="width: 100%; height: 100%; position: absolute; background: conic-gradient(#c0392b 0deg 9.7deg, #1a1a1a 9.7deg 19.4deg, #c0392b 19.4deg 29.1deg, #1a1a1a 29.1deg 38.8deg, #c0392b 38.8deg 48.5deg, #1a1a1a 48.5deg 58.2deg, #c0392b 58.2deg 67.9deg, #1a1a1a 67.9deg 77.6deg, #c0392b 77.6deg 87.3deg, #1a1a1a 87.3deg 97deg, #c0392b 97deg 106.7deg, #1a1a1a 106.7deg 116.4deg, #c0392b 116.4deg 126.1deg, #1a1a1a 126.1deg 135.8deg, #c0392b 135.8deg 145.5deg, #1a1a1a 145.5deg 155.2deg, #c0392b 155.2deg 164.9deg, #1a1a1a 164.9deg 174.6deg, #c0392b 174.6deg 184.3deg, #1a1a1a 184.3deg 194deg, #c0392b 194deg 203.7deg, #1a1a1a 203.7deg 213.4deg, #c0392b 213.4deg 223.1deg, #1a1a1a 223.1deg 232.8deg, #c0392b 232.8deg 242.5deg, #1a1a1a 242.5deg 252.2deg, #c0392b 252.2deg 261.9deg, #1a1a1a 261.9deg 271.6deg, #c0392b 271.6deg 281.3deg, #1a1a1a 281.3deg 291deg, #c0392b 291deg 300.7deg, #1a1a1a 300.7deg 310.4deg, #c0392b 310.4deg 320.1deg, #1a1a1a 320.1deg 329.8deg, #c0392b 329.8deg 339.5deg, #1a1a1a 339.5deg 349.2deg, #c0392b 349.2deg 358.9deg, #1a1a1a 358.9deg 360deg);"></div>
+                <div style="width: 40px; height: 40px; background: #b8860b; border-radius: 50%; z-index: 10; border: 2px solid #fff; display: flex; align-items: center; justify-content: center; font-weight: bold; color: #fff; text-shadow: 0 0 5px #000;">?</div>
               </div>
-              <div style="position: absolute; top: -10px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 10px solid transparent; border-right: 10px solid transparent; border-top: 20px solid #ffc107;"></div>
+              <div style="position: absolute; top: -15px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 10px solid transparent; border-right: 10px solid transparent; border-top: 25px solid #ffc107; z-index: 20; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.8));"></div>
             </div>
 
             <!-- Сетка ставок -->
-            <div style="display: grid; grid-template-columns: 25px repeat(12, 1fr) 30px; gap: 1px; font-size: 10px; background: #1b5e20; padding: 2px; border-radius: 4px; width: 100%; margin-bottom: 15px;">
-              <div style="grid-row: span 3; background: #27ae60; color: #fff; display: flex; align-items: center; justify-content: center; cursor: pointer;" onclick="addChipToCell(this, '0')">0</div>
-              <div style="background: #c0392b; color: #fff; padding: 5px; cursor: pointer;" onclick="addChipToCell(this, '1')">1</div>
-              <div style="background: #1a1a1a; color: #fff; padding: 5px; cursor: pointer;" onclick="addChipToCell(this, '2')">2</div>
-              <div style="background: #c0392b; color: #fff; padding: 5px; cursor: pointer;" onclick="addChipToCell(this, '3')">3</div>
-              <div style="background: #1a1a1a; color: #fff; padding: 5px; cursor: pointer;" onclick="addChipToCell(this, '4')">4</div>
-              <div style="background: #c0392b; color: #fff; padding: 5px; cursor: pointer;" onclick="addChipToCell(this, '5')">5</div>
-              <div style="background: #1a1a1a; color: #fff; padding: 5px; cursor: pointer;" onclick="addChipToCell(this, '6')">6</div>
-              <div style="background: #c0392b; color: #fff; padding: 5px; cursor: pointer;" onclick="addChipToCell(this, '7')">7</div>
-              <div style="background: #1a1a1a; color: #fff; padding: 5px; cursor: pointer;" onclick="addChipToCell(this, '8')">8</div>
-              <div style="background: #c0392b; color: #fff; padding: 5px; cursor: pointer;" onclick="addChipToCell(this, '9')">9</div>
-              <div style="background: #1a1a1a; color: #fff; padding: 5px; cursor: pointer;" onclick="addChipToCell(this, '10')">10</div>
-              <div style="background: #c0392b; color: #fff; padding: 5px; cursor: pointer;" onclick="addChipToCell(this, '11')">11</div>
-              <div style="background: #1a1a1a; color: #fff; padding: 5px; cursor: pointer;" onclick="addChipToCell(this, '12')">12</div>
+            <div style="display: grid; grid-template-columns: 25px repeat(12, 1fr) 30px; gap: 1px; font-size: 10px; background: #1b5e20; padding: 2px; border-radius: 4px; width: 100%; margin-bottom: 15px; border: 1px solid #b8860b;">
+              <div style="grid-row: span 3; background: #27ae60; color: #fff; display: flex; align-items: center; justify-content: center; cursor: pointer; font-weight: bold;" onclick="addChipToCell(this, '0')">0</div>
+              <div style="grid-row: span 3; background: #27ae60; color: #fff; display: flex; align-items: center; justify-content: center; cursor: pointer; font-weight: bold;" onclick="addChipToCell(this, '00')">00</div>
+              <div style="background: #c0392b; color: #fff; padding: 5px; cursor: pointer; font-weight: bold;" onclick="addChipToCell(this, '1')">1</div>
+              <div style="background: #1a1a1a; color: #fff; padding: 5px; cursor: pointer; font-weight: bold;" onclick="addChipToCell(this, '2')">2</div>
+              <div style="background: #c0392b; color: #fff; padding: 5px; cursor: pointer; font-weight: bold;" onclick="addChipToCell(this, '3')">3</div>
+              <div style="background: #1a1a1a; color: #fff; padding: 5px; cursor: pointer; font-weight: bold;" onclick="addChipToCell(this, '4')">4</div>
+              <div style="background: #c0392b; color: #fff; padding: 5px; cursor: pointer; font-weight: bold;" onclick="addChipToCell(this, '5')">5</div>
+              <div style="background: #1a1a1a; color: #fff; padding: 5px; cursor: pointer; font-weight: bold;" onclick="addChipToCell(this, '6')">6</div>
+              <div style="background: #c0392b; color: #fff; padding: 5px; cursor: pointer; font-weight: bold;" onclick="addChipToCell(this, '7')">7</div>
+              <div style="background: #1a1a1a; color: #fff; padding: 5px; cursor: pointer; font-weight: bold;" onclick="addChipToCell(this, '8')">8</div>
+              <div style="background: #c0392b; color: #fff; padding: 5px; cursor: pointer; font-weight: bold;" onclick="addChipToCell(this, '9')">9</div>
+              <div style="background: #1a1a1a; color: #fff; padding: 5px; cursor: pointer; font-weight: bold;" onclick="addChipToCell(this, '10')">10</div>
+              <div style="background: #c0392b; color: #fff; padding: 5px; cursor: pointer; font-weight: bold;" onclick="addChipToCell(this, '11')">11</div>
+              <div style="background: #1a1a1a; color: #fff; padding: 5px; cursor: pointer; font-weight: bold;" onclick="addChipToCell(this, '12')">12</div>
               <div style="grid-row: span 3; background: #1b5e20; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 8px; cursor: pointer;" onclick="addChipToCell(this, '2to1')">2:1</div>
-              <div style="background: #1a1a1a; color: #fff; padding: 5px; cursor: pointer;" onclick="addChipToCell(this, '13')">13</div>
-              <div style="background: #c0392b; color: #fff; padding: 5px; cursor: pointer;" onclick="addChipToCell(this, '14')">14</div>
-              <div style="background: #1a1a1a; color: #fff; padding: 5px; cursor: pointer;" onclick="addChipToCell(this, '15')">15</div>
-              <div style="background: #c0392b; color: #fff; padding: 5px; cursor: pointer;" onclick="addChipToCell(this, '16')">16</div>
-              <div style="background: #1a1a1a; color: #fff; padding: 5px; cursor: pointer;" onclick="addChipToCell(this, '17')">17</div>
-              <div style="background: #c0392b; color: #fff; padding: 5px; cursor: pointer;" onclick="addChipToCell(this, '18')">18</div>
-              <div style="background: #1a1a1a; color: #fff; padding: 5px; cursor: pointer;" onclick="addChipToCell(this, '19')">19</div>
-              <div style="background: #c0392b; color: #fff; padding: 5px; cursor: pointer;" onclick="addChipToCell(this, '20')">20</div>
-              <div style="background: #1a1a1a; color: #fff; padding: 5px; cursor: pointer;" onclick="addChipToCell(this, '21')">21</div>
-              <div style="background: #c0392b; color: #fff; padding: 5px; cursor: pointer;" onclick="addChipToCell(this, '22')">22</div>
-              <div style="background: #1a1a1a; color: #fff; padding: 5px; cursor: pointer;" onclick="addChipToCell(this, '23')">23</div>
-              <div style="background: #c0392b; color: #fff; padding: 5px; cursor: pointer;" onclick="addChipToCell(this, '24')">24</div>
-              <div style="background: #c0392b; color: #fff; padding: 5px; cursor: pointer;" onclick="addChipToCell(this, '25')">25</div>
-              <div style="background: #1a1a1a; color: #fff; padding: 5px; cursor: pointer;" onclick="addChipToCell(this, '26')">26</div>
-              <div style="background: #c0392b; color: #fff; padding: 5px; cursor: pointer;" onclick="addChipToCell(this, '27')">27</div>
-              <div style="background: #1a1a1a; color: #fff; padding: 5px; cursor: pointer;" onclick="addChipToCell(this, '28')">28</div>
-              <div style="background: #c0392b; color: #fff; padding: 5px; cursor: pointer;" onclick="addChipToCell(this, '29')">29</div>
-              <div style="background: #1a1a1a; color: #fff; padding: 5px; cursor: pointer;" onclick="addChipToCell(this, '30')">30</div>
-              <div style="background: #c0392b; color: #fff; padding: 5px; cursor: pointer;" onclick="addChipToCell(this, '31')">31</div>
-              <div style="background: #1a1a1a; color: #fff; padding: 5px; cursor: pointer;" onclick="addChipToCell(this, '32')">32</div>
-              <div style="background: #c0392b; color: #fff; padding: 5px; cursor: pointer;" onclick="addChipToCell(this, '33')">33</div>
-              <div style="background: #1a1a1a; color: #fff; padding: 5px; cursor: pointer;" onclick="addChipToCell(this, '34')">34</div>
-              <div style="background: #c0392b; color: #fff; padding: 5px; cursor: pointer;" onclick="addChipToCell(this, '35')">35</div>
-              <div style="background: #1a1a1a; color: #fff; padding: 5px; cursor: pointer;" onclick="addChipToCell(this, '36')">36</div>
+              <div style="background: #1a1a1a; color: #fff; padding: 5px; cursor: pointer; font-weight: bold;" onclick="addChipToCell(this, '13')">13</div>
+              <div style="background: #c0392b; color: #fff; padding: 5px; cursor: pointer; font-weight: bold;" onclick="addChipToCell(this, '14')">14</div>
+              <div style="background: #1a1a1a; color: #fff; padding: 5px; cursor: pointer; font-weight: bold;" onclick="addChipToCell(this, '15')">15</div>
+              <div style="background: #c0392b; color: #fff; padding: 5px; cursor: pointer; font-weight: bold;" onclick="addChipToCell(this, '16')">16</div>
+              <div style="background: #1a1a1a; color: #fff; padding: 5px; cursor: pointer; font-weight: bold;" onclick="addChipToCell(this, '17')">17</div>
+              <div style="background: #c0392b; color: #fff; padding: 5px; cursor: pointer; font-weight: bold;" onclick="addChipToCell(this, '18')">18</div>
+              <div style="background: #1a1a1a; color: #fff; padding: 5px; cursor: pointer; font-weight: bold;" onclick="addChipToCell(this, '19')">19</div>
+              <div style="background: #c0392b; color: #fff; padding: 5px; cursor: pointer; font-weight: bold;" onclick="addChipToCell(this, '20')">20</div>
+              <div style="background: #1a1a1a; color: #fff; padding: 5px; cursor: pointer; font-weight: bold;" onclick="addChipToCell(this, '21')">21</div>
+              <div style="background: #c0392b; color: #fff; padding: 5px; cursor: pointer; font-weight: bold;" onclick="addChipToCell(this, '22')">22</div>
+              <div style="background: #1a1a1a; color: #fff; padding: 5px; cursor: pointer; font-weight: bold;" onclick="addChipToCell(this, '23')">23</div>
+              <div style="background: #c0392b; color: #fff; padding: 5px; cursor: pointer; font-weight: bold;" onclick="addChipToCell(this, '24')">24</div>
+              <div style="background: #c0392b; color: #fff; padding: 5px; cursor: pointer; font-weight: bold;" onclick="addChipToCell(this, '25')">25</div>
+              <div style="background: #1a1a1a; color: #fff; padding: 5px; cursor: pointer; font-weight: bold;" onclick="addChipToCell(this, '26')">26</div>
+              <div style="background: #c0392b; color: #fff; padding: 5px; cursor: pointer; font-weight: bold;" onclick="addChipToCell(this, '27')">27</div>
+              <div style="background: #1a1a1a; color: #fff; padding: 5px; cursor: pointer; font-weight: bold;" onclick="addChipToCell(this, '28')">28</div>
+              <div style="background: #c0392b; color: #fff; padding: 5px; cursor: pointer; font-weight: bold;" onclick="addChipToCell(this, '29')">29</div>
+              <div style="background: #1a1a1a; color: #fff; padding: 5px; cursor: pointer; font-weight: bold;" onclick="addChipToCell(this, '30')">30</div>
+              <div style="background: #c0392b; color: #fff; padding: 5px; cursor: pointer; font-weight: bold;" onclick="addChipToCell(this, '31')">31</div>
+              <div style="background: #1a1a1a; color: #fff; padding: 5px; cursor: pointer; font-weight: bold;" onclick="addChipToCell(this, '32')">32</div>
+              <div style="background: #c0392b; color: #fff; padding: 5px; cursor: pointer; font-weight: bold;" onclick="addChipToCell(this, '33')">33</div>
+              <div style="background: #1a1a1a; color: #fff; padding: 5px; cursor: pointer; font-weight: bold;" onclick="addChipToCell(this, '34')">34</div>
+              <div style="background: #c0392b; color: #fff; padding: 5px; cursor: pointer; font-weight: bold;" onclick="addChipToCell(this, '35')">35</div>
+              <div style="background: #1a1a1a; color: #fff; padding: 5px; cursor: pointer; font-weight: bold;" onclick="addChipToCell(this, '36')">36</div>
+              <div style="grid-column: span 4; background: #2c3e50; color: #fff; padding: 5px; cursor: pointer; font-weight: bold;" onclick="addChipToCell(this, '1st12')">1st 12</div>
+              <div style="grid-column: span 4; background: #2c3e50; color: #fff; padding: 5px; cursor: pointer; font-weight: bold;" onclick="addChipToCell(this, '2nd12')">2nd 12</div>
+              <div style="grid-column: span 4; background: #2c3e50; color: #fff; padding: 5px; cursor: pointer; font-weight: bold;" onclick="addChipToCell(this, '3rd12')">3rd 12</div>
+              <div style="grid-column: span 2; background: #2c3e50; color: #fff; padding: 5px; cursor: pointer; font-weight: bold;" onclick="addChipToCell(this, '1-18')">1-18</div>
+              <div style="grid-column: span 2; background: #c0392b; color: #fff; padding: 5px; cursor: pointer; font-weight: bold;" onclick="addChipToCell(this, 'EVEN')">EVEN</div>
+              <div style="grid-column: span 2; background: #c0392b; color: #fff; padding: 5px; cursor: pointer; font-weight: bold;" onclick="addChipToCell(this, 'RED')">RED</div>
+              <div style="grid-column: span 2; background: #1a1a1a; color: #fff; padding: 5px; cursor: pointer; font-weight: bold;" onclick="addChipToCell(this, 'BLACK')">BLACK</div>
+              <div style="grid-column: span 2; background: #2c3e50; color: #fff; padding: 5px; cursor: pointer; font-weight: bold;" onclick="addChipToCell(this, 'ODD')">ODD</div>
+              <div style="grid-column: span 2; background: #2c3e50; color: #fff; padding: 5px; cursor: pointer; font-weight: bold;" onclick="addChipToCell(this, '19-36')">19-36</div>
             </div>
 
+            <!-- Выбор фишек -->
             <div style="display: flex; justify-content: center; gap: 10px; margin-bottom: 15px;">
-              <button class="chip-btn" style="background: #e74c3c; width: 40px; height: 40px; border-radius: 50%; border: 2px solid #fff; color: #fff; font-weight: bold;" onclick="setCurrentChip(1)">1</button>
-              <button class="chip-btn" style="background: #8e44ad; width: 40px; height: 40px; border-radius: 50%; border: 2px solid #fff; color: #fff; font-weight: bold;" onclick="setCurrentChip(5)">5</button>
-              <button class="chip-btn" style="background: #2980b9; width: 40px; height: 40px; border-radius: 50%; border: 2px solid #fff; color: #fff; font-weight: bold;" onclick="setCurrentChip(10)">10</button>
+              <button class="chip-btn" style="background: #e74c3c; width: 40px; height: 40px; border-radius: 50%; border: 2px solid #fff; color: #fff; font-weight: bold; box-shadow: 0 0 10px #e74c3c;" onclick="setCurrentChip(1)">1</button>
+              <button class="chip-btn" style="background: #8e44ad; width: 40px; height: 40px; border-radius: 50%; border: 2px solid #fff; color: #fff; font-weight: bold; box-shadow: 0 0 10px #8e44ad;" onclick="setCurrentChip(5)">5</button>
+              <button class="chip-btn" style="background: #2980b9; width: 40px; height: 40px; border-radius: 50%; border: 2px solid #fff; color: #fff; font-weight: bold; box-shadow: 0 0 10px #2980b9;" onclick="setCurrentChip(10)">10</button>
             </div>
 
+            <!-- Кнопки управления -->
             <div style="display: flex; gap: 10px;">
-              <button class="btn" style="background: #4caf50; flex: 1;" onclick="clearBets()">Очистить</button>
-              <button class="btn" style="background: #ffc107; color: #000; flex: 2;" onclick="spinRoulette()">Крутить!</button>
+              <button class="btn" style="background: #ef4444; flex: 1; border: 2px solid #fff;" onclick="clearBets()">Очистить</button>
+              <button class="btn" style="background: #ffc107; color: #000; flex: 2; border: 2px solid #fff; font-size: 18px;" onclick="spinRoulette()">Крутить!</button>
             </div>
+            <div id="rouletteResult" style="text-align:center; font-weight:bold; margin-top:15px; color: #fff; text-shadow: 0 0 5px #000;"></div>
           </div>
         </div>
 
-        <!-- МИНЫ -->
+        <!-- МИНЫ (КРАСИВЫЕ) -->
         <div id="casino-panel-mines" class="casino-panel" style="display: none;">
           <div style="background: #1a1e29; border-radius: 16px; padding: 15px; border: 1px solid #2a2e39;">
             <div style="display: flex; justify-content: space-between; margin-bottom: 15px;">
-              <div style="background: #222736; padding: 10px; border-radius: 10px; text-align: center; flex: 1; margin-right: 5px;"><div style="color: #888; font-size: 12px;">Сейчас</div><div style="color: #fff; font-weight: bold;" id="minesCurrentMult">—</div></div>
-              <div style="background: #222736; padding: 10px; border-radius: 10px; text-align: center; flex: 1; margin-right: 5px;"><div style="color: #888; font-size: 12px;">Следующая</div><div style="color: #ffc107; font-weight: bold;" id="minesNextMult">×1,02</div></div>
-              <div style="background: #222736; padding: 10px; border-radius: 10px; text-align: center; flex: 1;"><div style="color: #888; font-size: 12px;">Шанс</div><div style="color: #fff; font-weight: bold;" id="minesChance">88 %</div></div>
+              <div style="background: #222736; padding: 10px; border-radius: 10px; text-align: center; flex: 1; margin-right: 5px;">
+                <div style="color: #888; font-size: 12px;">Сейчас</div>
+                <div style="color: #fff; font-weight: bold;" id="minesCurrentMult">—</div>
+              </div>
+              <div style="background: #222736; padding: 10px; border-radius: 10px; text-align: center; flex: 1; margin-right: 5px;">
+                <div style="color: #888; font-size: 12px;">Следующая</div>
+                <div style="color: #ffc107; font-weight: bold;" id="minesNextMult">×1,02</div>
+              </div>
+              <div style="background: #222736; padding: 10px; border-radius: 10px; text-align: center; flex: 1;">
+                <div style="color: #888; font-size: 12px;">Шанс</div>
+                <div style="color: #fff; font-weight: bold;" id="minesChance">88 %</div>
+              </div>
             </div>
 
             <div id="minesGrid" style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin-bottom: 15px;"></div>
 
             <div style="background: #222736; border-radius: 16px; padding: 15px;">
               <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-                <button class="bet-minus-plus" style="background: transparent; border: 2px solid #ffc107; color: #ffc107; width: 40px; height: 40px; border-radius: 50%; font-size: 20px;" onclick="changeMinesBet(-1000)">−</button>
+                <button class="bet-minus-plus" style="background: transparent; border: 2px solid #ffc107; color: #ffc107; width: 40px; height: 40px; border-radius: 50%; font-size: 20px; cursor: pointer;" onclick="changeMinesBet(-1000)">−</button>
                 <div style="color: #fff; font-size: 24px; font-weight: bold;" id="minesBetDisplay">1 000 ₽</div>
-                <button class="bet-minus-plus" style="background: transparent; border: 2px solid #ffc107; color: #ffc107; width: 40px; height: 40px; border-radius: 50%; font-size: 20px;" onclick="changeMinesBet(1000)">+</button>
+                <button class="bet-minus-plus" style="background: transparent; border: 2px solid #ffc107; color: #ffc107; width: 40px; height: 40px; border-radius: 50%; font-size: 20px; cursor: pointer;" onclick="changeMinesBet(1000)">+</button>
               </div>
               <div style="display: flex; gap: 5px; margin-bottom: 15px;">
                 <button class="btn" style="background: #222736; color: #888; flex: 1; padding: 10px; font-size: 12px;" onclick="setMinesBet(100)">100</button>
@@ -220,9 +247,9 @@
               <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
                 <span style="color: #888;">Мин на поле</span>
                 <div style="display: flex; align-items: center; gap: 10px;">
-                  <button class="bet-minus-plus" style="background: #222736; border: none; color: #fff; width: 30px; height: 30px; border-radius: 50%;" onclick="changeMinesCount(-1)">−</button>
+                  <button class="bet-minus-plus" style="background: #222736; border: none; color: #fff; width: 30px; height: 30px; border-radius: 50%; cursor: pointer;" onclick="changeMinesCount(-1)">−</button>
                   <span id="minesCountDisplay" style="color: #fff; font-weight: bold;">3</span>
-                  <button class="bet-minus-plus" style="background: #222736; border: none; color: #fff; width: 30px; height: 30px; border-radius: 50%;" onclick="changeMinesCount(1)">+</button>
+                  <button class="bet-minus-plus" style="background: #222736; border: none; color: #fff; width: 30px; height: 30px; border-radius: 50%; cursor: pointer;" onclick="changeMinesCount(1)">+</button>
                 </div>
               </div>
               <div style="display: flex; gap: 5px; margin-bottom: 15px;">
@@ -387,76 +414,76 @@
     "Новосибирск": { "price_coef": 1.00, "cold": true, "desc": "Баланс климата и цен." }
   };
 
-  // 68 ЗАДАНИЙ ОТ ЗАКАЗЧИКА
+  // 68 ЗАДАНИЙ (СЛОЖНЫЕ, БЕЗ ЯВНЫХ ПОДСКАЗОК)
   const TASKS = [
-    { id: "A1", q: "A1. Стук на холодную. Причина?", opts: ["Гидрокомпенсаторы/закоксовка", "Износ колец", "Детонация"], ans: 0 },
-    { id: "A2", q: "A2. Троит на холодную 2-3 мин. Цепочка диагностики?", opts: ["Свечи → провода → форсунки → подсос → компрессия", "Сразу разбирать двигатель", "Заменить ЭБУ"], ans: 0 },
-    { id: "A3", q: "A3. Белый дым, антифриз падает. Диагноз?", opts: ["Прокладка ГБЦ", "Колпачки", "Богатая смесь"], ans: 0 },
-    { id: "A4", q: "A4. Синий дым, расход масла. 3 причины?", opts: ["Колпачки, кольца, вентиляция картера", "Термостат, помпа, радиатор", "Свечи, катушка, ДПКВ"], ans: 0 },
-    { id: "A5", q: "A5. Черный дым. Причина?", opts: ["Переобогащение смеси", "Бедная смесь", "Вода в баке"], ans: 0 },
-    { id: "A6", q: "A6. Плавают обороты. 4 причины?", opts: ["Подсос, ДХХ, ДМРВ, форсунки", "Форсунки, ДМРВ, дроссель, подсос", "ЭБУ, проводка, форсунки, подсос"], ans: 0 },
-    { id: "A7", q: "A7. Глохнет на горячую. 3 гипотезы?", opts: ["ДПКВ, катушка, бензонасос", "Свечи, фильтр, термостат", "ДМРВ, лямбда, форсунки"], ans: 0 },
-    { id: "A8", q: "A8. Расход +30%, динамика в норме. 5 точек?", opts: ["Шины, тормоза, ДМРВ/лямбда, форсунки, катализатор", "Только катализатор", "Только форсунки"], ans: 0 },
-    { id: "A9", q: "A9. Детонация на 92-м. Что проверить?", opts: ["УОЗ, датчик детонации, топливо, нагар", "Заменить катализатор", "Промыть форсунки"], ans: 0 },
-    { id: "A10", q: "A10. Не заводится после заправки. Алгоритм?", opts: ["Топливо → фильтр → насос → давление → искра → ЭБУ", "Сразу менять насос", "Сразу менять свечи"], ans: 0 },
-    { id: "A11", q: "A11. Вибрация на холостых. Отличить двигатель от кузова?", opts: ["Подушки двигателя vs балансировка/ШРУС", "Только замена свечей", "Только балансировка"], ans: 0 },
-    { id: "A12", q: "A12. Запах бензина в салоне. 3 причины?", opts: ["Топливопроводы, адсорбер, форсунки", "Только адсорбер", "Только форсунки"], ans: 0 },
-    { id: "B1", q: "B1. Сцепление «ведёт». Причина?", opts: ["Неполное выключение, воздух, корзина", "Износ диска", "Замасливание"], ans: 0 },
-    { id: "B2", q: "B2. Сцепление «буксует». 3 причины?", opts: ["Износ диска, замасливание, пружины корзины", "Воздух в гидроприводе", "Неполное выключение"], ans: 0 },
-    { id: "B3", q: "B3. Хруст при включении 2-й. Как различить?", opts: ["Тест на других передачах + проверка выключения", "Сразу менять КПП", "Сразу менять сцепление"], ans: 0 },
-    { id: "B4", q: "B4. Вибрация при трогании. 3 источника?", opts: ["Диск сцепления, маховик, подушки КПП", "Тормоза, шины, руль", "Двигатель, выхлоп, ЭБУ"], ans: 0 },
-    { id: "B5", q: "B5. Течь сальника КПП. Что проверить?", opts: ["Сальник, сапун, уровень масла, люфт вала", "Только замена сальника", "Только долить масло"], ans: 0 },
-    { id: "B6", q: "B6. АКПП рывки. 4 причины?", opts: ["Масло/фильтр, соленоиды, адаптация, гидроблок", "Сразу капиталить АКПП", "Только долить масло"], ans: 0 },
-    { id: "B7", q: "B7. Вариатор пробуксовка. 3 проверки?", opts: ["Уровень жидкости, ремень/цепь, охлаждение", "Сразу менять вариатор", "Только долить жидкость"], ans: 0 },
-    { id: "B8", q: "B8. Шум в КПП на нейтрали. Как локализовать?", opts: ["Выжать сцепление: подшипник вала vs выжимной", "Сразу менять КПП", "Только долить масло"], ans: 0 },
-    { id: "B9", q: "B9. Кардан: вибрация. 3 проверки?", opts: ["Крестовины, балансировка, подвесной подшипник", "Только балансировка", "Только крестовины"], ans: 0 },
-    { id: "B10", q: "B10. Дифференциал: гул на поворотах. Диагноз?", opts: ["Износ сателлитов/подшипников, уровень масла", "Только замена масла", "Только шины"], ans: 0 },
-    { id: "C1", q: "C1. Мягкая педаль после замены колодок. 6 действий?", opts: ["Прокачка, воздух, течь, ГТЦ, ABS, проверка", "Сразу менять ГТЦ", "Сразу менять ABS"], ans: 0 },
-    { id: "C2", q: "C2. Вибрация при торможении. 3 причины?", opts: ["Биение диска, направляющие, ступица", "Только колодки", "Только шины"], ans: 0 },
-    { id: "C3", q: "C3. Скрип тормозов. Когда норма?", opts: ["Материал колодок vs износ/задиры", "Всегда норма", "Всегда менять суппорт"], ans: 0 },
-    { id: "C4", q: "C4. Уводит в сторону при торможении. 4 причины?", opts: ["Закисший суппорт, шланг, колодки, геометрия", "Только геометрия", "Только колодки"], ans: 0 },
-    { id: "C5", q: "C5. Педаль провалилась. Алгоритм?", opts: ["Остановка, ручник, осмотр, эвакуатор, запрет движения", "Доехать до дома", "Прокачать на месте"], ans: 0 },
-    { id: "C6", q: "C6. Стук в подвеске. Дерево проверки?", opts: ["Стойки → шаровые → втулки → опоры", "Сразу менять всё", "Только стойки"], ans: 0 },
-    { id: "C7", q: "C7. Люфт шаровой. Почему критично?", opts: ["Риск отрыва колеса; монтировка + подъёмник", "Не критично", "Только на слух"], ans: 0 },
-    { id: "C8", q: "C8. Износ шин «пятнами». 3 причины?", opts: ["Дисбаланс, амортизаторы, геометрия", "Только давление", "Только геометрия"], ans: 0 },
-    { id: "C9", q: "C9. Гул ступицы. Как отличить от шин?", opts: ["Изменение на поворотах + проверка люфта", "Только на слух", "Только балансировка"], ans: 0 },
-    { id: "C10", q: "C10. ABS горит постоянно. 4 причины?", opts: ["Датчик колеса, проводка, блок, грязь", "Сразу менять блок ABS", "Сразу менять все датчики"], ans: 0 },
-    { id: "C11", q: "C11. Рулевое: стук. 3 источника?", opts: ["Рейка, наконечники, карданчик", "Только рейка", "Только наконечники"], ans: 0 },
-    { id: "C12", q: "C12. После замены амортизаторов — стук. Ошибки?", opts: ["Опора, пыльник, затяжка под нагрузкой", "Только опора", "Только пыльник"], ans: 0 },
-    { id: "D1", q: "D1. Пропуски в 3 цилиндре под нагрузкой. 4 гипотезы?", opts: ["Катушка, свеча, форсунка, компрессия", "Только свеча", "Только ЭБУ"], ans: 0 },
-    { id: "D2", q: "D2. Утечка тока. Алгоритм?", opts: ["Ток утечки ≤50 мА, предохранители, блоки с таймером", "Сразу менять АКБ", "Сразу менять генератор"], ans: 0 },
-    { id: "D3", q: "D3. Генератор не заряжает. 5 проверок?", opts: ["Ремень, напряжение, диодный мост, регулятор, проводка", "Сразу менять генератор", "Только ремень"], ans: 0 },
-    { id: "D4", q: "D4. Стартер щёлкает, но не крутит. 4 причины?", opts: ["АКБ, втягивающее, масса, контакты", "Только стартер", "Только АКБ"], ans: 0 },
-    { id: "D5", q: "D5. Нет искры. Цепочка?", opts: ["Свеча → катушка → ДПКВ → ЭБУ → проводка", "Сразу ЭБУ", "Сразу катушка"], ans: 0 },
-    { id: "D6", q: "D6. Дворники только на макс. Причина?", opts: ["Резистор/реле скоростей", "Моторчик дворников", "Предохранитель"], ans: 0 },
-    { id: "D7", q: "D7. Бензонасос не работает. 3 проверки?", opts: ["Реле, предохранитель, давление/проводка", "Сразу менять насос", "Только предохранитель"], ans: 0 },
-    { id: "D8", q: "D8. Ошибка лямбды. Менять или искать причину?", opts: ["Подсос/богатая смесь vs сам датчик", "Всегда менять датчик", "Всегда искать подсос"], ans: 0 },
-    { id: "D9", q: "D9. ДХО не включаются. 3 проверки?", opts: ["Предохранитель, реле, концевик/датчик света", "Только лампы", "Только реле"], ans: 0 },
-    { id: "D10", q: "D10. Разряд АКБ из-за «умной» зарядки. Что проверить?", opts: ["Ток утечки, генератор, потребители", "Только АКБ", "Только генератор"], ans: 0 },
-    { id: "D11", q: "D11. Дым из-под панели. Действия?", opts: ["Снять клемму, огнетушитель, не трогать проводку", "Залить водой", "Продолжить движение"], ans: 0 },
-    { id: "D12", q: "D12. CAN-шина: нет связи. 3 проверки?", opts: ["Питание/масса, сопротивление 60 Ом, обрыв", "Сразу менять блок", "Сразу менять проводку"], ans: 0 },
-    { id: "D13", q: "D13. ДПКВ плавающая ошибка. Почему на горячую?", opts: ["Температурная деформация/зазор", "Всегда ДПКВ неисправен", "Всегда ЭБУ"], ans: 0 },
-    { id: "D14", q: "D14. Подсветка салона не гаснет. 3 причины?", opts: ["Концевик, реле, блок комфорта", "Только лампы", "Только предохранитель"], ans: 0 },
-    { id: "E1", q: "E1. Перегрев в пробке. 5 причин?", opts: ["Вентилятор, термостат, радиатор, помпа, пробка", "Только термостат", "Только вентилятор"], ans: 0 },
-    { id: "E2", q: "E2. Печка не греет. 4 причины?", opts: ["Воздух, заслонка, радиатор печки, термостат", "Только термостат", "Только радиатор"], ans: 0 },
-    { id: "E3", q: "E3. Течь антифриза. 3 зоны?", opts: ["Патрубки, помпа, радиатор", "Только радиатор", "Только патрубки"], ans: 0 },
-    { id: "E4", q: "E4. Масло уходит, следов нет. 4 варианта?", opts: ["Сальники, прокладка клапанной, вентиляция, кольца", "Только кольца", "Только сальники"], ans: 0 },
-    { id: "E5", q: "E5. Низкое давление масла на горячую. 4 пункта?", opts: ["Датчик, масло/фильтр, насос, вкладыши", "Сразу капиталить", "Только датчик"], ans: 0 },
-    { id: "E6", q: "E6. Пузыри в расширительном бачке. Диагноз?", opts: ["Прорыв газов: прокладка/трещина ГБЦ", "Воздушная пробка", "Норма"], ans: 0 },
-    { id: "E7", q: "E7. Вентилятор не включается. 4 проверки?", opts: ["Датчик/реле, предохранитель, мотор, проводка", "Только мотор", "Только реле"], ans: 0 },
-    { id: "E8", q: "E8. Перегрев после замены антифриза. Ошибка?", opts: ["Воздушная пробка, неправильная прокачка", "Не тот антифриз", "Не тот термостат"], ans: 0 },
-    { id: "F1", q: "F1. Дёргается в дождь. Дерево диагностики?", opts: ["ВВ-часть, датчики, разъёмы — влага", "Только свечи", "Только ЭБУ"], ans: 0 },
-    { id: "F2", q: "F2. Бюджет 1 ремонт. Приоритет?", opts: ["Шаровая → патрубок → колодки → сальник", "Сальник → шаровая → патрубок → колодки", "Колодки → сальник → шаровая → патрубок"], ans: 0 },
-    { id: "F3", q: "F3. «Всё работает, но не едет». 5 причин?", opts: ["Сцепление, тормоза, топливо, катализатор, АКПП", "Только сцепление", "Только АКПП"], ans: 0 },
-    { id: "F4", q: "F4. После ДТП не заводится. 6 проверок?", opts: ["Датчик удара, масса, проводка, топливо, искра, ошибки", "Сразу менять ЭБУ", "Сразу менять АКБ"], ans: 0 },
-    { id: "F5", q: "F5. Троит после мойки двигателя. 3 причины?", opts: ["Вода в разъёмах, катушках, свечных колодцах", "Сразу менять свечи", "Сразу менять ЭБУ"], ans: 0 },
-    { id: "F6", q: "F6. Клиент требует «сбросить ошибку». Риск?", opts: ["Сброс без ремонта → повтор; нужна диагностика", "Сбросить и отпустить", "Отказать без объяснений"], ans: 0 },
-    { id: "G1", q: "G1. «Чёрная свеча = богатая смесь». 3 ошибки?", opts: ["Нагар — следствие; причины разные", "Всё верно", "Нужно менять только свечи"], ans: 0 },
-    { id: "G2", q: "G2. «Компрессия в норме — двигатель здоров». Опровергни.", opts: ["Колпачки, клапаны, ГБЦ могут быть неисправны", "Компрессия всё решает", "Нужно только померить ещё раз"], ans: 0 },
-    { id: "G3", q: "G3. «Прокачал тормоза — всё ок». Что ещё?", opts: ["Течь, уровень, ABS, тест-драйв", "Ничего", "Только уровень"], ans: 0 },
-    { id: "G4", q: "G4. «Ошибка лямбды — сразу менять». Почему не так?", opts: ["Подсос/богатая смесь — причина", "Датчик всегда виноват", "Нужно менять оба датчика"], ans: 0 },
-    { id: "G5", q: "G5. «Стук — значит подвеска». 3 альтернативы?", opts: ["Двигатель, выхлоп, КПП", "Только подвеска", "Только тормоза"], ans: 0 },
-    { id: "G6", q: "G6. «АКБ новый — проблема не в нём». 3 проверки?", opts: ["Клеммы, ток утечки, генератор", "Только АКБ", "Только генератор"], ans: 0 }
+    { id: "A1", q: "Металлический стук при пуске, пропадает после прогрева, масло в норме. Что проверить?", opts: ["Гидрокомпенсаторы/закоксовка", "Износ колец", "Детонация"], ans: 0 },
+    { id: "A2", q: "Троит 2–3 мин после запуска, ошибок нет. С чего начать диагностику?", opts: ["Свечи и провода", "Сразу разбирать двигатель", "Менять ЭБУ"], ans: 0 },
+    { id: "A3", q: "Густой белый дым, антифриз падает, эмульсия на щупе. Ваш диагноз?", opts: ["Пробита прокладка ГБЦ", "Маслосъёмные колпачки", "Богатая смесь"], ans: 0 },
+    { id: "A4", q: "Синий дым при перегазовке, расход масла 1 л/1000 км. Что искать?", opts: ["Колпачки, кольца, вентиляцию картера", "Термостат и помпу", "Свечи и катушку"], ans: 0 },
+    { id: "A5", q: "Черный дым. Чем опасна езда с такой неисправностью?", opts: ["Риск перегрева катализатора", "Ничем не опасна", "Только повышенный расход"], ans: 0 },
+    { id: "A6", q: "Холостой ход «гуляет» 600–1100. Что проверить в первую очередь?", opts: ["Подсос воздуха", "Сразу менять ЭБУ", "Разбирать двигатель"], ans: 0 },
+    { id: "A7", q: "Двигатель глохнет на горячую. Что проверить?", opts: ["ДПКВ и бензонасос", "Только свечи", "Только фильтр"], ans: 0 },
+    { id: "A8", q: "Расход топлива вырос на 30%, динамика в норме. Где искать?", opts: ["Шины, тормоза, ДМРВ", "Только катализатор", "Только форсунки"], ans: 0 },
+    { id: "A9", q: "Стук «пальцы» под нагрузкой на 92-м бензине. Что проверить?", opts: ["УОЗ и датчик детонации", "Заменить катализатор", "Промыть форсунки"], ans: 0 },
+    { id: "A10", q: "Не заводится после заправки. С чего начать?", opts: ["Топливо и фильтр", "Сразу менять насос", "Сразу менять свечи"], ans: 0 },
+    { id: "A11", q: "Вибрация на холостых. Как отличить двигатель от кузова?", opts: ["Проверить подушки двигателя", "Только замена свечей", "Только балансировка"], ans: 0 },
+    { id: "A12", q: "Запах бензина в салоне. Что нельзя делать?", opts: ["Запускать двигатель при течи", "Открывать окна", "Искать течь"], ans: 0 },
+    { id: "B1", q: "Передачи включаются с хрустом, педаль в пол. Что это?", opts: ["Сцепление «ведёт»", "Сцепление «буксует»", "Износ КПП"], ans: 0 },
+    { id: "B2", q: "Обороты растут, скорость нет. Что это?", opts: ["Сцепление «буксует»", "Сцепление «ведёт»", "Неисправен дифференциал"], ans: 0 },
+    { id: "B3", q: "Хруст при включении 2-й. Как проверить сцепление?", opts: ["Выжать сцепление и включить передачу", "Сразу менять КПП", "Сразу менять сцепление"], ans: 0 },
+    { id: "B4", q: "Вибрация при трогании. Что проверить?", opts: ["Диск сцепления и маховик", "Тормоза и шины", "Двигатель и выхлоп"], ans: 0 },
+    { id: "B5", q: "Течь сальника КПП. Что проверить попутно?", opts: ["Сапун и люфт вала", "Только заменить сальник", "Только долить масло"], ans: 0 },
+    { id: "B6", q: "АКПП рывки при переключении. Что нельзя делать?", opts: ["Агрессивно ездить", "Доливать масло", "Менять фильтр"], ans: 0 },
+    { id: "B7", q: "Вариатор пробуксовка. Что проверить перед ремонтом?", opts: ["Уровень жидкости и охлаждение", "Сразу менять вариатор", "Только долить жидкость"], ans: 0 },
+    { id: "B8", q: "Шум в КПП на нейтрали. Как локализовать?", opts: ["Выжать сцепление", "Сразу менять КПП", "Только долить масло"], ans: 0 },
+    { id: "B9", q: "Вибрация кардана на скорости. Что проверить?", opts: ["Крестовины и подвесной", "Только балансировку", "Только крестовины"], ans: 0 },
+    { id: "B10", q: "Гул дифференциала на поворотах. Диагноз?", opts: ["Износ сателлитов/подшипников", "Только замена масла", "Только шины"], ans: 0 },
+    { id: "C1", q: "Мягкая педаль после замены колодок. Что проверить до прокачки?", opts: ["Течь и уровень жидкости", "Сразу менять ГТЦ", "Сразу менять ABS"], ans: 0 },
+    { id: "C2", q: "Вибрация при торможении. Что проверить?", opts: ["Биение диска и направляющие", "Только колодки", "Только шины"], ans: 0 },
+    { id: "C3", q: "Скрип тормозов. Когда это норма?", opts: ["Материал колодок", "Всегда норма", "Всегда менять суппорт"], ans: 0 },
+    { id: "C4", q: "Уводит в сторону при торможении. Что проверить?", opts: ["Закисший суппорт и шланг", "Только геометрию", "Только колодки"], ans: 0 },
+    { id: "C5", q: "Педаль провалилась. Ваши действия?", opts: ["Остановка и вызов эвакуатора", "Доехать до дома", "Прокачать на месте"], ans: 0 },
+    { id: "C6", q: "Стук в подвеске на неровностях. С чего начать?", opts: ["Стойки и шаровые", "Сразу менять всё", "Только стойки"], ans: 0 },
+    { id: "C7", q: "Люфт шаровой опоры. Почему это критично?", opts: ["Риск отрыва колеса", "Не критично", "Только на слух"], ans: 0 },
+    { id: "C8", q: "Износ шин «пятнами». Что проверить?", opts: ["Дисбаланс и амортизаторы", "Только давление", "Только геометрию"], ans: 0 },
+    { id: "C9", q: "Гул ступицы. Как отличить от гула шин?", opts: ["Изменение на поворотах", "Только на слух", "Только балансировка"], ans: 0 },
+    { id: "C10", q: "ABS горит постоянно. Что проверить первым?", opts: ["Датчик колеса и грязь", "Сразу менять блок ABS", "Сразу менять все датчики"], ans: 0 },
+    { id: "C11", q: "Стук в рулевом управлении. Что проверить?", opts: ["Рейка и наконечники", "Только рейку", "Только наконечники"], ans: 0 },
+    { id: "C12", q: "Стук после замены амортизаторов. Ошибка сборки?", opts: ["Затяжка под нагрузкой", "Только опора", "Только пыльник"], ans: 0 },
+    { id: "D1", q: "Пропуск в 3 цилиндре только под нагрузкой. Что проверить?", opts: ["Катушку и форсунку", "Только свечу", "Только ЭБУ"], ans: 0 },
+    { id: "D2", q: "АКБ разряжается за 2 дня. Что проверить?", opts: ["Ток утечки", "Сразу менять АКБ", "Сразу менять генератор"], ans: 0 },
+    { id: "D3", q: "Генератор не заряжает. Что проверить?", opts: ["Ремень и диодный мост", "Сразу менять генератор", "Только ремень"], ans: 0 },
+    { id: "D4", q: "Стартер щёлкает, но не крутит. Что проверить?", opts: ["АКБ и втягивающее", "Только стартер", "Только АКБ"], ans: 0 },
+    { id: "D5", q: "Нет искры. С чего начать?", opts: ["Свеча и катушка", "Сразу ЭБУ", "Сразу катушка"], ans: 0 },
+    { id: "D6", q: "Дворники работают только на максимальной скорости. Причина?", opts: ["Резистор/реле скоростей", "Моторчик дворников", "Предохранитель"], ans: 0 },
+    { id: "D7", q: "Бензонасос не работает. Как проверить без замены?", opts: ["Реле и предохранитель", "Сразу менять насос", "Только предохранитель"], ans: 0 },
+    { id: "D8", q: "Ошибка лямбда-зонда. Когда менять?", opts: ["Когда причина не в подсосе", "Всегда менять датчик", "Всегда искать подсос"], ans: 0 },
+    { id: "D9", q: "ДХО не включаются. Что проверить?", opts: ["Предохранитель и реле", "Только лампы", "Только реле"], ans: 0 },
+    { id: "D10", q: "Разряд АКБ из-за «умной» зарядки. Что проверить?", opts: ["Ток утечки и генератор", "Только АКБ", "Только генератор"], ans: 0 },
+    { id: "D11", q: "Дым из-под панели. Ваши действия?", opts: ["Снять клемму", "Залить водой", "Продолжить движение"], ans: 0 },
+    { id: "D12", q: "CAN-шина: нет связи с блоком. Что проверить?", opts: ["Питание и сопротивление 60 Ом", "Сразу менять блок", "Сразу менять проводку"], ans: 0 },
+    { id: "D13", q: "ДПКВ «плавающая» ошибка. Почему на горячую?", opts: ["Температурная деформация", "Всегда ДПКВ неисправен", "Всегда ЭБУ"], ans: 0 },
+    { id: "D14", q: "Подсветка салона не гаснет. Что проверить?", opts: ["Концевик и реле", "Только лампы", "Только предохранитель"], ans: 0 },
+    { id: "E1", q: "Перегрев в пробке. Что проверить?", opts: ["Вентилятор и термостат", "Только термостат", "Только вентилятор"], ans: 0 },
+    { id: "E2", q: "Печка не греет. Что проверить?", opts: ["Воздух в системе и заслонку", "Только термостат", "Только радиатор"], ans: 0 },
+    { id: "E3", q: "Течь антифриза. Где искать?", opts: ["Патрубки и помпа", "Только радиатор", "Только патрубки"], ans: 0 },
+    { id: "E4", q: "Масло уходит, следов нет. Что проверить?", opts: ["Сальники и вентиляцию картера", "Только кольца", "Только сальники"], ans: 0 },
+    { id: "E5", q: "Низкое давление масла на горячую. Что проверить до разборки?", opts: ["Датчик и фильтр", "Сразу капиталить", "Только датчик"], ans: 0 },
+    { id: "E6", q: "Пузыри в расширительном бачке. Диагноз?", opts: ["Прорыв газов", "Воздушная пробка", "Норма"], ans: 0 },
+    { id: "E7", q: "Вентилятор не включается. Что проверить?", opts: ["Датчик и реле", "Только мотор", "Только реле"], ans: 0 },
+    { id: "E8", q: "Перегрев после замены антифриза. Типичная ошибка?", opts: ["Воздушная пробка", "Не тот антифриз", "Не тот термостат"], ans: 0 },
+    { id: "F1", q: "Машина дёргается в дождь. Что проверить?", opts: ["ВВ-часть и разъёмы", "Только свечи", "Только ЭБУ"], ans: 0 },
+    { id: "F2", q: "Бюджет 1 ремонт. Что делать в первую очередь?", opts: ["Шаровую (риск отрыва)", "Сальник", "Колодки"], ans: 0 },
+    { id: "F3", q: "«Всё работает, но не едет». Что проверить?", opts: ["Сцепление и тормоза", "Только сцепление", "Только АКПП"], ans: 0 },
+    { id: "F4", q: "После ДТП не заводится. Что проверить?", opts: ["Датчик удара и массу", "Сразу менять ЭБУ", "Сразу менять АКБ"], ans: 0 },
+    { id: "F5", q: "Троит после мойки двигателя. Почему?", opts: ["Вода в разъёмах", "Сразу менять свечи", "Сразу менять ЭБУ"], ans: 0 },
+    { id: "F6", q: "Клиент требует «сбросить ошибку». Почему нельзя?", opts: ["Без ремонта ошибка вернётся", "Сбросить и отпустить", "Отказать без объяснений"], ans: 0 },
+    { id: "G1", q: "«Чёрная свеча = богатая смесь». Что не так?", opts: ["Нагар — следствие, причин много", "Всё верно", "Нужно менять только свечи"], ans: 0 },
+    { id: "G2", q: "«Компрессия в норме — двигатель здоров». Почему не так?", opts: ["Колпачки и клапаны могут быть неисправны", "Компрессия всё решает", "Нужно только померить ещё раз"], ans: 0 },
+    { id: "G3", q: "«Прокачал тормоза — всё ок». Что ещё проверить?", opts: ["Течь и ABS", "Ничего", "Только уровень"], ans: 0 },
+    { id: "G4", q: "«Ошибка лямбды — сразу менять». Почему это ошибка?", opts: ["Причина может быть в подсосе", "Датчик всегда виноват", "Нужно менять оба датчика"], ans: 0 },
+    { id: "G5", q: "«Стук — значит подвеска». Что ещё может стучать?", opts: ["Двигатель и выхлоп", "Только подвеска", "Только тормоза"], ans: 0 },
+    { id: "G6", q: "«АКБ новый — проблема не в нём». Что проверить?", opts: ["Клеммы и утечку тока", "Только АКБ", "Только генератор"], ans: 0 }
   ];
 
   // ==== СОСТОЯНИЕ ИГРЫ ====

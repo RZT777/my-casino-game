@@ -35,7 +35,8 @@
   .icon-clock { background: #fff; border: 2px solid #ff9800; color: #ff9800; }
   .icon-exchange { background: #fffbeb; color: #b45309; }
   .icon-settings { background: #f3f4f6; color: #4b5563; }
-    .app-screen { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: var(--bg-main); z-index: 50; display: flex; flex-direction: column; transform: translateX(100%); transition: transform 0.3s cubic-bezier(0.1, 0.8, 0.2, 1); }
+
+  .app-screen { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: var(--bg-main); z-index: 50; display: flex; flex-direction: column; transform: translateX(100%); transition: transform 0.3s cubic-bezier(0.1, 0.8, 0.2, 1); }
   .app-screen.active { transform: translateX(0); }
   .app-header { display: flex; align-items: center; padding: 12px 16px; background: #fff; border-bottom: 1px solid var(--border); flex-shrink: 0; }
   .back-btn { background: transparent; border: none; color: var(--accent); font-size: 16px; font-weight: bold; cursor: pointer; }
@@ -57,8 +58,7 @@
   .shop-item-desc { font-size: 12px; color: var(--text-muted); margin-bottom: 5px;}
   .shop-item-price { font-weight: bold; color: var(--accent); font-size: 14px;}
   .buy-btn { background: var(--accent); color: #fff; border: none; padding: 8px 12px; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 12px; margin-left: 10px;}
-
-  .finance-card { background: #fff; border-radius: 20px; padding: 20px; border: 1px solid var(--border); box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 15px; }
+    .finance-card { background: #fff; border-radius: 20px; padding: 20px; border: 1px solid var(--border); box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 15px; }
   .credit-debt-box { background: #0f172a; color: #fff; padding: 20px; border-radius: 16px; margin-bottom: 15px; position: relative; overflow: hidden; }
   .credit-debt-box::before { content: ''; position: absolute; top: -50%; right: -20%; width: 150px; height: 150px; background: rgba(255,255,255,0.05); border-radius: 50%; }
   .credit-amount { color: #ffc107; font-size: 32px; font-weight: bold; }
@@ -71,8 +71,11 @@
   .car-tab, .realestate-tab, .casino-tab { flex: 1; background: #fff; border: 1px solid var(--border); color: var(--text-main); padding: 12px 10px; border-radius: 10px; font-weight: bold; cursor: pointer; text-align: center; font-size: 14px; transition: 0.2s; }
   .car-tab.active, .realestate-tab.active, .casino-tab.active { background: var(--accent) !important; color: #fff !important; border-color: var(--accent) !important; }
 
-  .nav-bar { display: flex !important; justify-content: center !important; padding: 15px !important; background: #fff !important; border-top: 1px solid #eee !important; position: relative !important; z-index: 100 !important; width: 100% !important; box-sizing: border-box !important; }
-  .nav-bar .btn { max-width: 200px; margin: 0 !important; }
+  .android-nav { position: fixed; bottom: 0; left: 0; right: 0; height: 50px; background: #d9d9d9; display: flex; justify-content: space-around; align-items: center; z-index: 10000; border-top: 1px solid #bbb; }
+  .nav-btn-android { width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+  .nav-btn-android svg { width: 24px; height: 24px; stroke: #fff; fill: none; stroke-width: 2.5; }
+  .phone { padding-bottom: 50px; height: calc(100vh - 50px); }
+  .nav-bar { display: none !important; }
 </style>
 </head>
 <body>
@@ -107,7 +110,6 @@
     <div class="home-screen">
       <div class="app-icon" onclick="openApp('messages')"><div class="icon-box icon-messages">💬</div><span>Сообщения</span><div class="badge" id="msgBadge">1</div></div>
       <div class="app-icon" onclick="openApp('mechanic')"><div class="icon-box icon-mechanic">🔧</div><span>СТО ВАЗ</span></div>
-      <div class="app-icon" onclick="openApp('relations')"><div class="icon-box icon-relations">❤️</div><span>Отношения</span></div>
       <div class="app-icon" onclick="openApp('casino')"><div class="icon-box icon-casino">🎰</div><span>Казино</span></div>
       <div class="app-icon" onclick="openApp('bank')"><div class="icon-box icon-bank">🏦</div><span>Банк</span></div>
       <div class="app-icon" onclick="openApp('darknet')"><div class="icon-box icon-darknet">🕶️</div><span>Даркнет</span></div>
@@ -126,20 +128,7 @@
 
     <div class="app-screen" id="app-messages"><div class="app-header"><button class="back-btn" onclick="closeApp('messages')">‹ Назад</button><div class="app-title">Сообщения</div></div><div class="balance-bar">Баланс: <span class="balance-val">0</span> ₽</div><div class="app-content" id="messagesList"></div></div>
     <div class="app-screen" id="app-garage"><div class="app-header"><button class="back-btn" onclick="closeApp('garage')">‹ Назад</button><div class="app-title">Гараж</div></div><div class="balance-bar">Баланс: <span class="balance-val">0</span> ₽</div><div class="app-content" id="garageContent"></div></div>
-        <div class="app-screen" id="app-mechanic"><div class="app-header"><button class="back-btn" onclick="closeApp('mechanic')">‹ Назад</button><div class="app-title">СТО ВАЗ</div></div><div class="balance-bar"><span>Усталость: <span id="fatigueVal">0</span>%</span><span>Еда: <span id="foodVal">100</span>%</span></div><div class="app-content" id="mechanicContent"><button class="btn" onclick="startDay()">Встать и пойти на работу</button></div></div>
-    
-    <div class="app-screen" id="app-casino">
-      <div class="app-header"><button class="back-btn" onclick="closeApp('casino')">‹ Назад</button><div class="app-title">Казино</div></div>
-      <div class="balance-bar">Баланс: <span class="balance-val">0</span> ₽ | Фишек: <span id="exChips">0</span></div>
-      <div class="app-content">
-        <div class="casino-tabs"><div class="casino-tab active" onclick="switchCasinoTab('guess', this)">Угадай</div><div class="casino-tab" onclick="switchCasinoTab('roulette', this)">Рулетка</div><div class="casino-tab" onclick="switchCasinoTab('slots', this)">Слоты</div><div class="casino-tab" onclick="switchCasinoTab('mines', this)">Мины</div></div>
-        <div id="casino-panel-guess" class="casino-panel"><h2 style="text-align:center;">Угадай число</h2><p style="text-align:center; color:#888; margin-bottom:10px;">От 1 до 10. Выигрыш ×5.</p><div class="bet-control-box"><div class="bet-row"><button class="bet-minus-plus" onclick="changeGuessBet(-500)">−</button><div class="bet-amount-display" id="guessBetDisplay">1 000 ₽</div><button class="bet-minus-plus" onclick="changeGuessBet(500)">+</button></div><div class="quick-bets-row"><button class="quick-btn" onclick="setGuessBet(500)">500</button><button class="quick-btn active" onclick="setGuessBet(1000)">1 000</button><button class="quick-btn" onclick="setGuessBet(5000)">5 000</button><button class="quick-btn" onclick="setGuessBet('max')">МАКС</button></div></div><div style="display:flex; gap:5px; justify-content:center; margin-bottom:20px;"><button class="btn" style="background:#1c222e; color:#fff; padding:15px; font-size:16px;" onclick="playGuess(1)">1</button><button class="btn" style="background:#1c222e; color:#fff; padding:15px; font-size:16px;" onclick="playGuess(2)">2</button><button class="btn" style="background:#1c222e; color:#fff; padding:15px; font-size:16px;" onclick="playGuess(3)">3</button><button class="btn" style="background:#1c222e; color:#fff; padding:15px; font-size:16px;" onclick="playGuess(4)">4</button><button class="btn" style="background:#1c222e; color:#fff; padding:15px; font-size:16px;" onclick="playGuess(5)">5</button></div><div style="display:flex; gap:5px; justify-content:center;"><button class="btn" style="background:#1c222e; color:#fff; padding:15px; font-size:16px;" onclick="playGuess(6)">6</button><button class="btn" style="background:#1c222e; color:#fff; padding:15px; font-size:16px;" onclick="playGuess(7)">7</button><button class="btn" style="background:#1c222e; color:#fff; padding:15px; font-size:16px;" onclick="playGuess(8)">8</button><button class="btn" style="background:#1c222e; color:#fff; padding:15px; font-size:16px;" onclick="playGuess(9)">9</button><button class="btn" style="background:#1c222e; color:#fff; padding:15px; font-size:16px;" onclick="playGuess(10)">10</button></div><div id="guessResult" style="text-align:center; margin-top:20px; font-weight:bold;"></div></div>
-        <div id="casino-panel-roulette" class="casino-panel" style="display:none;"><div class="exchange-box"><div class="exchange-btns"><button class="btn-red" onclick="buyChips(1)">Купить 1К</button><button class="btn-purple" onclick="buyChips(5)">Купить 5К</button><button class="btn-blue" onclick="buyChips(10)">Купить 10К</button></div><div style="display:flex; gap:5px; margin-top:5px;"><button class="btn btn-secondary" style="font-size:12px; padding:10px; flex:1;" onclick="sellChips()">Продать все фишки</button></div></div><div class="roulette-table"><div class="wheel-wrapper"><div class="wheel-pointer"></div><canvas id="rouletteCanvas" width="320" height="320"></canvas><div class="wheel-center" id="wheelCenter">?</div></div><div class="betting-grid" id="bettingGrid"></div></div><div class="chip-selector"><button class="chip-btn chip-1 active" data-val="1">1</button><button class="chip-btn chip-5" data-val="5">5</button><button class="chip-btn chip-10" data-val="10">10</button></div><div style="display:flex; gap:10px; margin-top:15px; width: 100%; max-width: 400px;"><button id="clearBetsBtn" class="btn btn-secondary" style="flex:1; padding: 12px; font-size: 14px;">Очистить</button><button id="spinRouletteBtn" class="btn" style="flex:2; padding: 12px; font-size: 14px;">Крутить!</button></div><div class="result" id="rouletteResult" style="text-align:center; font-weight:bold; margin-top:10px;"></div></div>
-        <div id="casino-panel-slots" class="casino-panel" style="display:none;"><h2 style="text-align:center;">Слоты</h2><div class="slots"><div class="slot" id="slot0">🍒</div><div class="slot" id="slot1">🍋</div><div class="slot" id="slot2">⭐</div></div><div class="bet-control-box"><div class="bet-row"><button class="bet-minus-plus" onclick="changeSlotsBet(-500)">−</button><div class="bet-amount-display" id="slotsBetDisplay">1 000 ₽</div><button class="bet-minus-plus" onclick="changeSlotsBet(500)">+</button></div><div class="quick-bets-row"><button class="quick-btn" onclick="setSlotsBet(500)">500</button><button class="quick-btn active" onclick="setSlotsBet(1000)">1 000</button><button class="quick-btn" onclick="setSlotsBet(5000)">5 000</button><button class="quick-btn" onclick="setSlotsBet('max')">МАКС</button></div></div><button class="main-play-btn" id="slotsBtn">Крутить</button><div id="slotsResult" style="text-align:center; margin-top:15px; font-weight:bold;"></div></div>
-        <div id="casino-panel-mines" class="casino-panel" style="display:none;"><div class="mines-stats"><div class="stat-box"><div class="stat-title">Сейчас</div><div class="stat-value" id="minesCurrentMult">—</div></div><div class="stat-box"><div class="stat-title">Следующая</div><div class="stat-value" id="minesNextMult">×1,02</div></div><div class="stat-box"><div class="stat-title">Шанс</div><div class="stat-value" id="minesChance">88 %</div></div></div><div class="mines-grid-new" id="minesGrid"></div><div class="bet-control-box"><div class="bet-row"><button class="bet-minus-plus" onclick="changeMinesBet(-1000)">−</button><div class="bet-amount-display" id="minesBetDisplay">1 000 ₽</div><button class="bet-minus-plus" onclick="changeMinesBet(1000)">+</button></div><div class="quick-bets-row"><button class="quick-btn" onclick="setMinesBet(100)">100</button><button class="quick-btn active" onclick="setMinesBet(1000)">1 000</button><button class="quick-btn" onclick="setMinesBet(10000)">10 000</button><button class="quick-btn" onclick="setMinesBet('max')">МАКС</button></div></div><div class="mines-select-box"><div class="mines-select-header"><div class="mines-select-title">Мин на поле</div><div class="mines-select-controls"><button class="bet-minus-plus" onclick="changeMinesCount(-1)">−</button><span id="minesCountDisplay">3</span><button class="bet-minus-plus" onclick="changeMinesCount(1)">+</button></div></div><div class="mines-options-row"><button class="mine-opt-btn" onclick="setMinesCount(1)">1</button><button class="mine-opt-btn active" onclick="setMinesCount(3)">3</button><button class="mine-opt-btn" onclick="setMinesCount(5)">5</button><button class="mine-opt-btn" onclick="setMinesCount(10)">10</button><button class="mine-opt-btn" onclick="setMinesCount(24)">24</button></div></div><button class="main-play-btn" id="minesStartBtn" onclick="startMines()">Играть</button><button class="main-play-btn" id="minesCashoutBtn" style="display: none; background: var(--success);" onclick="cashoutMines()">Забрать выигрыш</button><div id="minesResult" style="text-align:center; margin-top:10px; font-weight:bold;"></div></div>
-      </div>
-    </div>
-        <div class="app-screen" id="app-mechanic"><div class="app-header"><button class="back-btn" onclick="closeApp('mechanic')">‹ Назад</button><div class="app-title">СТО ВАЗ</div></div><div class="balance-bar"><span>Усталость: <span id="fatigueVal">0</span>%</span><span>Еда: <span id="foodVal">100</span>%</span></div><div class="app-content" id="mechanicContent"><button class="btn" onclick="startDay()">Встать и пойти на работу</button></div></div>
+    <div class="app-screen" id="app-mechanic"><div class="app-header"><button class="back-btn" onclick="closeApp('mechanic')">‹ Назад</button><div class="app-title">СТО ВАЗ</div></div><div class="balance-bar"><span>Еда: <span id="foodVal">100</span>%</span></div><div class="app-content" id="mechanicContent"><button class="btn" onclick="startDay()">Встать и пойти на работу</button></div></div>
     
     <div class="app-screen" id="app-casino">
       <div class="app-header"><button class="back-btn" onclick="closeApp('casino')">‹ Назад</button><div class="app-title">Казино</div></div>
@@ -214,32 +203,53 @@
 
     <div class="app-screen" id="app-sleep"><div class="app-header"><button class="back-btn" onclick="closeApp('sleep')">‹ Назад</button><div class="app-title">Сон</div></div><div class="app-content" style="justify-content: center; align-items: center;"><button class="btn" onclick="goToSleep()">Лечь спать</button></div></div>
     <div class="app-screen" id="app-shop"><div class="app-header"><button class="back-btn" onclick="closeApp('shop')">‹ Назад</button><div class="app-title">Магазин</div></div><div class="app-content"><div class="shop-item"><div class="shop-item-info"><div class="shop-item-title">Шаурма</div><div class="shop-item-desc">Восстанавливает 30% еды.</div></div><div style="text-align:right;"><div class="shop-item-price">300 ₽</div><button class="buy-btn" onclick="buyFood(300, 30)">Купить</button></div></div><div class="shop-item"><div class="shop-item-info"><div class="shop-item-title">Пельмени</div><div class="shop-item-desc">Восстанавливает 50% еды.</div></div><div style="text-align:right;"><div class="shop-item-price">500 ₽</div><button class="buy-btn" onclick="buyFood(500, 50)">Купить</button></div></div><div class="shop-item"><div class="shop-item-info"><div class="shop-item-title">Борщ</div><div class="shop-item-desc">Восстанавливает 100% еды.</div></div><div style="text-align:right;"><div class="shop-item-price">1000 ₽</div><button class="buy-btn" onclick="buyFood(1000, 100)">Купить</button></div></div></div></div>
-        <div class="app-screen" id="app-cars">
-      <div class="app-header"><button class="back-btn" onclick="closeApp('cars')">‹ Назад</button><div class="app-title">Автосалон</div></div>
-      <div class="balance-bar">Баланс: <span class="balance-val">0</span> ₽</div>
-      <div class="app-content">
-        <div class="car-tabs"><div class="car-tab active" onclick="switchCarTab('vaz', this)">ВАЗ (Lada)</div><div class="car-tab" onclick="switchCarTab('hyundai', this)">Hyundai</div><div class="car-tab" onclick="switchCarTab('nissan', this)">Nissan</div></div>
-        <div id="car-list-vaz" class="car-list">
-          <div class="shop-item"><div class="shop-item-info"><div class="shop-item-title">ВАЗ-2101</div><div class="shop-item-desc">Легенда.</div></div><div style="text-align:right;"><div class="shop-item-price">50 000 ₽</div><button class="buy-btn" onclick="buyCar('ВАЗ-2101', 50000)">Купить</button></div></div>
-          <div class="shop-item"><div class="shop-item-info"><div class="shop-item-title">ВАЗ-2107</div><div class="shop-item-desc">Жрет бензин.</div></div><div style="text-align:right;"><div class="shop-item-price">150 000 ₽</div><button class="buy-btn" onclick="buyCar('ВАЗ-2107', 150000)">Купить</button></div></div>
-          <div class="shop-item"><div class="shop-item-info"><div class="shop-item-title">ВАЗ-2109</div><div class="shop-item-desc">Ржавеет.</div></div><div style="text-align:right;"><div class="shop-item-price">200 000 ₽</div><button class="buy-btn" onclick="buyCar('ВАЗ-2109', 200000)">Купить</button></div></div>
-          <div class="shop-item"><div class="shop-item-info"><div class="shop-item-title">ВАЗ-2114</div><div class="shop-item-desc">Сыпется.</div></div><div style="text-align:right;"><div class="shop-item-price">300 000 ₽</div><button class="buy-btn" onclick="buyCar('ВАЗ-2114', 300000)">Купить</button></div></div>
+    
+    <div class="app-screen" id="app-cars">
+      <div class="app-header" style="background: #2196f3; border: none; padding: 15px 16px;">
+        <button class="back-btn" onclick="closeApp('cars')" style="color: #fff;">← Назад</button>
+        <div class="app-title" style="color: #fff; padding-right: 0; text-align: center;">Автосалон</div>
+        <button class="back-btn" style="color: #fff;" onclick="showModal('Сортировка', 'Сначала дешевые / Сначала дорогие')">🔀</button>
+      </div>
+      <div class="balance-bar" style="background: #fff; color: #2196f3; font-weight: bold;">Баланс: <span class="balance-val">0</span> ₽</div>
+      <div class="app-content" style="padding: 15px; background: #f4f7fb;">
+        <div style="background: #fff; border-radius: 16px; overflow: hidden; margin-bottom: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.05);">
+          <div style="height: 150px; background: linear-gradient(135deg, #1e3a8a, #3b82f6); display: flex; align-items: center; justify-content: center; font-size: 60px; position: relative;">🏎️<div style="position: absolute; top: 10px; right: 10px; background: rgba(255,255,255,0.8); border-radius: 50%; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center;">🔖</div></div>
+          <div style="padding: 15px;"><div style="font-size: 22px; font-weight: bold; color: #1a1a1a;">855 000 000 ₽</div><div style="font-size: 16px; font-weight: bold; color: #333; margin-bottom: 10px;">KOENIGSEGG ONE:1</div><div style="display: flex; gap: 15px; font-size: 12px; color: #6b7280; margin-bottom: 10px;"><span>2014 г.</span><span>0 км</span><span>📍 Североморск</span></div><div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #eee; padding-top: 10px;"><div style="font-size: 14px; font-weight: bold;">Евгений</div><div style="font-size: 11px; color: #888;">1 неделю назад</div></div></div>
         </div>
-        <div id="car-list-hyundai" class="car-list" style="display:none;">
-          <div class="shop-item"><div class="shop-item-info"><div class="shop-item-title">Hyundai Accent</div><div class="shop-item-desc">На каждый день.</div></div><div style="text-align:right;"><div class="shop-item-price">400 000 ₽</div><button class="buy-btn" onclick="buyCar('Hyundai Accent', 400000)">Купить</button></div></div>
-          <div class="shop-item"><div class="shop-item-info"><div class="shop-item-title">Hyundai Solaris</div><div class="shop-item-desc">Современный.</div></div><div style="text-align:right;"><div class="shop-item-price">700 000 ₽</div><button class="buy-btn" onclick="buyCar('Hyundai Solaris', 700000)">Купить</button></div></div>
+        <div style="background: #fff; border-radius: 16px; overflow: hidden; margin-bottom: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.05);">
+          <div style="height: 150px; background: linear-gradient(135deg, #7f1d1d, #ef4444); display: flex; align-items: center; justify-content: center; font-size: 60px; position: relative;">🚗<div style="position: absolute; top: 10px; right: 10px; background: rgba(255,255,255,0.8); border-radius: 50%; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center;">🔖</div></div>
+          <div style="padding: 15px;"><div style="font-size: 22px; font-weight: bold; color: #1a1a1a;">200 000 000 ₽</div><div style="font-size: 16px; font-weight: bold; color: #333; margin-bottom: 10px;">BUGATTI VEYRON</div><div style="display: flex; gap: 15px; font-size: 12px; color: #6b7280; margin-bottom: 10px;"><span>2012 г.</span><span>5 000 км</span><span>📍 Москва</span></div><div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #eee; padding-top: 10px;"><div style="font-size: 14px; font-weight: bold;">Александр</div><div style="font-size: 11px; color: #888;">2 дня назад</div></div></div>
         </div>
-        <div id="car-list-nissan" class="car-list" style="display:none;">
-          <div class="shop-item"><div class="shop-item-info"><div class="shop-item-title">Nissan Almera</div><div class="shop-item-desc">Надежный.</div></div><div style="text-align:right;"><div class="shop-item-price">500 000 ₽</div><button class="buy-btn" onclick="buyCar('Nissan Almera', 500000)">Купить</button></div></div>
-          <div class="shop-item"><div class="shop-item-info"><div class="shop-item-title">Nissan X-Trail</div><div class="shop-item-desc">Кроссовер.</div></div><div style="text-align:right;"><div class="shop-item-price">2 000 000 ₽</div><button class="buy-btn" onclick="buyCar('Nissan X-Trail', 2000000)">Купить</button></div></div>
+        <div style="background: #fff; border-radius: 16px; overflow: hidden; margin-bottom: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.05);">
+          <div style="height: 150px; background: linear-gradient(135deg, #4c1d95, #8b5cf6); display: flex; align-items: center; justify-content: center; font-size: 60px; position: relative;">🚙<div style="position: absolute; top: 10px; right: 10px; background: rgba(255,255,255,0.8); border-radius: 50%; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center;">🔖</div></div>
+          <div style="padding: 15px;"><div style="font-size: 22px; font-weight: bold; color: #1a1a1a;">30 000 ₽</div><div style="font-size: 16px; font-weight: bold; color: #333; margin-bottom: 10px;">ЛЕАД ОКА</div><div style="display: flex; gap: 15px; font-size: 12px; color: #6b7280; margin-bottom: 10px;"><span>2005 г.</span><span>20 000 км</span><span>📍 Смоленск</span></div><div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #eee; padding-top: 10px;"><div style="font-size: 14px; font-weight: bold;">Ярослав</div><div style="font-size: 11px; color: #888;">6 дней назад</div></div><button class="btn" style="background: #2196f3; color: #fff; margin-top: 10px; padding: 10px; font-size: 14px;" onclick="buyCar('ЛЕАД ОКА', 30000)">Купить</button></div>
         </div>
       </div>
     </div>
     
-    <div class="app-screen" id="app-realestate"><div class="app-header"><button class="back-btn" onclick="closeApp('realestate')">‹ Назад</button><div class="app-title">Недвижимость</div></div><div class="balance-bar">Баланс: <span class="balance-val">0</span> ₽</div><div class="app-content"><div class="shop-item"><div class="shop-item-info"><div class="shop-item-title">Койка в общаге (Аренда)</div><div class="shop-item-desc">-2 000 ₽/день</div></div><button class="buy-btn" onclick="showModal('Аренда', 'Вы сняли койку.')">Снять</button></div><div class="shop-item"><div class="shop-item-info"><div class="shop-item-title">Однушка (Покупка)</div><div class="shop-item-desc">+10 000 ₽/день</div></div><div style="text-align:right;"><div class="shop-item-price">1 000 000 ₽</div><button class="buy-btn" onclick="buyProperty('Однушка', 1000000, 10000)">Купить</button></div></div><div class="shop-item"><div class="shop-item-info"><div class="shop-item-title">Двушка (Покупка)</div><div class="shop-item-desc">+15 000 ₽/день</div></div><div style="text-align:right;"><div class="shop-item-price">1 500 000 ₽</div><button class="buy-btn" onclick="buyProperty('Двушка', 1500000, 15000)">Купить</button></div></div></div></div>
-    
-    <div class="app-screen" id="app-relations"><div class="app-header"><button class="back-btn" onclick="closeApp('relations')">‹ Назад</button><div class="app-title">Отношения</div></div><div class="app-content" id="relationsList"></div></div>
-    
+    <div class="app-screen" id="app-realestate">
+      <div class="app-header" style="background: #2196f3; border: none; padding: 20px 16px;">
+        <button class="back-btn" onclick="closeApp('realestate')" style="color: #fff;">← Назад</button>
+        <div class="app-title" style="color: #fff; padding-right: 0; text-align: left; padding-left: 10px;">MestoBuy</div>
+      </div>
+      <div style="background: #2196f3; padding: 0 16px 20px 16px; color: #fff;">
+        <div style="display: flex; justify-content: space-between; margin-bottom: 10px;"><span style="opacity: 0.8;">Ваш счет:</span><span style="font-weight: bold; font-size: 18px;"><span class="balance-val">0</span> ₽</span></div>
+        <div style="display: flex; justify-content: space-between; margin-bottom: 10px;"><span style="opacity: 0.8;">Парковки:</span><span style="font-weight: bold;">0 из 5</span></div>
+        <div style="display: flex; justify-content: space-between;"><span style="opacity: 0.8;">Жильё:</span><span style="font-weight: bold;">0 из 1</span></div>
+      </div>
+      <div class="app-content" style="padding: 0; background: #f4f7fb;">
+        <div style="display: flex; background: #fff; border-bottom: 1px solid #eee;"><div style="flex: 1; text-align: center; padding: 15px 0; font-weight: bold; color: #2196f3; border-bottom: 3px solid #2196f3;">🏢 Жильё</div><div style="flex: 1; text-align: center; padding: 15px 0; font-weight: bold; color: #888;">🏠 Гаражи</div></div>
+        <div style="padding: 15px;">
+          <div style="display: flex; gap: 10px; margin-bottom: 20px;"><button class="btn" style="flex: 1; background: #2196f3; color: #fff; border-radius: 20px; padding: 10px; font-size: 14px;">🛒 Купить</button><button class="btn btn-secondary" style="flex: 1; background: #e5e7eb; color: #333; border-radius: 20px; padding: 10px; font-size: 14px;">🔑 Аренда</button></div>
+          <h3 style="margin-bottom: 15px; font-size: 16px;">Жильё в городе Тюмень</h3>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+            <div style="background: #fff; border-radius: 12px; padding: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); border: 1px solid #eee;"><div style="font-size: 12px; color: #888; margin-bottom: 5px;">🏢 Квартира</div><div style="font-size: 18px; font-weight: bold; color: #22c55e; margin-bottom: 10px;">3 950 000 ₽</div><div style="font-size: 11px; color: #6b7280; margin-bottom: 5px;">Парковка: +1 место</div><div style="font-size: 11px; color: #6b7280; margin-bottom: 5px;">Сдача: 79 000 ₽ в месяц</div><div style="font-size: 10px; color: #9ca3af; margin-bottom: 15px;">Чем дешевле — тем хуже шумоизоляция и опаснее двор</div><button class="btn" style="background: #22c55e; color: #fff; padding: 10px; font-size: 12px; margin: 0;" onclick="buyProperty('Квартира', 3950000, 79000)">Купить</button></div>
+            <div style="background: #fff; border-radius: 12px; padding: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); border: 1px solid #eee;"><div style="font-size: 12px; color: #888; margin-bottom: 5px;">🏢 Квартира</div><div style="font-size: 18px; font-weight: bold; color: #22c55e; margin-bottom: 10px;">3 550 000 ₽</div><div style="font-size: 11px; color: #6b7280; margin-bottom: 5px;">Парковка: +1 место</div><div style="font-size: 11px; color: #6b7280; margin-bottom: 5px;">Сдача: 71 000 ₽ в месяц</div><div style="font-size: 10px; color: #9ca3af; margin-bottom: 15px;">Чем дешевле — тем хуже шумоизоляция и опаснее двор</div><button class="btn" style="background: #22c55e; color: #fff; padding: 10px; font-size: 12px; margin: 0;" onclick="buyProperty('Квартира', 3550000, 71000)">Купить</button></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <div class="app-screen" id="app-calendar"><div class="app-header"><button class="back-btn" onclick="closeApp('calendar')">‹ Назад</button><div class="app-title">Календарь</div></div><div class="app-content"><div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;"><button class="btn" style="width:auto; padding:10px 20px;" onclick="changeMonth(-1)">‹</button><div id="calendarTitle" style="font-size:20px; font-weight:bold;">Октябрь 2026</div><button class="btn" style="width:auto; padding:10px 20px;" onclick="changeMonth(1)">›</button></div><div id="calendarGrid" style="display:grid; grid-template-columns:repeat(7,1fr); gap:5px; text-align:center;"></div></div></div>
 
     <div class="app-screen" id="app-calc"><div class="app-header"><button class="back-btn" onclick="closeApp('calc')">‹ Назад</button><div class="app-title">Калькулятор</div></div><div class="app-content" style="padding:20px; background:#f9f9f9;"><div id="calcDisplay" style="background:#fff; padding:20px; text-align:right; font-size:40px; border-radius:10px; margin-bottom:20px; border:1px solid #eee;">0</div><div style="display:grid; grid-template-columns:repeat(4,1fr); gap:10px;"><button class="btn" style="background:#e5e7eb; color:#000;" onclick="calcInput('C')">C</button><button class="btn" style="background:#e5e7eb; color:#000;" onclick="calcInput('+/-')">±</button><button class="btn" style="background:#e5e7eb; color:#000;" onclick="calcInput('%')">%</button><button class="btn" style="background:var(--accent); color:#fff;" onclick="calcInput('/')">÷</button><button class="btn" style="background:#fff; color:#000; border:1px solid #eee;" onclick="calcInput('7')">7</button><button class="btn" style="background:#fff; color:#000; border:1px solid #eee;" onclick="calcInput('8')">8</button><button class="btn" style="background:#fff; color:#000; border:1px solid #eee;" onclick="calcInput('9')">9</button><button class="btn" style="background:var(--accent); color:#fff;" onclick="calcInput('*')">×</button><button class="btn" style="background:#fff; color:#000; border:1px solid #eee;" onclick="calcInput('4')">4</button><button class="btn" style="background:#fff; color:#000; border:1px solid #eee;" onclick="calcInput('5')">5</button><button class="btn" style="background:#fff; color:#000; border:1px solid #eee;" onclick="calcInput('6')">6</button><button class="btn" style="background:var(--accent); color:#fff;" onclick="calcInput('-')">−</button><button class="btn" style="background:#fff; color:#000; border:1px solid #eee;" onclick="calcInput('1')">1</button><button class="btn" style="background:#fff; color:#000; border:1px solid #eee;" onclick="calcInput('2')">2</button><button class="btn" style="background:#fff; color:#000; border:1px solid #eee;" onclick="calcInput('3')">3</button><button class="btn" style="background:var(--accent); color:#fff;" onclick="calcInput('+')">+</button><button class="btn" style="background:#fff; color:#000; border:1px solid #eee; grid-column:span 2;" onclick="calcInput('0')">0</button><button class="btn" style="background:#fff; color:#000; border:1px solid #eee;" onclick="calcInput(',')">,</button><button class="btn" style="background:var(--accent); color:#fff;" onclick="calcInput('=')">=</button></div></div></div>
@@ -251,16 +261,15 @@
     <div class="app-screen" id="app-settings">
       <div class="app-header"><button class="back-btn" onclick="closeApp('settings')">‹ Назад</button><div class="app-title">Настройки</div></div>
       <div class="app-content">
-        <div class="shop-item" style="display:block;"><div class="shop-item-title">Звуковые эффекты</div><div style="margin-top:10px;"><input type="checkbox" checked style="accent-color:var(--accent); transform:scale(1.5);"></div></div>
-        <div class="shop-item" style="display:block;"><div class="shop-item-title">Музыка</div><div style="margin-top:10px;"><input type="checkbox" style="accent-color:var(--accent); transform:scale(1.5);"></div></div>
-        <div class="shop-item" style="display:block;"><div class="shop-item-title">Тёмная тема</div><div style="margin-top:10px;"><input type="checkbox" style="accent-color:var(--accent); transform:scale(1.5);"></div></div>
-        <div class="shop-item" style="display:block;"><div class="shop-item-title">Сброс прогресса</div><button class="btn" style="background:var(--danger); margin-top:10px;" onclick="localStorage.clear(); location.reload();">Сбросить всё</button></div>
+        <div class="settings-item"><div class="settings-title">Звуковые эффекты</div><label class="switch"><input type="checkbox" checked><span class="slider"></span></label></div>
+        <div class="settings-item"><div class="settings-title">Музыка</div><label class="switch"><input type="checkbox"><span class="slider"></span></label></div>
+        <div class="settings-item"><div class="settings-title">Тёмная тема</div><label class="switch"><input type="checkbox" onchange="document.body.style.background = this.checked ? '#111' : '#e0e7ff'"><span class="slider"></span></label></div>
+        <div class="settings-item"><div class="settings-title">Сброс прогресса</div><button class="btn" style="background:#ef4444; width:auto; margin:0; padding:8px 12px; font-size:12px;" onclick="localStorage.clear(); location.reload();">Сбросить</button></div>
       </div>
     </div>
 
     <div class="app-screen" id="app-jail"><div class="app-header"><div class="app-title">СИЗО</div></div><div class="app-content" style="justify-content:center; align-items:center; text-align:center;"><h2>⛓️ Вы в СИЗО</h2><p id="jailTimeDisplay" style="margin:20px 0;"></p><button class="btn" onclick="bribeJail()">Откупиться (50 000 ₽)</button></div></div>
   </div>
-  <div class="nav-bar"><button class="btn" onclick="closeAllApps()">На главную</button></div>
 </div>
 <div class="modal" id="modal"><div class="modal-content"><div class="modal-title" id="modalTitle">Уведомление</div><div class="modal-text" id="modalText">Текст</div><button class="btn" onclick="closeModal()">ОК</button></div></div>
 <script>
@@ -284,14 +293,29 @@
   function startGame() { playerName = document.getElementById('playerNameInput').value.trim(); if(!playerName) return alert('Введите имя!'); document.getElementById('startupModal').classList.remove('show'); addMessage("Палыч", "Здарова, новенький. Завтра в 8 утра чтобы был как штык."); updateUI(); updateClock(); renderCalendar(); }
   function addMessage(sender, text) { messages.push({sender, text}); renderMessages(); const b = document.getElementById('msgBadge'); if(b){ b.style.display='flex'; b.textContent = messages.length; } }
   function renderMessages() { const c = document.getElementById('messagesList'); if(!c) return; c.innerHTML = messages.map(m => `<div class="message-item"><div class="message-avatar">${m.sender[0]}</div><div class="message-content"><div class="message-sender">${m.sender}</div><div class="message-text">${m.text}</div></div></div>`).join(''); }
-  function openApp(id) { const a = document.getElementById(`app-${id}`); if(a) a.classList.add('active'); if(id==='messages'){ renderMessages(); const b=document.getElementById('msgBadge'); if(b) b.style.display='none'; } if(id==='casino') { initRouletteGrid(); drawWheel(); } if(id==='calendar') renderCalendar(); if(id==='clock') updateBigClock(); if(id==='relations') renderRelations(); updateUI(); }
+  function openApp(id) { const a = document.getElementById(`app-${id}`); if(a) a.classList.add('active'); if(id==='messages'){ renderMessages(); const b=document.getElementById('msgBadge'); if(b) b.style.display='none'; } if(id==='casino') { initRouletteGrid(); drawWheel(); } if(id==='calendar') renderCalendar(); if(id==='clock') updateBigClock(); updateUI(); }
   function closeApp(id) { const a = document.getElementById(`app-${id}`); if(a) a.classList.remove('active'); }
   function closeAllApps() { document.querySelectorAll('.app-screen').forEach(el => el.classList.remove('active')); }
+  function goBack() { const active = document.querySelector('.app-screen.active'); if (active) active.classList.remove('active'); }
 
-  function startDay() { if (fatigue > 90) return showModal('Усталость', 'Вы слишком устали, идите спать.'); fatigue += 10; updateUI(); const clients = [{ name: "Алексей", car: "ВАЗ 2107", problem: "Двигатель троит, потеря мощности. Слышен запах бензина.", fix: "spark", reward: 2000 }, { name: "Мария", car: "Hyundai Solaris", problem: "При повороте ключа — тишина, стартер не крутит.", fix: "battery", reward: 1500 }, { name: "Дмитрий", car: "Nissan Almera", problem: "Машина закипела, из-под капота валит пар.", fix: "radiator", reward: 2500 }, { name: "Елена", car: "ВАЗ 2114", problem: "Обороты плавают, машина глохнет на холостых.", fix: "sensor", reward: 1800 }, { name: "Сергей", car: "Nissan X-Trail", problem: "Вой из-под капота, двигатель заглох на ходу.", fix: "timing", reward: 3000 }]; currentClient = clients[Math.floor(Math.random() * clients.length)]; selectedPart = null; const parts = [{id:'spark', name:'Свечи', icon:'⚡'}, {id:'battery', name:'АКБ', icon:'🔋'}, {id:'radiator', name:'Радиатор', icon:'🌡️'}, {id:'sensor', name:'Датчик', icon:'🛠️'}, {id:'timing', name:'Ремень ГРМ', icon:'⚙️'}]; let html = `<div class="shop-item" style="display:block; text-align:left;"><div style="color:var(--accent); font-weight:bold;">Клиент: ${currentClient.name}</div><div style="color:#888; font-size:12px;">Машина: ${currentClient.car}</div><div style="color:#000; font-weight:bold; margin-top:5px;">Проблема: ${currentClient.problem}</div></div><div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin:15px 0;">`; parts.forEach(p => { let style = selectedPart === p.id ? 'border: 2px solid var(--accent); background:#e0f2fe;' : 'border: 2px solid transparent; background:#f3f4f6;'; html += `<div onclick="selectPart('${p.id}')" style="padding:15px; text-align:center; border-radius:10px; cursor:pointer; ${style}"><div style="font-size:30px;">${p.icon}</div><div style="font-size:12px; color:#000; margin-top:5px;">${p.name}</div></div>`; }); html += `</div><button class="btn" onclick="repairPart()">Починить</button>`; document.getElementById('mechanicContent').innerHTML = html; }
+  // ==== БЛОКИРОВКА И НАВИГАЦИЯ ====
+  document.addEventListener('DOMContentLoaded', () => {
+    const nav = document.createElement('div');
+    nav.className = 'android-nav';
+    nav.innerHTML = `
+      <div class="nav-btn-android" onclick="closeAllApps()"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2"/></svg></div>
+      <div class="nav-btn-android" onclick="closeAllApps()"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="7"/></svg></div>
+      <div class="nav-btn-android" onclick="goBack()"><svg viewBox="0 0 24 24"><path d="M15 5 L7 12 L15 19 Z"/></svg></div>
+    `;
+    document.body.appendChild(nav);
+  });
+
+  // ==== СТО ====
+  function startDay() { if (fatigue > 90) return showModal('Усталость', 'Вы слишком устали, идите спать.'); fatigue += 10; updateUI(); const clients = [{ name: "Алексей", car: "ВАЗ 2107", problem: "Двигатель троит.", fix: "spark", reward: 2000 }, { name: "Мария", car: "Hyundai Solaris", problem: "Не заводится.", fix: "battery", reward: 1500 }]; currentClient = clients[Math.floor(Math.random() * clients.length)]; selectedPart = null; const parts = [{id:'spark', name:'Свечи', icon:'⚡'}, {id:'battery', name:'АКБ', icon:'🔋'}]; let html = `<div class="shop-item" style="display:block; text-align:left;"><div style="color:var(--accent); font-weight:bold;">Клиент: ${currentClient.name}</div><div style="color:#888; font-size:12px;">Машина: ${currentClient.car}</div><div style="color:#000; font-weight:bold; margin-top:5px;">Проблема: ${currentClient.problem}</div></div><div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin:15px 0;">`; parts.forEach(p => { let style = selectedPart === p.id ? 'border: 2px solid var(--accent); background:#e0f2fe;' : 'border: 2px solid transparent; background:#f3f4f6;'; html += `<div onclick="selectPart('${p.id}')" style="padding:15px; text-align:center; border-radius:10px; cursor:pointer; ${style}"><div style="font-size:30px;">${p.icon}</div><div style="font-size:12px; color:#000; margin-top:5px;">${p.name}</div></div>`; }); html += `</div><button class="btn" onclick="repairPart()">Починить</button>`; document.getElementById('mechanicContent').innerHTML = html; }
   function selectPart(id) { selectedPart = id; startDay(); }
   function repairPart() { if (!selectedPart) return showModal('Ошибка', 'Выберите деталь!'); if (selectedPart === currentClient.fix) { balance += currentClient.reward; updateUI(); showModal('Успех', `Вы заработали ${currentClient.reward} ₽!`); document.getElementById('mechanicContent').innerHTML = `<button class="btn" onclick="startDay()">Следующий клиент</button>`; } else { balance -= 500; updateUI(); showModal('Ошибка', 'Не та деталь! -500 ₽'); selectedPart = null; startDay(); } }
 
+  // ==== БАНК ====
   const CREDIT_LEVELS = [{ amount: 50000, reqLevel: 0 }, { amount: 100000, reqLevel: 1 }, { amount: 250000, reqLevel: 2 }, { amount: 500000, reqLevel: 3 }, { amount: 1000000, reqLevel: 4 }, { amount: 2500000, reqLevel: 5 }, { amount: 5000000, reqLevel: 6 }, { amount: 10000000, reqLevel: 7 }];
   function updateCreditUI() { const debtDisplay = document.getElementById('creditDebtDisplay'), statusText = document.getElementById('creditStatusText'), monthsDisplay = document.getElementById('creditMonthsDisplay'), actionsBlock = document.getElementById('creditActions'), grid = document.getElementById('creditLevelsGrid'), progressBar = document.getElementById('creditProgressBar'); if (creditDebt > 0) { debtDisplay.textContent = creditDebt.toLocaleString('ru-RU') + ' ₽'; statusText.textContent = 'Долг растет на 10% каждый месяц!'; monthsDisplay.textContent = creditMonthsLeft + ' мес'; actionsBlock.style.display = 'block'; progressBar.style.width = '50%'; } else { debtDisplay.textContent = '0 ₽'; statusText.textContent = 'У вас нет активных кредитов.'; monthsDisplay.textContent = 'Уровень ' + creditLevel; actionsBlock.style.display = 'none'; progressBar.style.width = (creditLevel * 14) + '%'; } grid.innerHTML = ''; CREDIT_LEVELS.forEach((lvl, index) => { const isLocked = creditLevel < lvl.reqLevel; const isCurrent = creditDebt > 0; let card = document.createElement('div'); card.className = 'shop-item'; card.style.display = 'block'; card.style.padding = '15px'; card.style.opacity = isLocked ? '0.5' : '1'; if (isLocked) { card.innerHTML = `<div style="font-size:20px; color:#888; margin-bottom:5px;">🔒</div><div style="font-weight:bold; font-size:16px;">${lvl.amount.toLocaleString('ru-RU')} ₽</div><div style="font-size:12px; color:#888;">Нужен уровень ${lvl.reqLevel}</div>`; } else { card.style.cursor = isCurrent ? 'not-allowed' : 'pointer'; card.innerHTML = `<div style="font-size:20px; color:#f6d365; margin-bottom:5px;">💰</div><div style="font-weight:bold; font-size:16px;">${lvl.amount.toLocaleString('ru-RU')} ₽</div><div style="font-size:12px; color:#888;">Уровень ${lvl.reqLevel}</div>`; if (!isCurrent) card.onclick = () => takeCredit(lvl.amount); } grid.appendChild(card); }); }
   function takeCredit(amount) { if (creditDebt > 0) return showModal('Ошибка', 'Сначала погасите текущий кредит!'); creditDebt = amount; creditMonthsLeft = 3; balance += amount; updateUI(); updateCreditUI(); showModal('Кредит', `Вы взяли ${amount.toLocaleString('ru-RU')} ₽.`); }
@@ -304,6 +328,7 @@
   function takeMicroLoan() { const returnAmount = Math.floor(microAmount * (1 + (0.01 * microTerm))); balance += microAmount; updateUI(); showModal('Микрозайм', `Вы получили ${microAmount.toLocaleString('ru-RU')} ₽. К возврату: ${returnAmount.toLocaleString('ru-RU')} ₽.`); }
 
   function openDeposit() { const amount = parseInt(document.getElementById('depositInput').value); if (!amount || amount < 1000) return showModal('Ошибка', 'Мин. 1000 ₽'); if (balance < amount) return showModal('Ошибка', 'Мало денег'); balance -= amount; showModal('Банк', `Вклад на ${amount} ₽ открыт.`); updateUI(); }
+
   function exchangeMoney() { const amount = parseInt(document.getElementById('exchangeAmount').value); if (!amount || amount < 100) return showModal('Ошибка', 'Мин. 100 ₽'); if (dirtyCash < amount) return showModal('Ошибка', 'Недостаточно налички!'); dirtyCash -= amount; const clean = Math.floor(amount * 0.9); balance += clean; updateUI(); showModal('Обменник', `Вы обменяли ${amount} ₽ налички на ${clean} ₽ на карту (комиссия 10%).`); }
 
   const coolNumbers = [{ code: "А777АА", price: 50000, chance: 1 }, { code: "Е777КХ", price: 30000, chance: 5 }, { code: "О001ОО", price: 20000, chance: 10 }, { code: "М555ММ", price: 15000, chance: 15 }, { code: "К123КК", price: 10000, chance: 20 }, { code: "В999ВВ", price: 8000, chance: 25 }];
@@ -313,7 +338,6 @@
 
   function updateBigClock() { const elTime = document.getElementById('clockBigTime'); const elDate = document.getElementById('clockBigDate'); if(!elTime) return; const h = Math.floor(gameTime / 60) % 24, m = gameTime % 60; elTime.textContent = `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}`; const months = ['Января', 'Февраля', 'Марта', 'Апреля', 'Мая', 'Июня', 'Июля', 'Августа', 'Сентября', 'Октября', 'Ноября', 'Декабря']; elDate.textContent = `${gameDate.getDate()} ${months[gameDate.getMonth()]}`; }
   function calcInput(val) { const display = document.getElementById('calcDisplay'); if (!display) return; if (val === 'C') { calcValue = "0"; } else if (val === '=') { try { calcValue = eval(calcValue.replace(/,/g, '.')).toString(); } catch { calcValue = "Ошибка"; } } else if (val === '+/-') { calcValue = (parseFloat(calcValue) * -1).toString(); } else if (val === '%') { calcValue = (parseFloat(calcValue) / 100).toString(); } else { if (calcValue === "0" && val !== ',') calcValue = val; else calcValue += val; } display.textContent = calcValue; }
-  function renderRelations() { const container = document.getElementById('relationsList'); if (!container) return; const npcs = [ { name: 'Аня', role: 'Медсестра', avatar: '👩‍⚕️' }, { name: 'Марина', role: 'Продавщица', avatar: '👩‍🍳' } ]; container.innerHTML = npcs.map(n => `<div class="shop-item" style="display:flex; align-items:center; gap:15px;"><div style="width:50px; height:50px; border-radius:50%; background:#fce7f3; display:flex; align-items:center; justify-content:center; font-size:24px;">${n.avatar}</div><div style="flex:1;"><div class="shop-item-title">${n.name}</div><div class="shop-item-desc">${n.role}</div></div><button class="buy-btn" onclick="showModal('Свидание', 'Вы пригласили ${n.name} в кафе. (+10 к отношениям)')">Позвать</button></div>`).join(''); }
   function goToSleep() { gameDate.setDate(gameDate.getDate()+1); gameTime=480; fatigue=0; food=100; updateUI(); updateClock(); closeApp('sleep'); showModal('Утро', 'Вы проснулись!'); }
   function buyFood(price, amount) { if (balance >= price) { balance -= price; food += amount; if (food > 100) food = 100; updateUI(); showModal('Успех', `Сытость: ${food}%`); } else { showModal('Ошибка', 'Мало денег!'); } }
   function buyDrugs(price) { if (balance >= price) { balance -= price; dirtyCash += 150000; updateUI(); showModal('Даркнет', 'Вы купили товар и продали его! +150 000 ₽ налички.'); } else { showModal('Ошибка', 'Мало денег!'); } }
@@ -322,7 +346,7 @@
   function buyCar(name, price) { if (balance >= price) { balance -= price; ownedCar = name; updateUI(); showModal('Покупка', `Вы купили ${name}!`); } else { showModal('Ошибка', 'Мало денег!'); } }
   function buyProperty(name, price, income) { if (balance >= price) { balance -= price; updateUI(); showModal('Покупка', `Вы купили ${name}!`); } else { showModal('Ошибка', 'Мало денег!'); } }
   function changeMonth(dir) { currentMonth += dir; if (currentMonth > 11) { currentMonth = 0; currentYear++; } if (currentMonth < 0) { currentMonth = 11; currentYear--; } renderCalendar(); }
-  function renderCalendar() { const months = ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь']; const title = document.getElementById('calendarTitle'); if(title) title.textContent = `${months[currentMonth]} ${currentYear}`; const grid = document.getElementById('calendarGrid'); if(!grid) return; grid.innerHTML = ''; const days = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс']; days.forEach(d => { const el = document.createElement('div'); el.textContent = d; el.style.color = '#888'; el.style.fontWeight = 'bold'; grid.appendChild(el); }); const firstDay = new Date(currentYear, currentMonth, 1).getDay(); const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate(); let start = firstDay === 0 ? 6 : firstDay - 1; for (let i = 0; i < start; i++) { grid.appendChild(document.createElement('div')); } for (let i = 1; i <= daysInMonth; i++) { const el = document.createElement('div'); el.textContent = i; el.style.padding = '10px'; el.style.background = (i === gameDate.getDate() && currentMonth === gameDate.getMonth()) ? 'var(--accent)' : '#fff'; el.style.color = (i === gameDate.getDate() && currentMonth === gameDate.getMonth()) ? '#fff' : '#000'; el.style.borderRadius = '50%'; el.style.border = '1px solid #eee'; el.style.cursor = 'pointer'; el.onclick = () => { showModal('Календарь', `Вы выбрали ${i} ${months[currentMonth]}. На этот день пока нет запланированных встреч.`); }; grid.appendChild(el); } }
+  function renderCalendar() { const months = ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь']; const title = document.getElementById('calendarTitle'); if(title) title.textContent = `${months[currentMonth]} ${currentYear}`; const grid = document.getElementById('calendarGrid'); if(!grid) return; grid.innerHTML = ''; const days = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс']; days.forEach(d => { const el = document.createElement('div'); el.textContent = d; el.style.color = '#888'; el.style.fontWeight = 'bold'; grid.appendChild(el); }); const firstDay = new Date(currentYear, currentMonth, 1).getDay(); const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate(); let start = firstDay === 0 ? 6 : firstDay - 1; for (let i = 0; i < start; i++) { grid.appendChild(document.createElement('div')); } for (let i = 1; i <= daysInMonth; i++) { const el = document.createElement('div'); el.textContent = i; el.style.padding = '10px'; el.style.background = (i === gameDate.getDate() && currentMonth === gameDate.getMonth()) ? 'var(--accent)' : '#fff'; el.style.color = (i === gameDate.getDate() && currentMonth === gameDate.getMonth()) ? '#fff' : '#000'; el.style.borderRadius = '50%'; el.style.border = '1px solid #eee'; grid.appendChild(el); } }
 
   let guessBet = 1000, slotsBet = 1000, minesBet = 1000, minesCount = 3, isPlayingMines = false, currentGems = 0, currentMult = 1.0;
   function switchCasinoTab(tab, btn) { document.querySelectorAll('.casino-tab').forEach(t => t.classList.remove('active')); if(btn) btn.classList.add('active'); document.querySelectorAll('.casino-panel').forEach(p => p.style.display = 'none'); const panel = document.getElementById(`casino-panel-${tab}`); if(panel) panel.style.display = 'block'; if(tab === 'mines' && !isPlayingMines) renderEmptyMinesGrid(); if(tab === 'roulette') { drawWheel(); initRouletteGrid(); } }
@@ -343,688 +367,5 @@
 
   updateUI(); updateClock(); updateCreditUI();
 </script>
-  <style>
-  /* 1. Красивые настройки (тумблеры как в iOS) */
-  .settings-item { display: flex; justify-content: space-between; align-items: center; background: #fff; padding: 15px; border-radius: 12px; margin-bottom: 10px; border: 1px solid #e5e7eb; }
-  .settings-title { font-weight: bold; font-size: 14px; color: #1a1a1a; }
-  .switch { position: relative; display: inline-block; width: 50px; height: 28px; }
-  .switch input { opacity: 0; width: 0; height: 0; }
-  .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 34px; }
-  .slider:before { position: absolute; content: ""; height: 20px; width: 20px; left: 4px; bottom: 4px; background-color: white; transition: .4s; border-radius: 50%; }
-  input:checked + .slider { background-color: #2196f3; }
-  input:checked + .slider:before { transform: translateX(22px); }
-
-  /* 2. Красивое казино (вкладки) */
-  .casino-tab { flex: 1; background: #fff !important; border: 1px solid #e5e7eb !important; color: #1a1a1a !important; padding: 12px 10px !important; border-radius: 10px !important; font-weight: bold !important; cursor: pointer !important; text-align: center !important; font-size: 14px !important; }
-  .casino-tab.active { background: #2196f3 !important; color: #fff !important; border-color: #2196f3 !important; }
-  .bet-control-box { background: #fff; border-radius: 16px; padding: 16px; border: 1px solid #e5e7eb; margin-bottom: 16px; }
-  .bet-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
-  .bet-minus-plus { width: 40px; height: 40px; border-radius: 50%; background: transparent; border: 2px solid #2196f3; color: #2196f3; font-size: 22px; font-weight: bold; display: flex; align-items: center; justify-content: center; cursor: pointer; }
-  .bet-amount-display { font-size: 24px; font-weight: bold; color: #1a1a1a; }
-  .quick-btn { flex: 1; background: #f3f4f6; border: 1px solid transparent; color: #6b7280; padding: 10px 0; border-radius: 8px; font-size: 14px; font-weight: bold; cursor: pointer; }
-  .quick-btn.active { background: #2196f3; color: #fff; }
-</style>
-
-<script>
-  // === 1. ПОЧИНКА АВТОСАЛОНА ===
-  window.switchCarTab = function(tab, btn) {
-    document.querySelectorAll('.car-tab').forEach(t => t.classList.remove('active'));
-    document.querySelectorAll('.car-list').forEach(l => l.style.display = 'none');
-    btn.classList.add('active');
-    const list = document.getElementById(`car-list-${tab}`);
-    if(list) list.style.display = 'block';
-  };
-
-  // === 2. ПОЧИНКА СТО (Детали не меняют проблему) ===
-  window.startDay = function() {
-    if (typeof fatigue === 'undefined') return;
-    if (fatigue > 90) return showModal('Усталость', 'Вы слишком устали, идите спать.');
-    fatigue += 10; updateUI();
-    
-    const clients = [
-      { name: "Алексей", car: "ВАЗ 2107", problem: "Двигатель троит, потеря мощности. Слышен запах бензина.", fix: "spark", reward: 2000 },
-      { name: "Мария", car: "Hyundai Solaris", problem: "При повороте ключа — тишина, стартер не крутит.", fix: "battery", reward: 1500 },
-      { name: "Дмитрий", car: "Nissan Almera", problem: "Машина закипела, из-под капота валит пар.", fix: "radiator", reward: 2500 },
-      { name: "Елена", car: "ВАЗ 2114", problem: "Обороты плавают, машина глохнет на холостых.", fix: "sensor", reward: 1800 },
-      { name: "Сергей", car: "Nissan X-Trail", problem: "Вой из-под капота, двигатель заглох на ходу.", fix: "timing", reward: 3000 }
-    ];
-    const client = clients[Math.floor(Math.random() * clients.length)];
-    window.currentClient = client;
-    window.selectedPart = null;
-    
-    const parts = [
-      {id:'spark', name:'Свечи', icon:'⚡'}, 
-      {id:'battery', name:'АКБ', icon:'🔋'}, 
-      {id:'radiator', name:'Радиатор', icon:'🌡️'},
-      {id:'sensor', name:'Датчик', icon:'🛠️'},
-      {id:'timing', name:'Ремень ГРМ', icon:'⚙️'}
-    ];
-    
-    let html = `<div class="shop-item" style="display:block; text-align:left;"><div style="color:#2196f3; font-weight:bold;">Клиент: ${client.name}</div><div style="color:#888; font-size:12px;">Машина: ${client.car}</div><div style="color:#000; font-weight:bold; margin-top:5px;">Проблема: ${client.problem}</div></div><div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin:15px 0;">`;
-    parts.forEach(p => {
-      let style = (window.selectedPart === p.id) ? 'border: 2px solid #2196f3; background:#e0f2fe;' : 'border: 2px solid transparent; background:#f3f4f6;';
-      html += `<div onclick="window.selectPart('${p.id}')" style="padding:15px; text-align:center; border-radius:10px; cursor:pointer; ${style}"><div style="font-size:30px;">${p.icon}</div><div style="font-size:12px; color:#000; margin-top:5px;">${p.name}</div></div>`;
-    });
-    html += `</div><button class="btn" onclick="window.repairPart()">Починить</button>`;
-    document.getElementById('mechanicContent').innerHTML = html;
-  };
-
-  window.selectPart = function(id) { 
-    window.selectedPart = id; 
-    // Просто перерисовываем, чтобы подсветить выбранную деталь, НО НЕ МЕНЯЕМ КЛИЕНТА
-    const client = window.currentClient;
-    const parts = [
-      {id:'spark', name:'Свечи', icon:'⚡'}, 
-      {id:'battery', name:'АКБ', icon:'🔋'}, 
-      {id:'radiator', name:'Радиатор', icon:'🌡️'},
-      {id:'sensor', name:'Датчик', icon:'🛠️'},
-      {id:'timing', name:'Ремень ГРМ', icon:'⚙️'}
-    ];
-    let html = `<div class="shop-item" style="display:block; text-align:left;"><div style="color:#2196f3; font-weight:bold;">Клиент: ${client.name}</div><div style="color:#888; font-size:12px;">Машина: ${client.car}</div><div style="color:#000; font-weight:bold; margin-top:5px;">Проблема: ${client.problem}</div></div><div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin:15px 0;">`;
-    parts.forEach(p => {
-      let style = (window.selectedPart === p.id) ? 'border: 2px solid #2196f3; background:#e0f2fe;' : 'border: 2px solid transparent; background:#f3f4f6;';
-      html += `<div onclick="window.selectPart('${p.id}')" style="padding:15px; text-align:center; border-radius:10px; cursor:pointer; ${style}"><div style="font-size:30px;">${p.icon}</div><div style="font-size:12px; color:#000; margin-top:5px;">${p.name}</div></div>`;
-    });
-    html += `</div><button class="btn" onclick="window.repairPart()">Починить</button>`;
-    document.getElementById('mechanicContent').innerHTML = html;
-  };
-
-  window.repairPart = function() {
-    if (!window.selectedPart) return showModal('Ошибка', 'Выберите деталь!');
-    if (window.selectedPart === window.currentClient.fix) {
-      balance += window.currentClient.reward; updateUI();
-      showModal('Успех', `Вы заработали ${window.currentClient.reward} ₽!`);
-      document.getElementById('mechanicContent').innerHTML = `<button class="btn" onclick="window.startDay()">Следующий клиент</button>`;
-    } else {
-      balance -= 500; updateUI(); showModal('Ошибка', 'Не та деталь! -500 ₽');
-      window.selectedPart = null; window.startDay();
-    }
-  };
-
-  // === 3. ПОЧИНКА КАЗИНО (Вкладки и поля) ===
-  window.switchCasinoTab = function(tab, btn) {
-    document.querySelectorAll('.casino-tab').forEach(t => t.classList.remove('active'));
-    if(btn) btn.classList.add('active');
-    document.querySelectorAll('.casino-panel').forEach(p => p.style.display = 'none');
-    const panel = document.getElementById(`casino-panel-${tab}`);
-    if(panel) {
-        panel.style.display = 'block';
-        if (tab === 'roulette') {
-            if (typeof drawWheel === 'function') drawWheel();
-            if (typeof initRouletteGrid === 'function') initRouletteGrid();
-        }
-        if (tab === 'mines') {
-            if (typeof renderEmptyMinesGrid === 'function') renderEmptyMinesGrid();
-        }
-    }
-  };
-
-  // === 4. ЗАМЕНА ЭКРАНА НАСТРОЕК НА КРАСИВЫЙ ===
-  document.addEventListener('DOMContentLoaded', () => {
-    const settingsScreen = document.getElementById('app-settings');
-    if (settingsScreen) {
-      settingsScreen.innerHTML = `
-        <div class="app-header"><button class="back-btn" onclick="closeApp('settings')">‹ Назад</button><div class="app-title">Настройки</div></div>
-        <div class="app-content">
-          <div class="settings-item"><div class="settings-title">Звуковые эффекты</div><label class="switch"><input type="checkbox" checked><span class="slider"></span></label></div>
-          <div class="settings-item"><div class="settings-title">Музыка</div><label class="switch"><input type="checkbox"><span class="slider"></span></label></div>
-          <div class="settings-item"><div class="settings-title">Тёмная тема</div><label class="switch"><input type="checkbox" onchange="document.body.style.background = this.checked ? '#111' : '#e0e7ff'"><span class="slider"></span></label></div>
-          <div class="settings-item"><div class="settings-title">Сброс прогресса</div><button class="btn" style="background:#ef4444; width:auto; margin:0; padding:8px 12px; font-size:12px;" onclick="localStorage.clear(); location.reload();">Сбросить</button></div>
-        </div>
-      `;
-    }
-  });
-
-  // Запускаем отрисовку при открытии приложений
-  const originalOpenApp = window.openApp;
-  window.openApp = function(id) {
-    originalOpenApp(id);
-    if (id === 'mechanic') {
-       const content = document.getElementById('mechanicContent');
-       if(content && !content.innerHTML.includes('Починить')) {
-           content.innerHTML = `<button class="btn" onclick="window.startDay()">Встать и пойти на работу</button>`;
-       }
-    }
-  };
-</script>
-  <style>
-  /* 1. Фикс кнопки "На главную" (в самый низ по центру) */
-  .nav-bar { 
-    display: flex !important; 
-    justify-content: center !important; 
-    padding: 15px !important; 
-    background: #fff !important; 
-    border-top: 1px solid #eee !important; 
-    position: fixed !important; 
-    bottom: 0 !important; 
-    left: 0 !important; 
-    right: 0 !important; 
-    z-index: 1000 !important; 
-    width: 100% !important; 
-    box-sizing: border-box !important; 
-  }
-  .nav-bar .btn { max-width: 200px; margin: 0 !important; }
-
-  /* 2. Фикс пароля (4 точки) */
-  .dot { width: 15px; height: 15px; border: 2px solid #fff; border-radius: 50%; }
-  .dot.active { background: #fff; }
-
-  /* 3. Фикс темной темы (меняем фон всего тела) */
-  body.dark-theme { background: #121212 !important; color: #fff; }
-  body.dark-theme .phone { background: #1e1e1e; }
-  body.dark-theme .app-screen { background: #1e1e1e; }
-  body.dark-theme .app-content { background: #1e1e1e; }
-  body.dark-theme .shop-item, body.dark-theme .app-header { background: #2a2a2a; border-color: #444; color: #fff; }
-  body.dark-theme .shop-item-title, body.dark-theme .app-title { color: #fff; }
-
-  /* 4. Фикс казино (убираем зависание) */
-  .roulette-table { display: none !important; } /* Скрываем сломанное колесо */
-  .bet-control-box { display: none !important; } /* Скрываем сломанные ставки */
-  
-  /* 5. Стили для кнопок казино */
-  .casino-tab { flex: 1; background: #fff !important; border: 1px solid #e5e7eb !important; color: #1a1a1a !important; padding: 12px 10px !important; border-radius: 10px !important; font-weight: bold !important; cursor: pointer !important; text-align: center !important; font-size: 14px !important; }
-  .casino-tab.active { background: #2196f3 !important; color: #fff !important; border-color: #2196f3 !important; }
-</style>
-
-<script>
-  // === 1. ПОЧИНКА ГАРАЖА (Отрисовка купленных машин и номеров) ===
-  window.renderGarage = function() {
-    const container = document.getElementById('garageContent');
-    if (!container) return;
-    
-    let html = `<h3 style="margin-bottom:10px;">Ваша машина:</h3>`;
-    if (typeof ownedCar === 'undefined' || !ownedCar) {
-      html += `<p style="color:#888;">У вас нет машины. Купите её в Автосалоне.</p>`;
-    } else {
-      html += `<div class="shop-item"><div class="shop-item-title">${ownedCar}</div></div>`;
-    }
-
-    html += `<h3 style="margin-top:20px; margin-bottom:10px;">Ваши номера:</h3>`;
-    if (typeof ownedNumbers === 'undefined' || ownedNumbers.length === 0) {
-      html += `<p style="color:#888;">У вас пока нет номеров.</p>`;
-    } else {
-      ownedNumbers.forEach(n => {
-        html += `<div class="shop-item"><div class="shop-item-title">${n}</div><button class="buy-btn" onclick="window.installNumber('${n}')">Повесить</button></div>`;
-      });
-    }
-    container.innerHTML = html;
-  };
-
-  window.installNumber = function(num) {
-    if (!ownedCar) return showModal('Ошибка', 'Сначала купите машину!');
-    showModal('Успех', `Номер ${num} успешно повешен на ${ownedCar}!`);
-  };
-
-  // Вызываем отрисовку гаража при открытии
-  const oldOpenApp = window.openApp;
-  window.openApp = function(id) {
-    if (oldOpenApp) oldOpenApp(id);
-    if (id === 'garage') window.renderGarage();
-  };
-
-  // === 2. ПОЧИНКА ТЕМНОЙ ТЕМЫ ===
-  // Находим чекбокс темной темы и добавляем обработчик
-  document.addEventListener('DOMContentLoaded', () => {
-    const settingsScreen = document.getElementById('app-settings');
-    if (settingsScreen) {
-      // Перерисовываем настройки, чтобы добавить правильный обработчик
-      settingsScreen.innerHTML = `
-        <div class="app-header"><button class="back-btn" onclick="closeApp('settings')">‹ Назад</button><div class="app-title">Настройки</div></div>
-        <div class="app-content">
-          <div class="settings-item"><div class="settings-title">Звуковые эффекты</div><label class="switch"><input type="checkbox" checked><span class="slider"></span></label></div>
-          <div class="settings-item"><div class="settings-title">Музыка</div><label class="switch"><input type="checkbox"><span class="slider"></span></label></div>
-          <div class="settings-item"><div class="settings-title">Тёмная тема</div><label class="switch"><input type="checkbox" id="darkThemeToggle" onchange="window.toggleDarkTheme(this.checked)"><span class="slider"></span></label></div>
-          <div class="settings-item"><div class="settings-title">Сброс прогресса</div><button class="btn" style="background:#ef4444; width:auto; margin:0; padding:8px 12px; font-size:12px;" onclick="localStorage.clear(); location.reload();">Сбросить</button></div>
-        </div>
-      `;
-    }
-  });
-
-  window.toggleDarkTheme = function(isDark) {
-    if (isDark) document.body.classList.add('dark-theme');
-    else document.body.classList.remove('dark-theme');
-  };
-
-  // === 3. ПОЧИНКА КАЗИНО (Упрощенная версия, чтобы не висло) ===
-  window.switchCasinoTab = function(tab, btn) {
-    document.querySelectorAll('.casino-tab').forEach(t => t.classList.remove('active'));
-    if(btn) btn.classList.add('active');
-    document.querySelectorAll('.casino-panel').forEach(p => p.style.display = 'none');
-    const panel = document.getElementById(`casino-panel-${tab}`);
-    if(panel) {
-        panel.style.display = 'block';
-        // Если рулетка - показываем заглушку, так как колесо сломано
-        if (tab === 'roulette') {
-            panel.innerHTML = `<div style="text-align:center; padding:50px; color:#888;">Рулетка временно недоступна (идет ремонт)</div>`;
-        }
-        // Если мины - показываем сетку
-        if (tab === 'mines') {
-            if (typeof renderEmptyMinesGrid === 'function') renderEmptyMinesGrid();
-        }
-    }
-  };
-
-  // === 4. ПОЧИНКА ПАРОЛЯ (4 точки) ===
-  // Просто переопределяем функцию inputPin, чтобы она правильно считала
-  window.inputPin = function(num) {
-    if (num === 'del') pinCode = pinCode.slice(0, -1);
-    else pinCode += num;
-    
-    const dots = document.querySelectorAll('.dot');
-    dots.forEach((dot, i) => {
-      if (i < pinCode.length) dot.classList.add('active');
-      else dot.classList.remove('active');
-    });
-    
-    if (pinCode.length === 4) {
-      if (typeof isSettingPassword !== 'undefined' && isSettingPassword) {
-        savedPin = pinCode; localStorage.setItem('userPin', savedPin); 
-        showModal('Успех', 'Пароль установлен!'); 
-        isSettingPassword = false; pinCode = ""; 
-        dots.forEach(d => d.classList.remove('active'));
-      } else {
-        if (savedPin && pinCode === savedPin) { 
-          document.getElementById('lockScreen').style.display = 'none'; 
-          isLocked = false; 
-        } else { 
-          showModal('Ошибка', 'Неверный пароль!'); 
-          pinCode = ""; 
-          dots.forEach(d => d.classList.remove('active')); 
-        }
-      }
-    }
-  };
-
-  // Запускаем обновление гаража при старте
-  setTimeout(() => { if(typeof renderGarage === 'function') renderGarage(); }, 1000);
-</script>
-  <style>
-  /* Фикс пробела в кнопке "На главную" */
-  .nav-bar { display: flex !important; justify-content: center !important; padding: 15px !important; background: #fff !important; border-top: 1px solid #eee !important; position: fixed !important; bottom: 0 !important; left: 0 !important; right: 0 !important; z-index: 1000 !important; width: 100% !important; box-sizing: border-box !important; }
-  .nav-bar .btn { max-width: 200px; margin: 0 !important; text-align: center; }
-
-  /* Фикс вкладок недвижимости */
-  .realestate-tabs { display: flex !important; gap: 8px !important; margin-bottom: 20px !important; }
-  .realestate-tab { flex: 1; background: #fff; border: 1px solid #e5e7eb; color: #1a1a1a; padding: 12px; border-radius: 10px; font-weight: bold; cursor: pointer; text-align: center; }
-  .realestate-tab.active { background: #2196f3 !important; color: #fff !important; border-color: #2196f3 !important; }
-</style>
-
-<script>
-  // === 1. ПОЧИНКА СТО (30 сложных проблем, деталь не меняет проблему) ===
-  window.startDay = function() {
-    if (typeof fatigue === 'undefined') return;
-    if (fatigue > 90) return showModal('Усталость', 'Вы слишком устали, идите спать.');
-    fatigue += 10; updateUI();
-    
-    // 30 сложных проблем
-    const clients = [
-      { name: "Алексей", car: "ВАЗ 2107", problem: "Двигатель троит, потеря мощности. Слышен запах бензина.", fix: "spark" },
-      { name: "Мария", car: "Hyundai Solaris", problem: "При повороте ключа — тишина, стартер не крутит.", fix: "battery" },
-      { name: "Дмитрий", car: "Nissan Almera", problem: "Машина закипела, из-под капота валит пар.", fix: "radiator" },
-      { name: "Елена", car: "ВАЗ 2114", problem: "Обороты плавают, машина глохнет на холостых.", fix: "sensor" },
-      { name: "Сергей", car: "Nissan X-Trail", problem: "Вой из-под капота, двигатель заглох на ходу.", fix: "timing" },
-      { name: "Ольга", car: "Hyundai Creta", problem: "Машина не едет, при нажатии на газ — провал. Насос не качает.", fix: "fuel" },
-      { name: "Иван", car: "ВАЗ 2110", problem: "Стук в подвеске, машина кидает.", fix: "suspension" },
-      { name: "Анна", car: "Nissan Qashqai", problem: "Не работает свет, ночью ехать невозможно.", fix: "lights" },
-      { name: "Павел", car: "Hyundai Accent", problem: "Печка не греет, в салоне холодно.", fix: "heater" },
-      { name: "Виктор", car: "ВАЗ 2109", problem: "Белый густой дым из выхлопной, уровень антифриза падает.", fix: "gasket" },
-      { name: "Тимур", car: "ВАЗ 2114", problem: "ВСЁ СЛОМАНО! Двигатель не заводится, генератор не дает заряд.", fix: "all" },
-      { name: "Света", car: "Nissan Almera", problem: "Стук в двигателе, низкое давление масла.", fix: "pistons" },
-      { name: "Артем", car: "Hyundai Solaris", problem: "Машина не заводится, стартер крутит, но нет искры.", fix: "ignition" },
-      { name: "Кирилл", car: "ВАЗ 2107", problem: "Глохнет при торможении, обороты падают до нуля.", fix: "sensor" },
-      { name: "Дарья", car: "Nissan X-Trail", problem: "Скрип при торможении, педаль проваливается.", fix: "brakes" },
-      { name: "Максим", car: "Hyundai Accent", problem: "Люфт в рулевой рейке, стук при повороте.", fix: "steering" },
-      { name: "Юля", car: "ВАЗ 2101", problem: "Течет бензин из-под машины.", fix: "fuel" },
-      { name: "Роман", car: "Nissan Qashqai", problem: "Не работает кондиционер, дует горячим.", fix: "ac" },
-      { name: "Олег", car: "ПАЗ 3205", problem: "Не работает свет, ночью ехать невозможно.", fix: "lights" },
-      { name: "Марина", car: "Hyundai Accent", problem: "Печка не греет, в салоне холодно.", fix: "heater" }
-    ];
-    const client = clients[Math.floor(Math.random() * clients.length)];
-    window.currentClient = client;
-    window.selectedPart = null;
-    
-    const parts = [
-      {id:'spark', name:'Свечи', icon:'⚡'}, 
-      {id:'battery', name:'АКБ', icon:'🔋'}, 
-      {id:'radiator', name:'Радиатор', icon:'🌡️'},
-      {id:'sensor', name:'Датчик', icon:'🛠️'},
-      {id:'timing', name:'Ремень ГРМ', icon:'⚙️'},
-      {id:'fuel', name:'Бензонасос', icon:'⛽'},
-      {id:'suspension', name:'Подвеска', icon:'🛞'},
-      {id:'lights', name:'Освещение', icon:'💡'},
-      {id:'heater', name:'Печка', icon:'🔥'},
-      {id:'gasket', name:'Прокладка', icon:'💧'},
-      {id:'pistons', name:'Поршни', icon:'⚙️'},
-      {id:'ignition', name:'Зажигание', icon:'🔥'},
-      {id:'brakes', name:'Тормоза', icon:'🛞'},
-      {id:'steering', name:'Рулевая', icon:'🛠️'},
-      {id:'ac', name:'Кондиционер', icon:'❄️'}
-    ];
-    
-    let html = `<div class="shop-item" style="display:block; text-align:left;"><div style="color:#2196f3; font-weight:bold;">Клиент: ${client.name}</div><div style="color:#888; font-size:12px;">Машина: ${client.car}</div><div style="color:#000; font-weight:bold; margin-top:5px;">Проблема: ${client.problem}</div></div><div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px; margin:15px 0;">`;
-    parts.forEach(p => {
-      let style = (window.selectedPart === p.id) ? 'border: 2px solid #2196f3; background:#e0f2fe;' : 'border: 2px solid transparent; background:#f3f4f6;';
-      html += `<div onclick="window.selectPart('${p.id}')" style="padding:10px; text-align:center; border-radius:10px; cursor:pointer; ${style}"><div style="font-size:24px;">${p.icon}</div><div style="font-size:10px; color:#000; margin-top:5px;">${p.name}</div></div>`;
-    });
-    html += `</div><button class="btn" onclick="window.repairPart()">Починить</button>`;
-    document.getElementById('mechanicContent').innerHTML = html;
-  };
-
-  // При выборе детали мы просто подсвечиваем её, НЕ меняя клиента
-  window.selectPart = function(id) { 
-    window.selectedPart = id; 
-    // Просто перерисовываем подсветку
-    const parts = document.querySelectorAll('#mechanicContent div[onclick^="window.selectPart"]');
-    parts.forEach(el => {
-        if(el.getAttribute('onclick').includes(id)) {
-            el.style.border = '2px solid #2196f3';
-            el.style.background = '#e0f2fe';
-        } else {
-            el.style.border = '2px solid transparent';
-            el.style.background = '#f3f4f6';
-        }
-    });
-  };
-
-  window.repairPart = function() {
-    if (!window.selectedPart) return showModal('Ошибка', 'Выберите деталь!');
-    if (window.selectedPart === window.currentClient.fix) {
-      balance += 2000; updateUI();
-      showModal('Успех', `Вы заработали 2000 ₽!`);
-      document.getElementById('mechanicContent').innerHTML = `<button class="btn" onclick="window.startDay()">Следующий клиент</button>`;
-    } else {
-      balance -= 500; updateUI(); showModal('Ошибка', 'Не та деталь! -500 ₽');
-      window.selectedPart = null; window.startDay();
-    }
-  };
-
-  // === 2. ЧАСЫ (Синхронизация) ===
-  window.updateBigClock = function() {
-    const elTime = document.getElementById('clockBigTime');
-    const elDate = document.getElementById('clockBigDate');
-    if(!elTime) return;
-    const h = Math.floor(gameTime / 60) % 24, m = gameTime % 60;
-    elTime.textContent = `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}`;
-    const months = ['Января', 'Февраля', 'Марта', 'Апреля', 'Мая', 'Июня', 'Июля', 'Августа', 'Сентября', 'Октября', 'Ноября', 'Декабря'];
-    elDate.textContent = `${gameDate.getDate()} ${months[gameDate.getMonth()]}`;
-  };
-
-  // Вызываем обновление часов при входе в приложение
-  const oldOpenApp = window.openApp;
-  window.openApp = function(id) {
-    if (oldOpenApp) oldOpenApp(id);
-    if (id === 'clock') window.updateBigClock();
-  };
-
-  // === 3. НЕДВИЖИМОСТЬ (Разделение на аренду и покупку) ===
-  document.addEventListener('DOMContentLoaded', () => {
-    const realestateScreen = document.getElementById('app-realestate');
-    if (realestateScreen) {
-      realestateScreen.innerHTML = `
-        <div class="app-header"><button class="back-btn" onclick="closeApp('realestate')">‹ Назад</button><div class="app-title">Недвижимость</div></div>
-        <div class="balance-bar">Баланс: <span class="balance-val">0</span> ₽</div>
-        <div class="app-content">
-          <div class="realestate-tabs">
-            <div class="realestate-tab active" onclick="switchRealEstateTab('rent', this)">Аренда</div>
-            <div class="realestate-tab" onclick="switchRealEstateTab('buy', this)">Покупка</div>
-          </div>
-          <div id="realestate-list-rent" class="realestate-list">
-            <div class="shop-item"><div class="shop-item-info"><div class="shop-item-title">Койка в общаге</div><div class="shop-item-desc">-2 000 ₽/день</div></div><button class="buy-btn" onclick="showModal('Аренда', 'Вы сняли койку.')">Снять</button></div>
-            <div class="shop-item"><div class="shop-item-info"><div class="shop-item-title">Однушка</div><div class="shop-item-desc">-10 000 ₽/день</div></div><button class="buy-btn" onclick="showModal('Аренда', 'Вы сняли однушку.')">Снять</button></div>
-            <div class="shop-item"><div class="shop-item-info"><div class="shop-item-title">Двушка</div><div class="shop-item-desc">-20 000 ₽/день</div></div><button class="buy-btn" onclick="showModal('Аренда', 'Вы сняли двушку.')">Снять</button></div>
-          </div>
-          <div id="realestate-list-buy" class="realestate-list" style="display:none;">
-            <div class="shop-item"><div class="shop-item-info"><div class="shop-item-title">Студия</div><div class="shop-item-desc">+5 000 ₽/день</div></div><div style="text-align:right;"><div class="shop-item-price">500 000 ₽</div><button class="buy-btn" onclick="buyProperty('Студия', 500000, 5000)">Купить</button></div></div>
-            <div class="shop-item"><div class="shop-item-info"><div class="shop-item-title">Однушка</div><div class="shop-item-desc">+10 000 ₽/день</div></div><div style="text-align:right;"><div class="shop-item-price">1 000 000 ₽</div><button class="buy-btn" onclick="buyProperty('Однушка', 1000000, 10000)">Купить</button></div></div>
-            <div class="shop-item"><div class="shop-item-info"><div class="shop-item-title">Двушка</div><div class="shop-item-desc">+15 000 ₽/день</div></div><div style="text-align:right;"><div class="shop-item-price">1 500 000 ₽</div><button class="buy-btn" onclick="buyProperty('Двушка', 1500000, 15000)">Купить</button></div></div>
-          </div>
-        </div>
-      `;
-    }
-  });
-
-  window.switchRealEstateTab = function(tab, btn) {
-    document.querySelectorAll('.realestate-tab').forEach(t => t.classList.remove('active'));
-    document.querySelectorAll('.realestate-list').forEach(l => l.style.display = 'none');
-    btn.classList.add('active');
-    document.getElementById(`realestate-list-${tab}`).style.display = 'block';
-  };
-</script>
-  <style>
-  /* 1. ЖЕСТКИЙ ФИКС КНОПКИ "НА ГЛАВНУЮ" (всегда внизу по центру) */
-  .nav-bar { 
-    display: flex !important; 
-    justify-content: center !important; 
-    align-items: center !important;
-    padding: 15px !important; 
-    background: #fff !important; 
-    border-top: 1px solid #eee !important; 
-    position: fixed !important; 
-    bottom: 0 !important; 
-    left: 0 !important; 
-    right: 0 !important; 
-    z-index: 9999 !important; 
-    width: 100% !important; 
-    box-sizing: border-box !important; 
-  }
-  .nav-bar .btn { 
-    max-width: 200px !important; 
-    margin: 0 !important; 
-    text-align: center !important;
-  }
-  
-  /* 2. Убираем усталость из шапки СТО (скрываем) */
-  #fatigueVal { display: none !important; }
-  #fatigueVal + span { display: none !important; }
-  
-  /* 3. Стили для казино, чтобы всё было красиво */
-  .casino-tab { flex: 1; background: #fff !important; border: 1px solid #e5e7eb !important; color: #1a1a1a !important; padding: 12px 10px !important; border-radius: 10px !important; font-weight: bold !important; cursor: pointer !important; text-align: center !important; font-size: 14px !important; }
-  .casino-tab.active { background: #2196f3 !important; color: #fff !important; border-color: #2196f3 !important; }
-  .bet-control-box { background: #fff; border-radius: 16px; padding: 16px; border: 1px solid #e5e7eb; margin-bottom: 16px; }
-  .bet-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
-  .bet-minus-plus { width: 40px; height: 40px; border-radius: 50%; background: transparent; border: 2px solid #2196f3; color: #2196f3; font-size: 22px; font-weight: bold; display: flex; align-items: center; justify-content: center; cursor: pointer; }
-  .bet-amount-display { font-size: 24px; font-weight: bold; color: #1a1a1a; }
-  .quick-btn { flex: 1; background: #f3f4f6; border: 1px solid transparent; color: #6b7280; padding: 10px 0; border-radius: 8px; font-size: 14px; font-weight: bold; cursor: pointer; }
-  .quick-btn.active { background: #2196f3; color: #fff; }
-  .main-play-btn { width: 100%; padding: 18px; background: #2196f3; color: #fff; border: none; border-radius: 12px; font-size: 18px; font-weight: bold; cursor: pointer; }
-</style>
-
-<script>
-  // === 1. ФИКС КАЗИНО (Простая рулетка и рабочие игры) ===
-  window.switchCasinoTab = function(tab, btn) {
-    document.querySelectorAll('.casino-tab').forEach(t => t.classList.remove('active'));
-    if(btn) btn.classList.add('active');
-    document.querySelectorAll('.casino-panel').forEach(p => p.style.display = 'none');
-    const panel = document.getElementById(`casino-panel-${tab}`);
-    if(panel) {
-        panel.style.display = 'block';
-        // Если рулетка - рисуем простое колесо
-        if (tab === 'roulette') {
-            if (typeof drawWheel === 'function') drawWheel();
-            if (typeof initRouletteGrid === 'function') initRouletteGrid();
-        }
-        // Если мины - рисуем сетку
-        if (tab === 'mines') {
-            if (typeof renderEmptyMinesGrid === 'function') renderEmptyMinesGrid();
-        }
-    }
-  };
-
-  // Перерисовываем рулетку, чтобы она не висла
-  window.drawWheel = function() {
-    const canvas = document.getElementById('rouletteCanvas');
-    if (!canvas) return;
-    const ctx = canvas.getContext('2d');
-    const cx = canvas.width / 2, cy = canvas.height / 2, r = Math.min(cx, cy) - 2;
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    // Просто рисуем красный круг с цифрами (упрощенно)
-    ctx.beginPath(); ctx.arc(cx, cy, r, 0, 2 * Math.PI); ctx.fillStyle = '#c0392b'; ctx.fill();
-    ctx.fillStyle = '#fff'; ctx.font = 'bold 20px Arial'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-    ctx.fillText('РУЛЕТКА', cx, cy);
-  };
-
-  // === 2. ФИКС СТО (Убираем усталость из текста) ===
-  window.startDay = function() {
-    // Убираем проверку на усталость, чтобы всегда можно было работать
-    // fatigue > 90 return...
-    
-    const clients = [
-      { name: "Алексей", car: "ВАЗ 2107", problem: "Двигатель троит, потеря мощности. Слышен запах бензина.", fix: "spark" },
-      { name: "Мария", car: "Hyundai Solaris", problem: "При повороте ключа — тишина, стартер не крутит.", fix: "battery" },
-      { name: "Дмитрий", car: "Nissan Almera", problem: "Машина закипела, из-под капота валит пар.", fix: "radiator" }
-    ];
-    const client = clients[Math.floor(Math.random() * clients.length)];
-    window.currentClient = client;
-    window.selectedPart = null;
-    
-    const parts = [
-      {id:'spark', name:'Свечи', icon:'⚡'}, 
-      {id:'battery', name:'АКБ', icon:'🔋'}, 
-      {id:'radiator', name:'Радиатор', icon:'🌡️'}
-    ];
-    
-    let html = `<div class="shop-item" style="display:block; text-align:left;"><div style="color:#2196f3; font-weight:bold;">Клиент: ${client.name}</div><div style="color:#888; font-size:12px;">Машина: ${client.car}</div><div style="color:#000; font-weight:bold; margin-top:5px;">Проблема: ${client.problem}</div></div><div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin:15px 0;">`;
-    parts.forEach(p => {
-      let style = (window.selectedPart === p.id) ? 'border: 2px solid #2196f3; background:#e0f2fe;' : 'border: 2px solid transparent; background:#f3f4f6;';
-      html += `<div onclick="window.selectPart('${p.id}')" style="padding:15px; text-align:center; border-radius:10px; cursor:pointer; ${style}"><div style="font-size:30px;">${p.icon}</div><div style="font-size:12px; color:#000; margin-top:5px;">${p.name}</div></div>`;
-    });
-    html += `</div><button class="btn" onclick="window.repairPart()">Починить</button>`;
-    document.getElementById('mechanicContent').innerHTML = html;
-  };
-
-  // При выборе детали мы просто подсвечиваем её, НЕ меняя клиента
-  window.selectPart = function(id) { 
-    window.selectedPart = id; 
-    // Просто перерисовываем подсветку
-    const parts = document.querySelectorAll('#mechanicContent div[onclick^="window.selectPart"]');
-    parts.forEach(el => {
-        if(el.getAttribute('onclick').includes(id)) {
-            el.style.border = '2px solid #2196f3';
-            el.style.background = '#e0f2fe';
-        } else {
-            el.style.border = '2px solid transparent';
-            el.style.background = '#f3f4f6';
-        }
-    });
-  };
-
-  window.repairPart = function() {
-    if (!window.selectedPart) return showModal('Ошибка', 'Выберите деталь!');
-    if (window.selectedPart === window.currentClient.fix) {
-      balance += 2000; updateUI();
-      showModal('Успех', `Вы заработали 2000 ₽!`);
-      document.getElementById('mechanicContent').innerHTML = `<button class="btn" onclick="window.startDay()">Следующий клиент</button>`;
-    } else {
-      balance -= 500; updateUI(); showModal('Ошибка', 'Не та деталь! -500 ₽');
-      window.selectedPart = null; window.startDay();
-    }
-  };
-
-  // Запускаем обновление гаража при старте
-  setTimeout(() => { if(typeof renderGarage === 'function') renderGarage(); }, 1000);
-</script>
-  <style>
-  /* ЖЕСТКИЙ ФИКС КНОПКИ "НА ГЛАВНУЮ" */
-  .nav-bar { 
-    display: flex !important; 
-    justify-content: center !important; 
-    align-items: center !important;
-    padding: 12px !important; 
-    background: #fff !important; 
-    border-top: 1px solid #eee !important; 
-    position: fixed !important; 
-    bottom: 0 !important; 
-    left: 0 !important; 
-    right: 0 !important; 
-    z-index: 9999 !important; 
-    width: 100% !important; 
-    box-sizing: border-box !important; 
-  }
-  .nav-bar .btn { 
-    width: auto !important;
-    min-width: 180px !important;
-    max-width: 200px !important; 
-    margin: 0 !important; 
-    padding: 12px 24px !important;
-    text-align: center !important;
-    border-radius: 20px !important;
-  }
-</style>
-  <script>
-  // Удаляем иконку "Отношения" с рабочего стола
-  document.addEventListener('DOMContentLoaded', () => {
-    const icons = document.querySelectorAll('.app-icon');
-    icons.forEach(icon => {
-      if (icon.textContent.includes('Отношения')) {
-        icon.remove();
-      }
-    });
-  });
-</script>
-  <style>
-  /* Стили для нижней панели навигации как в Android */
-  .android-nav {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: 50px;
-    background: #d9d9d9; /* Серый фон как у системной панели */
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-    z-index: 10000;
-    border-top: 1px solid #bbb;
-  }
-  .nav-btn-android {
-    width: 50px;
-    height: 50px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-  }
-  .nav-btn-android svg {
-    width: 24px;
-    height: 24px;
-    stroke: #fff;
-    fill: none;
-    stroke-width: 2.5;
-  }
-  
-  /* Скрываем старую кнопку "На главную" */
-  .nav-bar { display: none !important; }
-  
-  /* Отодвигаем контент телефона вверх, чтобы он не перекрывался панелью */
-  .phone { padding-bottom: 50px; height: calc(100vh - 50px); }
-</style>
-
-<script>
-  // Создаем нижнюю панель навигации
-  document.addEventListener('DOMContentLoaded', () => {
-    const nav = document.createElement('div');
-    nav.className = 'android-nav';
-    nav.innerHTML = `
-      <div class="nav-btn-android" onclick="closeAllApps()">
-        <svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2"/></svg>
-      </div>
-      <div class="nav-btn-android" onclick="closeAllApps()">
-        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="7"/></svg>
-      </div>
-      <div class="nav-btn-android" onclick="goBack()">
-        <svg viewBox="0 0 24 24"><path d="M15 5 L7 12 L15 19 Z"/></svg>
-      </div>
-    `;
-    document.body.appendChild(nav);
-  });
-
-  // Функция "Назад" (закрывает текущее приложение)
-  window.goBack = function() {
-    const active = document.querySelector('.app-screen.active');
-    if (active) {
-      active.classList.remove('active');
-    }
-  };
-</script>
 </body>
-</html>  
+</html>

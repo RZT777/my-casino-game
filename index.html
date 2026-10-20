@@ -343,5 +343,149 @@
 
   updateUI(); updateClock(); updateCreditUI();
 </script>
+  <style>
+  /* 1. Красивые настройки (тумблеры как в iOS) */
+  .settings-item { display: flex; justify-content: space-between; align-items: center; background: #fff; padding: 15px; border-radius: 12px; margin-bottom: 10px; border: 1px solid #e5e7eb; }
+  .settings-title { font-weight: bold; font-size: 14px; color: #1a1a1a; }
+  .switch { position: relative; display: inline-block; width: 50px; height: 28px; }
+  .switch input { opacity: 0; width: 0; height: 0; }
+  .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 34px; }
+  .slider:before { position: absolute; content: ""; height: 20px; width: 20px; left: 4px; bottom: 4px; background-color: white; transition: .4s; border-radius: 50%; }
+  input:checked + .slider { background-color: #2196f3; }
+  input:checked + .slider:before { transform: translateX(22px); }
+
+  /* 2. Красивое казино (вкладки) */
+  .casino-tab { flex: 1; background: #fff !important; border: 1px solid #e5e7eb !important; color: #1a1a1a !important; padding: 12px 10px !important; border-radius: 10px !important; font-weight: bold !important; cursor: pointer !important; text-align: center !important; font-size: 14px !important; }
+  .casino-tab.active { background: #2196f3 !important; color: #fff !important; border-color: #2196f3 !important; }
+  .bet-control-box { background: #fff; border-radius: 16px; padding: 16px; border: 1px solid #e5e7eb; margin-bottom: 16px; }
+  .bet-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+  .bet-minus-plus { width: 40px; height: 40px; border-radius: 50%; background: transparent; border: 2px solid #2196f3; color: #2196f3; font-size: 22px; font-weight: bold; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+  .bet-amount-display { font-size: 24px; font-weight: bold; color: #1a1a1a; }
+  .quick-btn { flex: 1; background: #f3f4f6; border: 1px solid transparent; color: #6b7280; padding: 10px 0; border-radius: 8px; font-size: 14px; font-weight: bold; cursor: pointer; }
+  .quick-btn.active { background: #2196f3; color: #fff; }
+</style>
+
+<script>
+  // === 1. ПОЧИНКА АВТОСАЛОНА ===
+  window.switchCarTab = function(tab, btn) {
+    document.querySelectorAll('.car-tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.car-list').forEach(l => l.style.display = 'none');
+    btn.classList.add('active');
+    const list = document.getElementById(`car-list-${tab}`);
+    if(list) list.style.display = 'block';
+  };
+
+  // === 2. ПОЧИНКА СТО (Детали не меняют проблему) ===
+  window.startDay = function() {
+    if (typeof fatigue === 'undefined') return;
+    if (fatigue > 90) return showModal('Усталость', 'Вы слишком устали, идите спать.');
+    fatigue += 10; updateUI();
+    
+    const clients = [
+      { name: "Алексей", car: "ВАЗ 2107", problem: "Двигатель троит, потеря мощности. Слышен запах бензина.", fix: "spark", reward: 2000 },
+      { name: "Мария", car: "Hyundai Solaris", problem: "При повороте ключа — тишина, стартер не крутит.", fix: "battery", reward: 1500 },
+      { name: "Дмитрий", car: "Nissan Almera", problem: "Машина закипела, из-под капота валит пар.", fix: "radiator", reward: 2500 },
+      { name: "Елена", car: "ВАЗ 2114", problem: "Обороты плавают, машина глохнет на холостых.", fix: "sensor", reward: 1800 },
+      { name: "Сергей", car: "Nissan X-Trail", problem: "Вой из-под капота, двигатель заглох на ходу.", fix: "timing", reward: 3000 }
+    ];
+    const client = clients[Math.floor(Math.random() * clients.length)];
+    window.currentClient = client;
+    window.selectedPart = null;
+    
+    const parts = [
+      {id:'spark', name:'Свечи', icon:'⚡'}, 
+      {id:'battery', name:'АКБ', icon:'🔋'}, 
+      {id:'radiator', name:'Радиатор', icon:'🌡️'},
+      {id:'sensor', name:'Датчик', icon:'🛠️'},
+      {id:'timing', name:'Ремень ГРМ', icon:'⚙️'}
+    ];
+    
+    let html = `<div class="shop-item" style="display:block; text-align:left;"><div style="color:#2196f3; font-weight:bold;">Клиент: ${client.name}</div><div style="color:#888; font-size:12px;">Машина: ${client.car}</div><div style="color:#000; font-weight:bold; margin-top:5px;">Проблема: ${client.problem}</div></div><div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin:15px 0;">`;
+    parts.forEach(p => {
+      let style = (window.selectedPart === p.id) ? 'border: 2px solid #2196f3; background:#e0f2fe;' : 'border: 2px solid transparent; background:#f3f4f6;';
+      html += `<div onclick="window.selectPart('${p.id}')" style="padding:15px; text-align:center; border-radius:10px; cursor:pointer; ${style}"><div style="font-size:30px;">${p.icon}</div><div style="font-size:12px; color:#000; margin-top:5px;">${p.name}</div></div>`;
+    });
+    html += `</div><button class="btn" onclick="window.repairPart()">Починить</button>`;
+    document.getElementById('mechanicContent').innerHTML = html;
+  };
+
+  window.selectPart = function(id) { 
+    window.selectedPart = id; 
+    // Просто перерисовываем, чтобы подсветить выбранную деталь, НО НЕ МЕНЯЕМ КЛИЕНТА
+    const client = window.currentClient;
+    const parts = [
+      {id:'spark', name:'Свечи', icon:'⚡'}, 
+      {id:'battery', name:'АКБ', icon:'🔋'}, 
+      {id:'radiator', name:'Радиатор', icon:'🌡️'},
+      {id:'sensor', name:'Датчик', icon:'🛠️'},
+      {id:'timing', name:'Ремень ГРМ', icon:'⚙️'}
+    ];
+    let html = `<div class="shop-item" style="display:block; text-align:left;"><div style="color:#2196f3; font-weight:bold;">Клиент: ${client.name}</div><div style="color:#888; font-size:12px;">Машина: ${client.car}</div><div style="color:#000; font-weight:bold; margin-top:5px;">Проблема: ${client.problem}</div></div><div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin:15px 0;">`;
+    parts.forEach(p => {
+      let style = (window.selectedPart === p.id) ? 'border: 2px solid #2196f3; background:#e0f2fe;' : 'border: 2px solid transparent; background:#f3f4f6;';
+      html += `<div onclick="window.selectPart('${p.id}')" style="padding:15px; text-align:center; border-radius:10px; cursor:pointer; ${style}"><div style="font-size:30px;">${p.icon}</div><div style="font-size:12px; color:#000; margin-top:5px;">${p.name}</div></div>`;
+    });
+    html += `</div><button class="btn" onclick="window.repairPart()">Починить</button>`;
+    document.getElementById('mechanicContent').innerHTML = html;
+  };
+
+  window.repairPart = function() {
+    if (!window.selectedPart) return showModal('Ошибка', 'Выберите деталь!');
+    if (window.selectedPart === window.currentClient.fix) {
+      balance += window.currentClient.reward; updateUI();
+      showModal('Успех', `Вы заработали ${window.currentClient.reward} ₽!`);
+      document.getElementById('mechanicContent').innerHTML = `<button class="btn" onclick="window.startDay()">Следующий клиент</button>`;
+    } else {
+      balance -= 500; updateUI(); showModal('Ошибка', 'Не та деталь! -500 ₽');
+      window.selectedPart = null; window.startDay();
+    }
+  };
+
+  // === 3. ПОЧИНКА КАЗИНО (Вкладки и поля) ===
+  window.switchCasinoTab = function(tab, btn) {
+    document.querySelectorAll('.casino-tab').forEach(t => t.classList.remove('active'));
+    if(btn) btn.classList.add('active');
+    document.querySelectorAll('.casino-panel').forEach(p => p.style.display = 'none');
+    const panel = document.getElementById(`casino-panel-${tab}`);
+    if(panel) {
+        panel.style.display = 'block';
+        if (tab === 'roulette') {
+            if (typeof drawWheel === 'function') drawWheel();
+            if (typeof initRouletteGrid === 'function') initRouletteGrid();
+        }
+        if (tab === 'mines') {
+            if (typeof renderEmptyMinesGrid === 'function') renderEmptyMinesGrid();
+        }
+    }
+  };
+
+  // === 4. ЗАМЕНА ЭКРАНА НАСТРОЕК НА КРАСИВЫЙ ===
+  document.addEventListener('DOMContentLoaded', () => {
+    const settingsScreen = document.getElementById('app-settings');
+    if (settingsScreen) {
+      settingsScreen.innerHTML = `
+        <div class="app-header"><button class="back-btn" onclick="closeApp('settings')">‹ Назад</button><div class="app-title">Настройки</div></div>
+        <div class="app-content">
+          <div class="settings-item"><div class="settings-title">Звуковые эффекты</div><label class="switch"><input type="checkbox" checked><span class="slider"></span></label></div>
+          <div class="settings-item"><div class="settings-title">Музыка</div><label class="switch"><input type="checkbox"><span class="slider"></span></label></div>
+          <div class="settings-item"><div class="settings-title">Тёмная тема</div><label class="switch"><input type="checkbox" onchange="document.body.style.background = this.checked ? '#111' : '#e0e7ff'"><span class="slider"></span></label></div>
+          <div class="settings-item"><div class="settings-title">Сброс прогресса</div><button class="btn" style="background:#ef4444; width:auto; margin:0; padding:8px 12px; font-size:12px;" onclick="localStorage.clear(); location.reload();">Сбросить</button></div>
+        </div>
+      `;
+    }
+  });
+
+  // Запускаем отрисовку при открытии приложений
+  const originalOpenApp = window.openApp;
+  window.openApp = function(id) {
+    originalOpenApp(id);
+    if (id === 'mechanic') {
+       const content = document.getElementById('mechanicContent');
+       if(content && !content.innerHTML.includes('Починить')) {
+           content.innerHTML = `<button class="btn" onclick="window.startDay()">Встать и пойти на работу</button>`;
+       }
+    }
+  };
+</script>
 </body>
 </html>  

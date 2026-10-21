@@ -1,6 +1,213 @@
-// ==================== БАЗА ВОПРОСОВ (РЕАЛЬНЫЕ КЕЙСЫ И ТЕХНИКА) ====================
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🔧 Тест Автомеханика HARD</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Arial, sans-serif; }
+  body {
+    background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+    min-height: 100vh; display: flex; justify-content: center; align-items: center;
+    padding: 20px; color: #fff;
+  }
+  .container {
+    background: rgba(255,255,255,0.05); backdrop-filter: blur(10px);
+    border: 1px solid rgba(255,255,255,0.1); border-radius: 20px;
+    padding: 35px; max-width: 850px; width: 100%;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.6); max-height: 95vh; overflow-y: auto;
+  }
+  h1 { text-align: center; font-size: 2em; margin-bottom: 8px;
+       background: linear-gradient(90deg, #e74c3c, #8e44ad, #3498db);
+       -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+  .subtitle { text-align: center; color: #aaa; margin-bottom: 25px; font-size: 0.95em; }
+  
+  .profile-box {
+    background: rgba(231,76,60,0.1); border: 1px solid rgba(231,76,60,0.3);
+    border-radius: 12px; padding: 15px 20px; margin-bottom: 20px; text-align: center;
+  }
+  .profile-name { font-size: 1.1em; font-weight: bold; color: #e74c3c; margin-bottom: 5px; }
+  .profile-rank { font-size: 0.9em; color: #ccc; }
+  .input-name {
+    width: 100%; padding: 12px 15px; border-radius: 10px;
+    border: 1px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.08);
+    color: #fff; font-size: 1em; margin-bottom: 10px;
+  }
+  .input-name:focus { outline: none; border-color: #e74c3c; }
+  
+  .level-badge {
+    display: inline-block; padding: 6px 18px; border-radius: 20px;
+    font-weight: bold; font-size: 0.9em; margin-bottom: 15px;
+  }
+  .level-1 { background: #f39c12; }
+  .level-2 { background: #e67e22; }
+  .level-3 { background: #e74c3c; }
+  .level-4 { background: #8e44ad; }
+  .level-5 { background: linear-gradient(90deg, #e74c3c, #8e44ad); }
+  .level-6 { background: linear-gradient(90deg, #000, #e74c3c, #000); }
+  
+  .question { font-size: 1.15em; margin-bottom: 20px; line-height: 1.5; min-height: 50px; }
+  .options { display: flex; flex-direction: column; gap: 10px; }
+  .option {
+    background: rgba(255,255,255,0.08); border: 2px solid rgba(255,255,255,0.15);
+    border-radius: 12px; padding: 14px 18px; cursor: pointer;
+    transition: all 0.25s; font-size: 0.98em; text-align: left; color: #fff;
+  }
+  .option:hover:not(.disabled) { background: rgba(231,76,60,0.2); border-color: #e74c3c; transform: translateX(5px); }
+  .option.correct { background: rgba(39,174,96,0.4); border-color: #27ae60; }
+  .option.wrong { background: rgba(231,76,60,0.4); border-color: #e74c3c; }
+  .option.disabled { cursor: default; }
+  
+  .progress-bar { height: 8px; background: rgba(255,255,255,0.1); border-radius: 4px; margin-bottom: 20px; overflow: hidden; }
+  .progress-fill { height: 100%; background: linear-gradient(90deg, #e74c3c, #8e44ad); border-radius: 4px; transition: width 0.4s; }
+  
+  .stats { display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 0.9em; color: #ccc; flex-wrap: wrap; gap: 8px; }
+  .timer { padding: 4px 12px; border-radius: 10px; font-weight: bold; background: rgba(39,174,96,0.3); transition: background 0.3s; }
+  .timer.warning { background: rgba(243,156,18,0.4); }
+  .timer.danger { background: rgba(231,76,60,0.5); animation: pulse 0.8s infinite; }
+  @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.5; } }
+  
+  .btn {
+    display: block; width: 100%; padding: 15px; margin-top: 20px;
+    border: none; border-radius: 12px; font-size: 1.05em; font-weight: bold;
+    cursor: pointer; background: linear-gradient(90deg, #e74c3c, #8e44ad); color: #fff;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .btn:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(231,76,60,0.4); }
+  .btn.secondary { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); margin-top: 10px; }
+  .btn.secondary:hover { box-shadow: 0 5px 15px rgba(255,255,255,0.1); }
+  
+  .center { text-align: center; }
+  .result-emoji { font-size: 4.5em; margin: 10px 0; }
+  .result-title { font-size: 1.7em; margin-bottom: 8px; }
+  .result-score { font-size: 2.3em; font-weight: bold; color: #e74c3c; margin: 12px 0; }
+  .result-text { color: #bbb; margin-bottom: 8px; }
+  
+  .level-select { display: grid; grid-template-columns: repeat(auto-fit, minmax(145px, 1fr)); gap: 12px; margin-top: 15px; }
+  .level-card {
+    padding: 20px 12px; border-radius: 15px; text-align: center; cursor: pointer;
+    border: 2px solid rgba(255,255,255,0.15); transition: all 0.25s;
+    background: rgba(255,255,255,0.05);
+  }
+  .level-card:hover { transform: translateY(-5px); border-color: #e74c3c; }
+  .level-card .icon { font-size: 2.2em; margin-bottom: 8px; }
+  .level-card .name { font-weight: bold; margin-bottom: 4px; font-size: 0.9em; }
+  .level-card .desc { font-size: 0.75em; color: #aaa; }
+  .level-card .best { font-size: 0.72em; color: #f39c12; margin-top: 6px; min-height: 14px; }
+  .hidden { display: none; }
+  
+  .explanation {
+    margin-top: 15px; padding: 12px 15px;
+    background: rgba(52,152,219,0.15); border-left: 4px solid #3498db;
+    border-radius: 6px; font-size: 0.9em; color: #cde; display: none;
+  }
+  .review-item {
+    background: rgba(255,255,255,0.06); border-radius: 12px; padding: 14px 16px;
+    margin-bottom: 10px; text-align: left; border-left: 4px solid #e74c3c;
+  }
+  .review-item .rq { font-weight: bold; margin-bottom: 6px; font-size: 0.93em; }
+  .review-item .ra { font-size: 0.86em; color: #8fe; margin-bottom: 3px; }
+  .review-item .ry { font-size: 0.86em; color: #faa; }
+  .review-item .re { font-size: 0.8em; color: #aac; margin-top: 6px; font-style: italic; }
+  .section-title { font-size: 1.1em; margin: 15px 0 10px; color: #e74c3c; text-align: center; }
+  .best-table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 0.9em; }
+  .best-table th, .best-table td { padding: 8px; text-align: left; border-bottom: 1px solid rgba(255,255,255,0.1); }
+  .best-table th { color: #e74c3c; }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <div id="menu">
+    <h1>🔧 Тест Автомеханика HARD</h1>
+    <p class="subtitle">Только для тех, кто реально крутит гайки. Проверь себя!</p>
+    <div class="profile-box" id="profileBox">
+      <div class="profile-name" id="profileName">👨‍🔧 Гость</div>
+      <div class="profile-rank" id="profileRank">Введи имя, чтобы начать</div>
+      <input type="text" class="input-name" id="nameInput" placeholder="Твоё имя..." maxlength="20">
+      <button class="btn secondary" onclick="saveName()" style="margin-top:0;">💾 Сохранить</button>
+    </div>
+    <div class="section-title">Выбери уровень</div>
+    <div class="level-select">
+      <div class="level-card" onclick="startLevel(1)">
+        <div class="icon">🟠</div>
+        <div class="name">База</div>
+        <div class="desc">Устройство и термины</div>
+        <div class="best" id="best1"></div>
+      </div>
+      <div class="level-card" onclick="startLevel(2)">
+        <div class="icon">🟡</div>
+        <div class="name">Механик</div>
+        <div class="desc">Системы и диагностика</div>
+        <div class="best" id="best2"></div>
+      </div>
+      <div class="level-card" onclick="startLevel(3)">
+        <div class="icon">🔴</div>
+        <div class="name">Профи</div>
+        <div class="desc">Электроника и коды</div>
+        <div class="best" id="best3"></div>
+      </div>
+      <div class="level-card" onclick="startLevel(4)">
+        <div class="icon">🟣</div>
+        <div class="name">Эксперт</div>
+        <div class="desc">Точные цифры и допуски</div>
+        <div class="best" id="best4"></div>
+      </div>
+      <div class="level-card" onclick="startLevel(5)">
+        <div class="icon">🎯</div>
+        <div class="name">МАРАФОН</div>
+        <div class="desc">15 вопросов, все уровни</div>
+        <div class="best" id="best5"></div>
+      </div>
+      <div class="level-card" onclick="startLevel(6)" style="background: linear-gradient(135deg, rgba(0,0,0,0.4), rgba(231,76,60,0.2));">
+        <div class="icon">💀</div>
+        <div class="name">МАСТЕР-КЛАСС</div>
+        <div class="desc">Хардкор. 20 сек. Без пощады</div>
+        <div class="best" id="best6"></div>
+      </div>
+    </div>
+    <button class="btn secondary" onclick="showBestTable()" style="margin-top:15px;">🏆 Таблица рекордов</button>
+  </div>
+
+  <div id="game" class="hidden">
+    <div class="stats">
+      <span id="progressText">Вопрос 1/10</span>
+      <span id="scoreText">Счёт: 0</span>
+      <span class="timer" id="timer">⏱️ 30</span>
+    </div>
+    <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+    <div id="levelBadge" class="level-badge level-1">Уровень</div>
+    <div class="question" id="questionText"></div>
+    <div class="options" id="optionsBox"></div>
+    <div class="explanation" id="explanation"></div>
+    <button class="btn hidden" id="nextBtn" onclick="nextQuestion()">Далее →</button>
+  </div>
+
+  <div id="result" class="hidden center">
+    <div class="result-emoji" id="resultEmoji">🏆</div>
+    <div class="result-title" id="resultTitle"></div>
+    <div class="result-score" id="resultScore"></div>
+    <div class="result-text" id="resultText"></div>
+    <div id="reviewSection" class="hidden">
+      <div class="section-title">📋 Разбор ошибок</div>
+      <div id="reviewBox"></div>
+    </div>
+    <button class="btn" onclick="backToMenu()">🏠 В главное меню</button>
+    <button class="btn secondary" onclick="restartLevel()">🔁 Пройти ещё раз</button>
+  </div>
+
+  <div id="bestScreen" class="hidden">
+    <h1>🏆 Таблица рекордов</h1>
+    <div id="bestTableBox"></div>
+    <button class="btn" onclick="backToMenu()" style="margin-top:20px;">🏠 Назад</button>
+  </div>
+
+</div>
+
+<script>
+// ==================== БАЗА ВОПРОСОВ ====================
 const questionsDB = {
-  1: [ // БАЗА — теперь без детского сада
+  1: [ // БАЗА
     { q: "Причина масляного голодания двигателя?", options: ["Забитый маслоприемник", "Неисправный ДМРВ", "Подсос воздуха", "Пробитая прокладка ГБЦ"], correct: 0, exp: "Масляное голодание — это нехватка масла. Самая частая причина — забитый маслоприемник, реже — утечка или отказ насоса." },
     { q: "Что означает маркировка шины 205/55 R16?", options: ["Ширина 205 мм, профиль 55% от ширины, R16 — посадочный диаметр в дюймах", "Ширина 205 мм, высота 55 мм, диаметр 16 см", "Радиус 205 мм, профиль 55, диск 16 дюймов", "Скоростной индекс 205, нагрузка 55, радиус 16"], correct: 0, exp: "205 — ширина в мм. 55 — высота профиля в % от ширины. R — радиальная конструкция. 16 — диаметр диска в дюймах." },
     { q: "Какое стехиометрическое соотношение воздух/бензин для бензинового ДВС?", options: ["14.7:1", "12.5:1", "18.0:1", "10.0:1"], correct: 0, exp: "Для полного сгорания 1 кг бензина нужно 14.7 кг воздуха. Это λ=1." },
@@ -22,7 +229,7 @@ const questionsDB = {
     { q: "Для чего нужен адсорбер (EVAP)?", options: ["Улавливает пары бензина из бака", "Фильтрует топливо", "Охлаждает бензин", "Снижает шум впуска"], correct: 0, exp: "Адсорбер собирает пары топлива, чтобы они не попадали в атмосферу, и отправляет их во впуск на сгорание." },
     { q: "Как часто нужно менять ремень ГРМ?", options: ["Каждые 60–90 тыс. км или по регламенту", "Каждые 200 тыс. км", "Только когда порвется", "Раз в 5 лет независимо от пробега"], correct: 0, exp: "Регламент у всех разный, но обычно 60–90 тыс. км. Лучше менять с роликами и помпой заранее." }
   ],
-  2: [ // МЕХАНИК — симптомы и узлы
+  2: [ // МЕХАНИК
     { q: "Признак пробитой прокладки ГБЦ?", options: ["Белый густой дым из выхлопа и эмульсия на щупе", "Черный дым из выхлопа", "Стук в подвеске", "Скрип тормозов"], correct: 0, exp: "Антифриз попадает в цилиндры (белый дым) и в масло (эмульсия 'майонез' на щупе)." },
     { q: "Ошибка P0171 означает:", options: ["Слишком бедная смесь (Bank 1)", "Богатая смесь", "Пропуски зажигания", "Отказ ДМРВ"], correct: 0, exp: "P0171 — System Too Lean. ЭБУ добавляет максимум топлива, но лямбда все равно видит много воздуха." },
     { q: "Причина 'троения' двигателя?", options: ["Пропуски зажигания из-за свечи, катушки, форсунки или компрессии", "Износ тормозных колодок", "Низкое давление в шинах", "Неисправность ABS"], correct: 0, exp: "Троение — не работает один или несколько цилиндров. Проверяют свечи, катушки, форсунки, замеряют компрессию." },
@@ -41,11 +248,11 @@ const questionsDB = {
     { q: "Для чего нужен датчик давления в шинах (TPMS)?", options: ["Предупреждает о падении давления", "Регулирует давление", "Накачивает шины", "Измеряет температуру"], correct: 0, exp: "Система контроля давления в шинах (TPMS) зажигает лампу при падении давления ниже нормы." },
     { q: "Какой датчик определяет положение коленвала?", options: ["ДПКВ", "ДМРВ", "ДПДЗ", "ДТОЖ"], correct: 0, exp: "ДПКВ (Crankshaft Position Sensor) сообщает ЭБУ частоту вращения и положение коленвала для зажигания и впрыска." },
     { q: "Почему появляется 'белый дым' из выхлопной?", options: ["Попадание антифриза в камеру сгорания", "Богатая смесь", "Износ колец", "Забитый катализатор"], correct: 0, exp: "Белый густой дым (пар) с запахом сладкого — признак пробоя прокладки ГБЦ или трещины в головке." },
-    { q: "Что такое 'гидроудар'?", options: ["Попадание жидкости в цилиндр, вызывающее деформацию шатуна", "Удар подвески о препятствие", "Отказ ГУР", "Удар в АКПП"], correct: 0, exp: "Жидкость не сжимается. При попадании в цилиндр поршень останавливается, шатун гнется. Часто при въезде в глубокую лужу." },
+    { q: "Что такое 'гидроудар'?", options: ["Попадание жидкости в цилиндр, вызывающее деформацию шатуна", "Удар подвески о препятствие", "Отказ ГУР", "Удар в АКПП"], correct: 0, exp: "Жидкость не сжимается. При попадании в цилиндр поршень останавливается, шатун гнется." },
     { q: "Для чего нужен клапан сброса давления (Blow-off) на турбине?", options: ["Сбрасывает избыточное давление при закрытии дросселя", "Сбрасывает масло", "Охлаждает турбину", "Глушит мотор"], correct: 0, exp: "При сбросе газа дроссель закрывается, турбина продолжает дуть. Blow-off сбрасывает воздух, чтобы не было помпажа." }
   ],
-  3: [ // ПРОФИ — коды и точная диагностика
-    { q: "Что такое 'калильное зажигание'?", options: ["Воспламенение смеси от раскаленных частиц (нагара, электродов) без искры", "Искра от свечи", "Впрыск при холодном пуске", "Раннее зажигание"], correct: 0, exp: "Калильное зажигание не управляется ЭБУ. Свеча или нагар раскаляются и поджигают смесь." },
+  3: [ // ПРОФИ
+    { q: "Что такое 'калильное зажигание'?", options: ["Воспламенение смеси от раскаленных частиц без искры", "Искра от свечи", "Впрыск при холодном пуске", "Раннее зажигание"], correct: 0, exp: "Калильное зажигание не управляется ЭБУ. Свеча или нагар раскаляются и поджигают смесь." },
     { q: "Какая степень сжатия у современного турбодизеля?", options: ["14–18:1", "8–10:1", "4–6:1", "25–30:1"], correct: 0, exp: "Турбодизели имеют степень сжатия 14–18:1. Атмосферные дизели — 18–22:1. Бензинки — 9–12:1." },
     { q: "Что означает ошибка P0171 вместе с P0174?", options: ["Бедная смесь в обоих банках (общая причина)", "Отказ двух лямбда-зондов", "Пропуски во всех цилиндрах", "Отказ ДПКВ"], correct: 0, exp: "P0171 (Bank 1) + P0174 (Bank 2) означают, что бедность общая. Ищи подсос воздуха, умирающий бензонасос или грязный ДМРВ." },
     { q: "Что такое 'перекрытие клапанов'?", options: ["Одновременное открытие впускного и выпускного клапанов", "Увеличенный зазор клапанов", "Сдвиг фаз ГРМ", "Износ кулачка"], correct: 0, exp: "В конце такта выпуска и начале впуска оба клапана приоткрыты. Улучшает наполнение цилиндров." },
@@ -66,7 +273,7 @@ const questionsDB = {
     { q: "Что такое 'гидрокомпенсатор' и как он работает?", options: ["Плунжер, заполняемый маслом для выбора зазора клапана", "Насос ГУР", "Демпфер коленвала", "Датчик давления масла"], correct: 0, exp: "Масло подается внутрь плунжера, он выдвигается и убирает тепловой зазор." },
     { q: "Что вызывает ошибку P0300?", options: ["Множественные/случайные пропуски зажигания", "Неисправность АКПП", "Ошибка ABS", "Низкий заряд АКБ"], correct: 0, exp: "P0300 — Random/Multiple Cylinder Misfire. ЭБУ не может определить конкретный цилиндр." }
   ],
-  4: [ // ЭКСПЕРТ — цифры, допуски, тесты
+  4: [ // ЭКСПЕРТ
     { q: "Какой момент затяжки болтов ГБЦ типичен для бензинового ДВС?", options: ["60–100 Н·м в несколько проходов", "10–20 Н·м", "200–300 Н·м", "500 Н·м"], correct: 0, exp: "Обычно затягивается динамометрическим ключом в 2–3 этапа (например, 30 Нм, затем 60 Нм, затем доворот на 90°)." },
     { q: "Какое сопротивление у индуктивного датчика коленвала (ДПКВ)?", options: ["0.5–1.5 кОм", "10 Ом", "1 МОм", "100 кОм"], correct: 0, exp: "Типичное сопротивление 500–1500 Ом. Проверяется мультиметром и осциллографом." },
     { q: "Какое рабочее давление в системе прямого впрыска (GDI)?", options: ["50–200 бар", "3–4 бар", "1–2 бар", "500 бар"], correct: 0, exp: "ТНВД создает давление 50–200 бар (на некоторых до 350), чтобы впрыснуть топливо в цилиндр против компрессии." },
@@ -92,3 +299,280 @@ const questionsDB = {
 
 questionsDB[5] = [...questionsDB[1], ...questionsDB[2], ...questionsDB[3], ...questionsDB[4]];
 questionsDB[6] = [...questionsDB[3], ...questionsDB[4]];
+
+// ==================== ПЕРЕМЕШИВАНИЕ ОТВЕТОВ ====================
+function shuffleOptions(q) {
+  const indices = q.options.map((_, i) => i);
+  for (let i = indices.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [indices[i], indices[j]] = [indices[j], indices[i]];
+  }
+  const newOptions = indices.map(i => q.options[i]);
+  const newCorrect = indices.indexOf(q.correct);
+  return { q: q.q, options: newOptions, correct: newCorrect, exp: q.exp };
+}
+
+// ==================== ЛОГИКА ====================
+let currentLevel = 1;
+let currentQuestionIndex = 0;
+let score = 0;
+let answered = false;
+let levelQuestions = [];
+let timerInterval = null;
+let timeLeft = 30;
+let mistakes = [];
+let playerName = '';
+let totalQ = 10;
+
+const levelNames = {1: "БАЗА 🟠", 2: "МЕХАНИК 🟡", 3: "ПРОФИ 🔴", 4: "ЭКСПЕРТ 🟣", 5: "МАРАФОН 🎯", 6: "МАСТЕР-КЛАСС 💀"};
+const levelQCount = {1: 10, 2: 10, 3: 10, 4: 10, 5: 15, 6: 10};
+const levelTime = {1: 40, 2: 35, 3: 30, 4: 25, 5: 30, 6: 20};
+
+const AudioCtx = window.AudioContext || window.webkitAudioContext;
+let audioCtx = null;
+function playSound(type) {
+  try {
+    if (!audioCtx) audioCtx = new AudioCtx();
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.connect(gain); gain.connect(audioCtx.destination);
+    if (type === 'correct') {
+      osc.frequency.setValueAtTime(660, audioCtx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(990, audioCtx.currentTime + 0.15);
+      gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
+      osc.start(); osc.stop(audioCtx.currentTime + 0.3);
+    } else if (type === 'wrong') {
+      osc.type = 'sawtooth';
+      osc.frequency.setValueAtTime(300, audioCtx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(120, audioCtx.currentTime + 0.25);
+      gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.35);
+      osc.start(); osc.stop(audioCtx.currentTime + 0.35);
+    } else if (type === 'timeout') {
+      osc.type = 'square';
+      osc.frequency.setValueAtTime(200, audioCtx.currentTime);
+      gain.gain.setValueAtTime(0.12, audioCtx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.5);
+      osc.start(); osc.stop(audioCtx.currentTime + 0.5);
+    }
+  } catch(e) {}
+}
+
+function loadProfile() {
+  playerName = localStorage.getItem('mech_hard_name') || '';
+  updateProfileUI();
+}
+function saveName() {
+  const val = document.getElementById('nameInput').value.trim();
+  if (!val) return;
+  playerName = val;
+  localStorage.setItem('mech_hard_name', val);
+  updateProfileUI();
+  alert('✅ Имя сохранено: ' + val);
+}
+function updateProfileUI() {
+  const nameEl = document.getElementById('profileName');
+  const rankEl = document.getElementById('profileRank');
+  if (playerName) {
+    nameEl.textContent = '👨‍🔧 ' + playerName;
+    const total = parseInt(localStorage.getItem('mech_hard_total') || 0);
+    rankEl.textContent = getRank(total);
+    document.getElementById('nameInput').value = playerName;
+  } else {
+    nameEl.textContent = '👨‍🔧 Гость';
+    rankEl.textContent = 'Введи имя, чтобы начать';
+  }
+}
+function getRank(totalCorrect) {
+  if (totalCorrect >= 150) return '🏅 Гуру автосервиса';
+  if (totalCorrect >= 90) return '⭐ Мастер';
+  if (totalCorrect >= 45) return '🔧 Опытный механик';
+  if (totalCorrect >= 15) return '🛠️ Начинающий механик';
+  return '🔰 Стажёр';
+}
+function loadBestScores() {
+  const best = JSON.parse(localStorage.getItem('mech_hard_best') || '{}');
+  for (let lvl = 1; lvl <= 6; lvl++) {
+    const el = document.getElementById('best' + lvl);
+    if (best[lvl]) el.textContent = '🏆 ' + best[lvl] + '/' + levelQCount[lvl];
+    else el.textContent = '';
+  }
+}
+function saveBestScore(lvl, scoreVal) {
+  const best = JSON.parse(localStorage.getItem('mech_hard_best') || '{}');
+  if (!best[lvl] || scoreVal > best[lvl]) {
+    best[lvl] = scoreVal;
+    localStorage.setItem('mech_hard_best', JSON.stringify(best));
+  }
+}
+function showBestTable() {
+  document.getElementById('menu').classList.add('hidden');
+  document.getElementById('bestScreen').classList.remove('hidden');
+  const best = JSON.parse(localStorage.getItem('mech_hard_best') || '{}');
+  let html = '<table class="best-table"><tr><th>Уровень</th><th>Рекорд</th></tr>';
+  for (let lvl = 1; lvl <= 6; lvl++) {
+    const b = best[lvl];
+    html += `<tr><td>${levelNames[lvl]}</td><td>${b ? b + '/' + levelQCount[lvl] : '—'}</td></tr>`;
+  }
+  html += '</table>';
+  if (playerName) {
+    const total = parseInt(localStorage.getItem('mech_hard_total') || 0);
+    html += `<div class="section-title" style="margin-top:20px;">Профиль: ${playerName}</div>`;
+    html += `<div class="center" style="color:#ccc;">Всего правильных: <b style="color:#e74c3c;">${total}</b><br>Звание: <b style="color:#e74c3c;">${getRank(total)}</b></div>`;
+  }
+  document.getElementById('bestTableBox').innerHTML = html;
+}
+
+function startLevel(level) {
+  currentLevel = level;
+  currentQuestionIndex = 0;
+  score = 0;
+  answered = false;
+  mistakes = [];
+  totalQ = levelQCount[level];
+  timeLeft = levelTime[level];
+  levelQuestions = [...questionsDB[level]].sort(() => Math.random() - 0.5).slice(0, totalQ);
+  document.getElementById('menu').classList.add('hidden');
+  document.getElementById('result').classList.add('hidden');
+  document.getElementById('bestScreen').classList.add('hidden');
+  document.getElementById('game').classList.remove('hidden');
+  const badge = document.getElementById('levelBadge');
+  badge.textContent = levelNames[level];
+  badge.className = 'level-badge level-' + level;
+  loadQuestion();
+}
+
+function loadQuestion() {
+  answered = false;
+  clearInterval(timerInterval);
+  
+  const originalQ = levelQuestions[currentQuestionIndex];
+  const q = shuffleOptions(originalQ);
+  levelQuestions[currentQuestionIndex] = q;
+  
+  document.getElementById('questionText').textContent = q.q;
+  document.getElementById('progressText').textContent = `Вопрос ${currentQuestionIndex + 1}/${totalQ}`;
+  document.getElementById('scoreText').textContent = `Счёт: ${score}`;
+  document.getElementById('progressFill').style.width = ((currentQuestionIndex) / totalQ * 100) + '%';
+  
+  const expBox = document.getElementById('explanation');
+  expBox.style.display = 'none'; expBox.textContent = '';
+  document.getElementById('nextBtn').classList.add('hidden');
+  
+  const optionsBox = document.getElementById('optionsBox');
+  optionsBox.innerHTML = '';
+  
+  q.options.forEach((opt, idx) => {
+    const btn = document.createElement('button');
+    btn.className = 'option';
+    btn.textContent = opt;
+    btn.onclick = () => selectAnswer(idx, btn);
+    optionsBox.appendChild(btn);
+  });
+  
+  timeLeft = levelTime[currentLevel];
+  const timerEl = document.getElementById('timer');
+  timerEl.textContent = '⏱️ ' + timeLeft;
+  timerEl.className = 'timer';
+  
+  timerInterval = setInterval(() => {
+    timeLeft--;
+    timerEl.textContent = '⏱️ ' + timeLeft;
+    if (timeLeft <= 5) timerEl.className = 'timer danger';
+    else if (timeLeft <= 10) timerEl.className = 'timer warning';
+    else timerEl.className = 'timer';
+    if (timeLeft <= 0) { clearInterval(timerInterval); if (!answered) timeOut(); }
+  }, 1000);
+}
+
+function timeOut() {
+  answered = true;
+  playSound('timeout');
+  const q = levelQuestions[currentQuestionIndex];
+  const allOptions = document.querySelectorAll('.option');
+  allOptions.forEach(o => o.classList.add('disabled'));
+  allOptions[q.correct].classList.add('correct');
+  mistakes.push({ q: q.q, correct: q.options[q.correct], chosen: '(время вышло)', exp: q.exp });
+  const expBox = document.getElementById('explanation');
+  expBox.textContent = '⏰ Время вышло! 💡 ' + q.exp;
+  expBox.style.display = 'block';
+  document.getElementById('nextBtn').classList.remove('hidden');
+}
+
+function selectAnswer(idx, btn) {
+  if (answered) return;
+  answered = true;
+  clearInterval(timerInterval);
+  const q = levelQuestions[currentQuestionIndex];
+  const allOptions = document.querySelectorAll('.option');
+  allOptions.forEach(o => o.classList.add('disabled'));
+  if (idx === q.correct) {
+    btn.classList.add('correct'); score++; playSound('correct');
+    document.getElementById('scoreText').textContent = `Счёт: ${score}`;
+  } else {
+    btn.classList.add('wrong'); allOptions[q.correct].classList.add('correct');
+    playSound('wrong');
+    mistakes.push({ q: q.q, correct: q.options[q.correct], chosen: q.options[idx], exp: q.exp });
+  }
+  const expBox = document.getElementById('explanation');
+  expBox.textContent = '💡 ' + q.exp;
+  expBox.style.display = 'block';
+  document.getElementById('nextBtn').classList.remove('hidden');
+}
+
+function nextQuestion() {
+  currentQuestionIndex++;
+  if (currentQuestionIndex < totalQ) loadQuestion();
+  else showResult();
+}
+
+function showResult() {
+  clearInterval(timerInterval);
+  document.getElementById('game').classList.add('hidden');
+  document.getElementById('result').classList.remove('hidden');
+  const percent = Math.round(score / totalQ * 100);
+  saveBestScore(currentLevel, score);
+  const oldTotal = parseInt(localStorage.getItem('mech_hard_total') || 0);
+  localStorage.setItem('mech_hard_total', oldTotal + score);
+  updateProfileUI();
+  let emoji, title, text;
+  if (percent === 100) { emoji = "🏆"; title = "Идеально!"; text = "Ты настоящий мастер своего дела! 👨‍🔧"; }
+  else if (percent >= 80) { emoji = "🌟"; title = "Отличный результат!"; text = "Высокий уровень знаний. Продолжай в том же духе!"; }
+  else if (percent >= 60) { emoji = "👍"; title = "Хороший результат!"; text = "Есть небольшие пробелы, но база крепкая."; }
+  else if (percent >= 40) { emoji = "🔧"; title = "Неплохо, но..."; text = "Стоит повторить теорию и попробовать снова."; }
+  else { emoji = "📚"; title = "Нужно учиться!"; text = "Не расстраивайся — повтори материалы и возвращайся!"; }
+  document.getElementById('resultEmoji').textContent = emoji;
+  document.getElementById('resultTitle').textContent = title;
+  document.getElementById('resultScore').textContent = `${score} / ${totalQ} (${percent}%)`;
+  document.getElementById('resultText').textContent = text;
+  const reviewSection = document.getElementById('reviewSection');
+  const reviewBox = document.getElementById('reviewBox');
+  if (mistakes.length > 0) {
+    reviewSection.classList.remove('hidden');
+    reviewBox.innerHTML = mistakes.map(m => `
+      <div class="review-item">
+        <div class="rq">❌ ${m.q}</div>
+        <div class="ra">✅ Правильно: ${m.correct}</div>
+        <div class="ry">❌ Ты выбрал: ${m.chosen}</div>
+        <div class="re">💡 ${m.exp}</div>
+      </div>
+    `).join('');
+  } else reviewSection.classList.add('hidden');
+}
+
+function restartLevel() { startLevel(currentLevel); }
+function backToMenu() {
+  clearInterval(timerInterval);
+  document.getElementById('result').classList.add('hidden');
+  document.getElementById('game').classList.add('hidden');
+  document.getElementById('bestScreen').classList.add('hidden');
+  document.getElementById('menu').classList.remove('hidden');
+  loadBestScores();
+}
+
+loadProfile();
+loadBestScores();
+</script>
+</body>
+</html>

@@ -3,110 +3,110 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>🔧 Тест Автомеханика v4.0</title>
+<title>🔧 Автомеханик v4.1</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Arial, sans-serif; }
   body { background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); min-height: 100vh; display: flex; justify-content: center; align-items: center; padding: 20px; color: #fff; }
-  .container { background: rgba(255,255,255,0.05); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; padding: 30px; max-width: 850px; width: 100%; box-shadow: 0 20px 60px rgba(0,0,0,0.6); max-height: 95vh; overflow-y: auto; }
-  h1 { text-align: center; font-size: 2em; margin-bottom: 8px; background: linear-gradient(90deg, #e74c3c, #8e44ad, #3498db); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-  .subtitle { text-align: center; color: #aaa; margin-bottom: 20px; font-size: 0.95em; }
+  .container { background: rgba(255,255,255,0.05); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; padding: 25px; max-width: 600px; width: 100%; box-shadow: 0 20px 60px rgba(0,0,0,0.6); max-height: 95vh; overflow-y: auto; }
+  h1 { text-align: center; font-size: 1.8em; margin-bottom: 8px; background: linear-gradient(90deg, #e74c3c, #8e44ad, #3498db); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
   
   /* ЭКОНОМИКА */
-  .economy-bar { display: flex; justify-content: space-between; align-items: center; background: rgba(243,156,18,0.1); border: 1px solid rgba(243,156,18,0.3); border-radius: 12px; padding: 10px 15px; margin-bottom: 15px; flex-wrap: wrap; gap: 10px; }
-  .coins { font-size: 1.1em; font-weight: bold; color: #f39c12; }
-  .rank-badge { background: #e74c3c; padding: 4px 10px; border-radius: 10px; font-size: 0.85em; font-weight: bold; }
-  .xp-bar { flex-grow: 1; min-width: 100px; height: 8px; background: rgba(255,255,255,0.1); border-radius: 4px; overflow: hidden; }
-  .xp-fill { height: 100%; background: linear-gradient(90deg, #f39c12, #e67e22); transition: width 0.3s; }
+  .economy-bar { display: flex; justify-content: space-between; align-items: center; background: rgba(243,156,18,0.1); border: 1px solid rgba(243,156,18,0.3); border-radius: 12px; padding: 10px; margin-bottom: 15px; gap: 10px; }
+  .coins { font-size: 1em; font-weight: bold; color: #f39c12; white-space: nowrap; }
+  .rank-badge { background: #e74c3c; padding: 4px 10px; border-radius: 10px; font-size: 0.8em; font-weight: bold; white-space: nowrap; }
+  .xp-bar { flex-grow: 1; min-width: 50px; height: 8px; background: rgba(255,255,255,0.1); border-radius: 4px; overflow: hidden; }
+  .xp-fill { height: 100%; background: #f39c12; transition: width 0.3s; }
 
   /* ПРОФИЛЬ */
-  .profile-box { background: rgba(231,76,60,0.1); border: 1px solid rgba(231,76,60,0.3); border-radius: 12px; padding: 15px; margin-bottom: 15px; }
+  .profile-box { background: rgba(231,76,60,0.1); border: 1px solid rgba(231,76,60,0.3); border-radius: 12px; padding: 12px; margin-bottom: 15px; }
   .profile-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
-  .profile-name { font-size: 1.1em; font-weight: bold; color: #e74c3c; }
-  .profile-select { background: #222; color: #fff; border: 1px solid rgba(255,255,255,0.2); border-radius: 6px; padding: 6px; font-size: 0.85em; }
-  .input-name { width: 100%; padding: 10px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.08); color: #fff; margin-bottom: 10px; }
+  .profile-name { font-size: 1em; font-weight: bold; color: #e74c3c; }
+  .profile-select { background: #222; color: #fff; border: 1px solid rgba(255,255,255,0.2); border-radius: 6px; padding: 4px; font-size: 0.85em; }
+  .input-name { width: 100%; padding: 10px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.08); color: #fff; margin-bottom: 8px; }
 
   /* БЛОКИ МЕНЮ */
-  .menu-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; }
-  .menu-btn { padding: 12px; border-radius: 10px; border: none; font-weight: bold; cursor: pointer; color: #fff; text-align: center; transition: transform 0.2s; }
-  .menu-btn:hover { transform: translateY(-2px); }
+  .menu-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 15px; }
+  .menu-btn { padding: 12px 5px; border-radius: 10px; border: none; font-weight: bold; cursor: pointer; color: #fff; text-align: center; font-size: 0.9em; }
   .btn-theory { background: #3498db; }
   .btn-shop { background: #9b59b6; }
   .btn-cards { background: #e67e22; }
   .btn-errors { background: #c0392b; }
+  .btn-errors:disabled { opacity: 0.5; cursor: not-allowed; }
 
   /* СТРИК */
   .streak-box { background: rgba(0,0,0,0.3); border-radius: 12px; padding: 12px; text-align: center; margin-bottom: 15px; }
-  .streak-days { display: flex; justify-content: center; gap: 8px; margin-top: 10px; }
-  .day { width: 35px; height: 35px; border-radius: 50%; display: flex; justify-content: center; align-items: center; background: rgba(255,255,255,0.1); border: 2px solid rgba(255,255,255,0.2); font-weight: bold; }
+  .streak-days { display: flex; justify-content: center; gap: 6px; margin-top: 8px; }
+  .day { width: 30px; height: 30px; border-radius: 50%; display: flex; justify-content: center; align-items: center; background: rgba(255,255,255,0.1); border: 2px solid rgba(255,255,255,0.2); font-weight: bold; font-size: 0.8em; }
   .day.active { background: #e74c3c; border-color: #fff; }
   .day.today { border-color: #f39c12; }
 
   /* ЗАДАНИЯ */
-  .tasks-box { background: rgba(0,0,0,0.2); border-radius: 12px; padding: 15px; margin-bottom: 15px; font-size: 0.9em; }
-  .task-item { display: flex; justify-content: space-between; margin-bottom: 8px; padding-bottom: 5px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+  .tasks-box { background: rgba(0,0,0,0.2); border-radius: 12px; padding: 12px; margin-bottom: 15px; font-size: 0.85em; }
+  .task-item { display: flex; justify-content: space-between; margin-bottom: 6px; padding-bottom: 4px; border-bottom: 1px solid rgba(255,255,255,0.1); }
   .task-done { color: #27ae60; font-weight: bold; }
 
-  /* СЕТКА УРОВНЕЙ */
-  .level-select { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; }
-  .level-card { padding: 15px; border-radius: 12px; text-align: center; cursor: pointer; border: 2px solid rgba(255,255,255,0.15); background: rgba(255,255,255,0.05); }
+  /* УРОВНИ */
+  .level-select { display: grid; grid-template-columns: repeat(auto-fit, minmax(90px, 1fr)); gap: 8px; }
+  .level-card { padding: 12px 5px; border-radius: 12px; text-align: center; cursor: pointer; border: 2px solid rgba(255,255,255,0.15); background: rgba(255,255,255,0.05); }
   .level-card:hover { border-color: #e74c3c; }
-  .level-card .icon { font-size: 1.8em; }
-  .level-card .best { font-size: 0.75em; color: #f39c12; margin-top: 5px; }
+  .level-card .icon { font-size: 1.5em; }
+  .level-card .name { font-size: 0.85em; font-weight: bold; }
+  .level-card .best { font-size: 0.7em; color: #f39c12; margin-top: 5px; }
 
   /* ИГРА */
-  .game-screen .stats { display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 0.9em; color: #ccc; }
+  .stats { display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 0.85em; color: #ccc; }
   .timer { padding: 4px 10px; border-radius: 8px; font-weight: bold; background: rgba(39,174,96,0.3); }
   .timer.danger { background: rgba(231,76,60,0.5); }
   .progress-bar { height: 6px; background: rgba(255,255,255,0.1); border-radius: 4px; margin-bottom: 15px; overflow: hidden; }
   .progress-fill { height: 100%; background: #e74c3c; transition: width 0.3s; }
 
   .question-container { position: relative; margin-bottom: 15px; }
-  .question { font-size: 1.1em; line-height: 1.5; padding-right: 35px; }
+  .question { font-size: 1.1em; line-height: 1.4; padding-right: 30px; }
   .speak-btn { position: absolute; top: 0; right: 0; background: rgba(52,152,219,0.2); border: 1px solid #3498db; color: #fff; width: 30px; height: 30px; border-radius: 50%; cursor: pointer; }
   .options { display: flex; flex-direction: column; gap: 8px; }
-  .option { background: rgba(255,255,255,0.08); border: 2px solid rgba(255,255,255,0.15); border-radius: 10px; padding: 12px 15px; cursor: pointer; transition: all 0.2s; text-align: left; color: #fff; }
+  .option { background: rgba(255,255,255,0.08); border: 2px solid rgba(255,255,255,0.15); border-radius: 10px; padding: 12px; cursor: pointer; transition: all 0.2s; text-align: left; color: #fff; font-size: 0.9em; }
   .option:hover:not(.disabled) { background: rgba(231,76,60,0.2); }
   .option.correct { background: rgba(39,174,96,0.4); border-color: #27ae60; }
   .option.wrong { background: rgba(231,76,60,0.4); border-color: #e74c3c; }
   .option.disabled { cursor: default; opacity: 0.6; }
-  .option.hidden-by-joker { opacity: 0.1; pointer-events: none; }
 
   .help-buttons { display: flex; gap: 10px; margin-top: 15px; }
-  .help-btn { flex: 1; padding: 10px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2); background: rgba(0,0,0,0.3); color: #fff; cursor: pointer; }
+  .help-btn { flex: 1; padding: 10px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2); background: rgba(0,0,0,0.3); color: #fff; cursor: pointer; font-size: 0.85em; }
   .help-btn:hover:not(:disabled) { background: rgba(243,156,18,0.3); }
   .help-btn:disabled { opacity: 0.3; }
 
-  .explanation { margin-top: 15px; padding: 12px; background: rgba(52,152,219,0.15); border-left: 4px solid #3498db; border-radius: 6px; display: none; font-size: 0.9em; }
-  .btn { display: block; width: 100%; padding: 14px; margin-top: 15px; border: none; border-radius: 10px; font-size: 1em; font-weight: bold; cursor: pointer; background: linear-gradient(90deg, #e74c3c, #8e44ad); color: #fff; }
+  .explanation { margin-top: 15px; padding: 12px; background: rgba(52,152,219,0.15); border-left: 4px solid #3498db; border-radius: 6px; display: none; font-size: 0.85em; }
+  .btn { display: block; width: 100%; padding: 12px; margin-top: 15px; border: none; border-radius: 10px; font-size: 1em; font-weight: bold; cursor: pointer; background: linear-gradient(90deg, #e74c3c, #8e44ad); color: #fff; }
   .btn.secondary { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); }
   
   /* РЕЗУЛЬТАТЫ */
   .center { text-align: center; }
   .result-emoji { font-size: 4em; margin: 10px 0; }
-  .result-score { font-size: 2em; font-weight: bold; color: #e74c3c; }
-  .review-item { background: rgba(255,255,255,0.06); border-radius: 10px; padding: 12px; margin-bottom: 8px; text-align: left; border-left: 4px solid #e74c3c; font-size: 0.9em; }
+  .result-title { font-size: 1.2em; margin-bottom: 10px; }
+  .result-score { font-size: 1.8em; font-weight: bold; color: #e74c3c; }
+  .review-item { background: rgba(255,255,255,0.06); border-radius: 10px; padding: 12px; margin-bottom: 8px; text-align: left; border-left: 4px solid #e74c3c; font-size: 0.85em; }
 
   /* ТАБЛИЦЫ */
-  .data-table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 0.9em; }
+  .data-table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 0.85em; }
   .data-table th, .data-table td { padding: 8px; text-align: left; border-bottom: 1px solid rgba(255,255,255,0.1); }
-  
+
   /* КАРТОЧКИ */
-  .cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 10px; }
-  .card-item { background: rgba(0,0,0,0.4); border: 2px solid #f39c12; border-radius: 10px; padding: 10px; text-align: center; }
+  .cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(90px, 1fr)); gap: 8px; }
+  .card-item { background: rgba(0,0,0,0.4); border: 2px solid #f39c12; border-radius: 10px; padding: 8px; text-align: center; }
   .card-item.empty { border-color: rgba(255,255,255,0.1); background: rgba(255,255,255,0.05); opacity: 0.5; }
-  .card-icon { font-size: 2em; margin-bottom: 5px; }
-  .card-name { font-size: 0.8em; font-weight: bold; }
+  .card-icon { font-size: 1.8em; }
+  .card-name { font-size: 0.75em; font-weight: bold; margin-top: 4px; }
 
   /* МАГАЗИН */
   .shop-item { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 12px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
-  .shop-buy { background: #f39c12; color: #000; font-weight: bold; border: none; border-radius: 6px; padding: 6px 12px; cursor: pointer; }
+  .shop-buy { background: #f39c12; color: #000; font-weight: bold; border: none; border-radius: 6px; padding: 6px 12px; cursor: pointer; font-size: 0.9em; }
   .shop-buy:disabled { background: #555; color: #888; }
 
   /* ТЕОРИЯ */
   .theory-card { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; margin-bottom: 10px; overflow: hidden; }
-  .theory-header { padding: 12px 15px; cursor: pointer; display: flex; justify-content: space-between; font-weight: bold; color: #f39c12; }
-  .theory-content { padding: 0 15px; max-height: 0; overflow: hidden; transition: max-height 0.3s, padding 0.3s; font-size: 0.9em; line-height: 1.5; }
-  .theory-content.active { padding: 12px 15px; max-height: 1000px; border-top: 1px solid rgba(255,255,255,0.1); }
+  .theory-header { padding: 12px; cursor: pointer; display: flex; justify-content: space-between; font-weight: bold; color: #f39c12; font-size: 0.9em; }
+  .theory-content { padding: 0 12px; max-height: 0; overflow: hidden; transition: max-height 0.3s, padding 0.3s; font-size: 0.85em; line-height: 1.5; }
+  .theory-content.active { padding: 12px; max-height: 1000px; border-top: 1px solid rgba(255,255,255,0.1); }
   .locked { opacity: 0.5; filter: grayscale(1); cursor: not-allowed; }
 
   .hidden { display: none; }
@@ -115,9 +115,8 @@
 <body>
 <div class="container">
 
-  <!-- ГЛАВНОЕ МЕНЮ -->
   <div id="menu">
-    <h1>🔧 Автомеханик v4.0</h1>
+    <h1>🔧 Автомеханик v4.1</h1>
     
     <div class="economy-bar">
       <div class="coins">🔩 <span id="coinsDisplay">0</span></div>
@@ -138,23 +137,23 @@
       <button class="menu-btn btn-theory" onclick="showTheory()">📚 Теория</button>
       <button class="menu-btn btn-shop" onclick="showShop()">🛒 Магазин</button>
       <button class="menu-btn btn-cards" onclick="showCards()">🃏 Карточки</button>
-      <button class="menu-btn btn-errors" id="btnErrors" onclick="startErrorWork()">🩺 Работа над ошибками</button>
+      <button class="menu-btn btn-errors" id="btnErrors" onclick="startErrorWork()">🩺 Ошибки (0)</button>
     </div>
 
     <div class="streak-box" id="dailyBox">
-      <div style="font-size:0.9em; color:#f39c12;">Ежедневный вход</div>
+      <div style="font-size:0.85em; color:#f39c12;">Ежедневный вход</div>
       <div class="streak-days" id="streakDays"></div>
-      <button class="btn" id="claimBtn" onclick="claimDaily()" style="padding:8px; font-size:0.9em;">🎁 Забрать награду</button>
+      <button class="btn" id="claimBtn" onclick="claimDaily()" style="padding:8px; font-size:0.85em;">🎁 Забрать награду</button>
     </div>
 
     <div class="tasks-box" id="tasksBox">
-      <div style="font-weight:bold; color:#f39c12; margin-bottom:8px;">📅 Задания на сегодня</div>
+      <div style="font-weight:bold; color:#f39c12; margin-bottom:6px;">📅 Задания на сегодня</div>
       <div id="tasksList"></div>
     </div>
 
     <button class="btn" onclick="startDailyQuestion()" style="background: linear-gradient(90deg, #f39c12, #e67e22); margin-top:0;">❓ Вопрос дня (+50 🔩)</button>
 
-    <div class="section-title" style="margin: 15px 0 10px; text-align:center; color:#e74c3c;">Тесты по уровням</div>
+    <div style="margin: 15px 0 10px; text-align:center; color:#e74c3c; font-weight:bold;">Тесты по уровням</div>
     <div class="level-select">
       <div class="level-card" onclick="startLevel(1)"><div class="icon">🟠</div><div class="name">База</div><div class="best" id="best1"></div></div>
       <div class="level-card" onclick="startLevel(2)"><div class="icon">🟡</div><div class="name">Механик</div><div class="best" id="best2"></div></div>
@@ -168,10 +167,9 @@
     <button class="btn secondary" onclick="showBestTable()">🏆 Статистика</button>
   </div>
 
-  <!-- МАГАЗИН -->
   <div id="shopScreen" class="hidden">
     <h1>🛒 Магазин</h1>
-    <p class="subtitle" style="color: #f39c12;">Твой баланс: <b id="shopCoins">0</b> 🔩</p>
+    <p class="subtitle" style="color: #f39c12;">Баланс: <b id="shopCoins">0</b> 🔩</p>
     <div class="shop-item">
       <div><h4>🎯 50/50</h4><p style="font-size:0.8em; color:#aaa;">Убирает 2 неверных</p></div>
       <button class="shop-buy" onclick="buyJoker('5050', 30)" id="buy5050">30 🔩</button>
@@ -183,7 +181,6 @@
     <button class="btn" onclick="backToMenu()">🏠 Назад</button>
   </div>
 
-  <!-- КАРТОЧКИ -->
   <div id="cardsScreen" class="hidden">
     <h1>🃏 Коллекция</h1>
     <p class="subtitle">Собрано: <span id="cardsCount">0/10</span></p>
@@ -191,7 +188,6 @@
     <button class="btn" onclick="backToMenu()">🏠 Назад</button>
   </div>
 
-  <!-- ТЕОРИЯ -->
   <div id="theoryScreen" class="hidden">
     <h1>📚 Теория</h1>
     <p class="subtitle">Темы открываются с ростом звания</p>
@@ -199,14 +195,12 @@
     <button class="btn" onclick="backToMenu()">🏠 Назад</button>
   </div>
 
-  <!-- СТАТИСТИКА -->
   <div id="bestScreen" class="hidden">
     <h1>🏆 Статистика</h1>
     <div id="bestTableBox"></div>
     <button class="btn" onclick="backToMenu()">🏠 Назад</button>
   </div>
 
-  <!-- ИГРА -->
   <div id="game" class="hidden game-screen">
     <div class="stats">
       <span id="progressText">Вопрос 1/10</span>
@@ -230,7 +224,6 @@
     <button class="btn hidden" id="nextBtn" onclick="nextQuestion()">Далее →</button>
   </div>
 
-  <!-- РЕЗУЛЬТАТ -->
   <div id="result" class="hidden center">
     <div class="result-emoji" id="resultEmoji">🏆</div>
     <div class="result-title" id="resultTitle"></div>
@@ -248,9 +241,8 @@
 </div>
 
 <script>
-// ==================== БАЗА ====================
 const questionsDB = {
-  1: [ // База
+  1: [
     { q: "Причина масляного голодания двигателя?", options: ["Забитый маслоприемник", "Неисправный ДМРВ", "Подсос воздуха", "Пробитая прокладка ГБЦ"], correct: 0, topic: "engine", exp: "Масляное голодание — нехватка масла из-за забитого маслоприемника." },
     { q: "Маркировка шины 205/55 R16?", options: ["Ширина 205, профиль 55%, R16", "Ширина 205, высота 55, R16", "Радиус 205, профиль 55", "Индекс 205, нагрузка 55"], correct: 0, topic: "suspension", exp: "205 — ширина, 55 — профиль в %." },
     { q: "Стехиометрия для бензина?", options: ["14.7:1", "12.5:1", "18:1", "10:1"], correct: 0, topic: "diagnostics", exp: "14.7 кг воздуха на 1 кг бензина." },
@@ -272,7 +264,7 @@ const questionsDB = {
     { q: "Адсорбер?", options: ["Пары бензина", "Топливо", "Охлаждение", "Шум"], correct: 0, topic: "engine", exp: "EVAP." },
     { q: "Замена ГРМ?", options: ["60–90 тыс.", "200 тыс.", "Когда порвется", "5 лет"], correct: 0, topic: "engine", exp: "По регламенту." }
   ],
-  2: [ // Механик
+  2: [
     { q: "Признак пробитой прокладки ГБЦ?", options: ["Белый дым и эмульсия", "Черный дым", "Стук", "Скрип"], correct: 0, topic: "engine", exp: "Антифриз в масле." },
     { q: "P0171?", options: ["Бедная смесь", "Богатая", "Пропуски", "Отказ ДМРВ"], correct: 0, topic: "diagnostics", exp: "System Too Lean." },
     { q: "Троение?", options: ["Пропуски", "Колодки", "Шины", "ABS"], correct: 0, topic: "engine", exp: "Отказ цилиндра." },
@@ -294,7 +286,7 @@ const questionsDB = {
     { q: "Гидроудар?", options: ["Жидкость в цилиндре", "Подвеска", "ГУР", "АКПП"], correct: 0, topic: "engine", exp: "Шатун." },
     { q: "Blow-off?", options: ["Сброс давления", "Масло", "Охлаждение", "Глушение"], correct: 0, topic: "engine", exp: "Турбина." }
   ],
-  3: [ // Профи
+  3: [
     { q: "Калильное зажигание?", options: ["От раскаленных частиц", "Искра", "Впрыск", "Раннее"], correct: 0, topic: "engine", exp: "Без искры." },
     { q: "Степень сжатия дизеля?", options: ["14–18:1", "8–10", "4–6", "25–30"], correct: 0, topic: "engine", exp: "Турбо." },
     { q: "P0171 + P0174?", options: ["Оба банка бедные", "Две лямбды", "Пропуски", "ДПКВ"], correct: 0, topic: "diagnostics", exp: "Общая причина." },
@@ -316,7 +308,7 @@ const questionsDB = {
     { q: "Гидрокомпенсатор?", options: ["Плунжер", "Насос", "Демпфер", "Датчик"], correct: 0, topic: "engine", exp: "Масло." },
     { q: "P0300?", options: ["Множественные пропуски", "АКПП", "ABS", "АКБ"], correct: 0, topic: "diagnostics", exp: "Random." }
   ],
-  4: [ // Эксперт
+  4: [
     { q: "Момент ГБЦ?", options: ["60–100 Н·м", "10–20", "200–300", "500"], correct: 0, topic: "engine", exp: "В проходах." },
     { q: "ДПКВ?", options: ["0.5–1.5 кОм", "10 Ом", "1 МОм", "100 кОм"], correct: 0, topic: "electric", exp: "Индуктивный." },
     { q: "GDI давление?", options: ["50–200 бар", "3–4", "1–2", "500"], correct: 0, topic: "engine", exp: "ТНВД." },
@@ -340,43 +332,28 @@ const questionsDB = {
   ]
 };
 
-// База карточек
 const cardsDB = {
-  "ДМРВ": { icon: "🌬️", desc: "Датчик массового расхода воздуха. Отказ ведет к бедной смеси." },
-  "ДПКВ": { icon: "🎯", desc: "Датчик коленвала. Без него нет искры." },
-  "ДПРВ": { icon: "🔄", desc: "Датчик распредвала. Фазированный впрыск." },
-  "Лямбда": { icon: "💨", desc: "Кислородный датчик. Замеряет λ." },
-  "P0171": { icon: "⚠️", desc: "Бедная смесь (Bank 1)." },
-  "P0300": { icon: "🔥", desc: "Множественные пропуски зажигания." },
-  "P0420": { icon: "🛡️", desc: "Низкая эффективность катализатора." },
-  "P0016": { icon: "⏱️", desc: "Рассинхронизация валов (цепь)." },
-  "GDI": { icon: "⛽", desc: "Прямой впрыск. Проблема — нагар." },
-  "EGR": { icon: "♻️", desc: "Рециркуляция газов. Снижает NOx." }
+  "ДМРВ": { icon: "🌬️", desc: "Датчик массового расхода воздуха." },
+  "ДПКВ": { icon: "🎯", desc: "Датчик коленвала." },
+  "ДПРВ": { icon: "🔄", desc: "Датчик распредвала." },
+  "Лямбда": { icon: "💨", desc: "Кислородный датчик." },
+  "P0171": { icon: "⚠️", desc: "Бедная смесь." },
+  "P0300": { icon: "🔥", desc: "Множественные пропуски." },
+  "P0420": { icon: "🛡️", desc: "Катализатор." },
+  "P0016": { icon: "⏱️", desc: "Рассинхронизация." },
+  "GDI": { icon: "⛽", desc: "Прямой впрыск." },
+  "EGR": { icon: "♻️", desc: "Рециркуляция." }
 };
 
-// Бейджи
-const badgesDB = {
-  first_test: { icon: "🥇", name: "Первая кровь" },
-  perfect: { icon: "🎯", name: "Снайпер" },
-  rich: { icon: "💰", name: "Богач" }
-};
+const badgesDB = { first_test: { name: "Первая кровь" }, perfect: { name: "Снайпер" }, rich: { name: "Богач" } };
+const ranks = [ { name: "Новичок", minXP: 0 }, { name: "Механик", minXP: 100 }, { name: "Диагност", minXP: 300 }, { name: "Мастер", minXP: 700 }, { name: "Гуру", minXP: 1500 } ];
 
-// Звания
-const ranks = [
-  { name: "Новичок", minXP: 0 },
-  { name: "Механик", minXP: 100 },
-  { name: "Диагност", minXP: 300 },
-  { name: "Мастер", minXP: 700 },
-  { name: "Гуру", minXP: 1500 }
-];
-
-// ==================== ПЕРЕМЕННЫЕ ====================
 let currentLevel = 1, currentQuestionIndex = 0, score = 0, answered = false;
 let levelQuestions = [], timerInterval = null, timeLeft = 30, mistakes = [];
-let playerName = '', totalQ = 10, isExamMode = false, isDailyQuestion = false, isErrorWork = false;
+let playerName = '', totalQ = 10;
+let currentGameType = 'normal';
 let jokers = { 5050: 0, time: 0 };
 let coinsEarnedInGame = 0, xpEarnedInGame = 0;
-let currentGameType = 'normal'; // normal, exam, daily, errors
 
 const levelNames = { 1: "БАЗА", 2: "МЕХАНИК", 3: "ПРОФИ", 4: "ЭКСПЕРТ", 5: "МАРАФОН", 6: "ХАРДКОР", 7: "ЭКЗАМЕН" };
 const levelQCount = { 1: 10, 2: 10, 3: 10, 4: 10, 5: 15, 6: 10, 7: 20 };
@@ -408,17 +385,14 @@ function speakQuestion() {
   }
 }
 
-// ==================== УТИЛИТЫ ====================
 function getTodayStr() { const d = new Date(); return d.getFullYear() + '-' + (d.getMonth()+1) + '-' + d.getDate(); }
 function getYesterdayStr() { const d = new Date(); d.setDate(d.getDate() - 1); return d.getFullYear() + '-' + (d.getMonth()+1) + '-' + d.getDate(); }
 
-// ==================== ПРОФИЛЬ ====================
 function loadProfiles() {
   const profiles = JSON.parse(localStorage.getItem('mech_profiles') || '[]');
   const select = document.getElementById('profileSelect');
   select.innerHTML = '<option value="">Сменить...</option>';
   profiles.forEach(p => { const o = document.createElement('option'); o.value = p; o.textContent = p; select.appendChild(o); });
-  
   playerName = localStorage.getItem('mech_current_profile') || 'Гость';
   if (!localStorage.getItem('mech_current_profile')) {
     localStorage.setItem('mech_current_profile', playerName);
@@ -447,7 +421,6 @@ function switchProfile(name) {
   document.getElementById('profileSelect').value = '';
 }
 
-// ==================== ЭКОНОМИКА ====================
 function getCoins() { return parseInt(localStorage.getItem('mech_coins_' + playerName) || 0); }
 function addCoins(n) { localStorage.setItem('mech_coins_' + playerName, getCoins() + n); updateUI(); }
 function getXP() { return parseInt(localStorage.getItem('mech_xp_' + playerName) || 0); }
@@ -467,35 +440,30 @@ function updateUI() {
     prevRankXP = ranks[ranks.indexOf(nextRank) - 1].minXP;
     nextRankXP = nextRank.minXP;
   } else {
-    nextRankXP = xp;
-    prevRankXP = xp;
+    nextRankXP = xp; prevRankXP = xp;
   }
   const percent = ((xp - prevRankXP) / (nextRankXP - prevRankXP)) * 100;
   document.getElementById('xpFill').style.width = Math.min(percent, 100) + '%';
   
-  // Кнопка работы над ошибками
   const errs = JSON.parse(localStorage.getItem('mech_errors_' + playerName) || '[]');
   const btn = document.getElementById('btnErrors');
-  if (errs.length === 0) { btn.disabled = true; btn.style.opacity = '0.5'; } 
+  if (errs.length === 0) { btn.disabled = true; btn.style.opacity = '0.5'; btn.textContent = '🩺 Ошибки (0)'; } 
   else { btn.disabled = false; btn.style.opacity = '1'; btn.textContent = '🩺 Ошибки (' + errs.length + ')'; }
 }
 
-// ==================== БЕЙДЖИ ====================
 function awardBadge(key) {
   let b = JSON.parse(localStorage.getItem('mech_badges_' + playerName) || '[]');
   if (!b.includes(key)) {
     b.push(key); localStorage.setItem('mech_badges_' + playerName, JSON.stringify(b));
-    alert('🎉 Новое достижение: ' + badgesDB[key].name);
+    alert('🎉 Достижение: ' + badgesDB[key].name);
   }
 }
 
-// ==================== СТРИК ====================
 function loadDailyStatus() {
   const lastClaim = localStorage.getItem('mech_last_claim_' + playerName);
   const streak = parseInt(localStorage.getItem('mech_streak_' + playerName) || 0);
   const today = getTodayStr(); const yesterday = getYesterdayStr();
   const daysBox = document.getElementById('streakDays'); const claimBtn = document.getElementById('claimBtn');
-  
   daysBox.innerHTML = '';
   for (let i = 1; i <= 7; i++) {
     const d = document.createElement('div'); d.className = 'day'; d.textContent = i;
@@ -504,7 +472,6 @@ function loadDailyStatus() {
     if (lastClaim !== today && i === streak + 1 && lastClaim !== yesterday) d.classList.add('today');
     daysBox.appendChild(d);
   }
-
   if (lastClaim === today) {
     claimBtn.disabled = true; claimBtn.textContent = '✅ Получено'; claimBtn.style.opacity = '0.5';
   } else {
@@ -517,23 +484,19 @@ function claimDaily() {
   const today = getTodayStr(); const yesterday = getYesterdayStr();
   const lastClaim = localStorage.getItem('mech_last_claim_' + playerName);
   if (lastClaim === today) return;
-  
   let streak = parseInt(localStorage.getItem('mech_streak_' + playerName) || 0);
   if (lastClaim === yesterday) streak++; else streak = 1;
-  
   const reward = (streak >= 7) ? 150 : streak * 20;
   addCoins(reward);
   localStorage.setItem('mech_last_claim_' + playerName, today);
   localStorage.setItem('mech_streak_' + playerName, streak);
-  alert('🎉 Ежедневная награда: ' + reward + ' 🔩 (Стрик: ' + streak + ')');
+  alert('🎉 Ежедневная награда: ' + reward + ' 🔩');
   loadDailyStatus();
 }
 
-// ==================== ЗАДАНИЯ ====================
 function loadTasks() {
   const today = getTodayStr();
   let tasks = JSON.parse(localStorage.getItem('mech_tasks_' + playerName) || 'null');
-  
   if (!tasks || tasks.date !== today) {
     tasks = {
       date: today,
@@ -543,7 +506,6 @@ function loadTasks() {
     };
     localStorage.setItem('mech_tasks_' + playerName, JSON.stringify(tasks));
   }
-  
   const list = document.getElementById('tasksList');
   list.innerHTML = '';
   ['t1','t2','t3'].forEach(k => {
@@ -558,23 +520,19 @@ function updateTasksProgress(type, val) {
   const today = getTodayStr();
   let tasks = JSON.parse(localStorage.getItem('mech_tasks_' + playerName) || 'null');
   if (!tasks || tasks.date !== today) return;
-  
   if (type === 'test') tasks.t1.current++;
-  if (type === 'correct') tasks.t2.current += val;
+  if (type === 'correct') tasks.t2.current += (val || 0);
   if (type === 'perfect') tasks.t3.current++;
-  
   ['t1','t2','t3'].forEach(k => { if (tasks[k].current >= tasks[k].target) tasks[k].done = true; });
   localStorage.setItem('mech_tasks_' + playerName, JSON.stringify(tasks));
   loadTasks();
 }
 
-// ==================== КАРТОЧКИ ====================
 function showCards() {
   document.getElementById('menu').classList.add('hidden');
   document.getElementById('cardsScreen').classList.remove('hidden');
   const userCards = JSON.parse(localStorage.getItem('mech_cards_' + playerName) || '[]');
   document.getElementById('cardsCount').textContent = userCards.length + '/' + Object.keys(cardsDB).length;
-  
   const grid = document.getElementById('cardsGrid'); grid.innerHTML = '';
   for (let key in cardsDB) {
     const c = cardsDB[key];
@@ -587,7 +545,6 @@ function showCards() {
   }
 }
 
-// ==================== МАГАЗИН ====================
 function loadJokers() { jokers = JSON.parse(localStorage.getItem('mech_jokers_' + playerName) || '{"5050":0,"time":0}'); }
 function buyJoker(type, price) {
   if (getCoins() < price) { alert("Недостаточно гаек!"); return; }
@@ -609,7 +566,6 @@ function showShop() {
 function useJoker(type) {
   if (jokers[type] <= 0) return;
   if (answered) return;
-  
   if (type === '5050') {
     jokers['5050']--;
     const q = levelQuestions[currentQuestionIndex];
@@ -627,14 +583,11 @@ function useJoker(type) {
   document.getElementById('cntTime').textContent = jokers['time'];
 }
 
-// ==================== ВОПРОС ДНЯ ====================
 function startDailyQuestion() {
   const last = localStorage.getItem('mech_daily_q_' + playerName);
   if (last === getTodayStr()) { alert("Вопрос дня уже пройден!"); return; }
-  
   const all = [...questionsDB[3], ...questionsDB[4]];
   const q = all[Math.floor(Math.random() * all.length)];
-  
   currentGameType = 'daily';
   currentLevel = 7; currentQuestionIndex = 0; score = 0; answered = false; mistakes = []; coinsEarnedInGame = 0; xpEarnedInGame = 0;
   totalQ = 1; timeLeft = 30;
@@ -642,16 +595,15 @@ function startDailyQuestion() {
   initGameScreen(7);
 }
 
-// ==================== ТЕОРИЯ ====================
 function showTheory() {
   document.getElementById('menu').classList.add('hidden');
   document.getElementById('theoryScreen').classList.remove('hidden');
   renderTheory();
 }
+
 function renderTheory() {
   const rank = getRank();
   const list = document.getElementById('theoryList'); list.innerHTML = '';
-  
   const sections = [
     { title: "Топливная смесь и коррекции", minRank: "Новичок", content: "<p>Стехиометрия 14.7:1 (λ=1). STFT/LTFT коррекции. +25% LTFT = сильная бедность.</p>" },
     { title: "Датчики (ДМРВ, ДПКВ)", minRank: "Механик", content: "<p>ДМРВ — массовый расход воздуха. ДПКВ — коленвал, сопротивление 0.5–1.5 кОм.</p>" },
@@ -659,21 +611,31 @@ function renderTheory() {
     { title: "Симптомы (Дым, стуки)", minRank: "Мастер", content: "<p>Белый дым — антифриз. Сизый — масло. Черный — переобогащение. Троение — отказ цилиндра.</p>" },
     { title: "Инструментарий и кейсы", minRank: "Гуру", content: "<p>Дымогенератор — подсос. Leak-down — утечки. Осциллограф — форма сигнала. Компрессометр — ЦПГ.</p>" }
   ];
-
   sections.forEach(s => {
     const isLocked = ranks.findIndex(r => r.name === rank) < ranks.findIndex(r => r.name === s.minRank);
     const div = document.createElement('div'); div.className = 'theory-card' + (isLocked ? ' locked' : '');
-    div.innerHTML = `
-      <div class="theory-header" onclick="${isLocked ? 'alert(\\'Нужно звание ' + s.minRank + '\\')' : 'this.nextElementSibling.classList.toggle(\\'active\\')'}">
-        <span>${isLocked ? '🔒 ' : ''}${s.title}</span><span class="arrow">▼</span>
-      </div>
-      <div class="theory-content">${s.content}</div>
-    `;
+    
+    // Безопасная передача клика без вложенных кавычек
+    const header = document.createElement('div');
+    header.className = 'theory-header';
+    header.innerHTML = `<span>${isLocked ? '🔒 ' : ''}${s.title}</span><span class="arrow">▼</span>`;
+    header.onclick = function() {
+      if (isLocked) {
+        alert('Нужно звание: ' + s.minRank);
+      } else {
+        this.nextElementSibling.classList.toggle('active');
+      }
+    };
+    
+    const content = document.createElement('div');
+    content.className = 'theory-content';
+    content.innerHTML = s.content;
+    
+    div.appendChild(header); div.appendChild(content);
     list.appendChild(div);
   });
 }
 
-// ==================== РЕКОРДЫ ====================
 function loadBestScores() {
   if (!playerName) return;
   const best = JSON.parse(localStorage.getItem('mech_best_' + playerName) || '{}');
@@ -696,16 +658,13 @@ function showBestTable() {
   document.getElementById('bestTableBox').innerHTML = html;
 }
 
-// ==================== ИГРА ====================
 function startLevel(level) {
   currentGameType = 'normal';
   currentLevel = level; currentQuestionIndex = 0; score = 0; answered = false; mistakes = []; coinsEarnedInGame = 0; xpEarnedInGame = 0;
   totalQ = levelQCount[level]; timeLeft = levelTime[level];
-  
   if (level === 5) levelQuestions = [...questionsDB[1], ...questionsDB[2], ...questionsDB[3], ...questionsDB[4]].sort(() => Math.random() - 0.5).slice(0, totalQ);
   else if (level === 6) levelQuestions = [...questionsDB[3], ...questionsDB[4]].sort(() => Math.random() - 0.5).slice(0, totalQ);
   else levelQuestions = [...questionsDB[level]].sort(() => Math.random() - 0.5).slice(0, totalQ);
-  
   initGameScreen(level);
 }
 
@@ -720,7 +679,6 @@ function startExam() {
 function startErrorWork() {
   const errs = JSON.parse(localStorage.getItem('mech_errors_' + playerName) || '[]');
   if (errs.length === 0) return;
-  
   currentGameType = 'errors';
   currentLevel = 2; currentQuestionIndex = 0; score = 0; answered = false; mistakes = []; coinsEarnedInGame = 0; xpEarnedInGame = 0;
   totalQ = errs.length; timeLeft = 40;
@@ -732,12 +690,10 @@ function initGameScreen(level) {
   ['menu','shopScreen','theoryScreen','bestScreen','result','cardsScreen'].forEach(id => document.getElementById(id).classList.add('hidden'));
   document.getElementById('game').classList.remove('hidden');
   document.getElementById('helpButtons').classList.toggle('hidden', currentGameType === 'exam' || currentGameType === 'daily');
-  
   document.getElementById('joker5050').disabled = false;
   document.getElementById('jokerTime').disabled = false;
   document.getElementById('cnt5050').textContent = jokers['5050'];
   document.getElementById('cntTime').textContent = jokers['time'];
-  
   loadQuestion();
 }
 
@@ -786,7 +742,6 @@ function timeOut() {
   allOptions.forEach(o => o.classList.add('disabled'));
   allOptions[q.correct].classList.add('correct');
   mistakes.push({ q: q.q, correct: q.options[q.correct], chosen: '(время)', exp: q.exp });
-  
   if (currentGameType === 'normal') {
     const expBox = document.getElementById('explanation');
     expBox.textContent = '⏰ Время вышло! 💡 ' + q.exp; expBox.style.display = 'block';
@@ -831,32 +786,28 @@ function showResult() {
   document.getElementById('cardDropBox').classList.add('hidden');
   
   const percent = Math.round(score / totalQ * 100);
-  
-  // Начисления
   addCoins(coinsEarnedInGame);
   addXP(xpEarnedInGame);
   document.getElementById('resultCoins').textContent = coinsEarnedInGame;
   document.getElementById('resultXP').textContent = xpEarnedInGame;
   
-  // Прогресс заданий
-  if (currentGameType === 'normal' || currentGameType === 'exam') updateTasksProgress('test');
-  if (currentGameType === 'normal' || currentGameType === 'exam') updateTasksProgress('correct', score);
-  if (percent === 100) updateTasksProgress('perfect');
+  if (currentGameType === 'normal' || currentGameType === 'exam') {
+    updateTasksProgress('test');
+    updateTasksProgress('correct', score);
+    if (percent === 100) updateTasksProgress('perfect');
+  }
   
-  // Ошибки
   let errs = JSON.parse(localStorage.getItem('mech_errors_' + playerName) || '[]');
   if (currentGameType === 'normal' || currentGameType === 'exam') {
     mistakes.forEach(m => { if (!errs.find(e => e.q === m.q)) errs.push(m); });
     localStorage.setItem('mech_errors_' + playerName, JSON.stringify(errs));
   } else if (currentGameType === 'errors') {
-    if (mistakes.length === 0) { errs = []; }
-    else { errs = mistakes; }
+    if (mistakes.length === 0) errs = []; else errs = mistakes;
     localStorage.setItem('mech_errors_' + playerName, JSON.stringify(errs));
   } else if (currentGameType === 'daily') {
     localStorage.setItem('mech_daily_q_' + playerName, getTodayStr());
   }
   
-  // Карточка
   if (currentGameType !== 'daily' && Math.random() < 0.3) {
     const owned = JSON.parse(localStorage.getItem('mech_cards_' + playerName) || '[]');
     const unowned = Object.keys(cardsDB).filter(k => !owned.includes(k));
@@ -908,7 +859,6 @@ function backToMenu() {
   updateUI(); loadBestScores(); loadDailyStatus(); loadTasks();
 }
 
-// Перемешивание
 function shuffleOptions(q) {
   const indices = q.options.map((_, i) => i);
   for (let i = indices.length - 1; i > 0; i--) {
@@ -918,7 +868,6 @@ function shuffleOptions(q) {
   return { q: q.q, options: indices.map(i => q.options[i]), correct: indices.indexOf(q.correct), exp: q.exp, topic: q.topic || 'engine' };
 }
 
-// Запуск
 loadProfiles();
 loadBestScores();
 loadDailyStatus();

@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>🔧 Тест Автомеханика HARD</title>
+<title>🔧 Тест Автомеханика PRO MAX</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Arial, sans-serif; }
   body {
@@ -22,12 +22,18 @@
        -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
   .subtitle { text-align: center; color: #aaa; margin-bottom: 25px; font-size: 0.95em; }
   
+  /* ПРОФИЛЬ */
   .profile-box {
     background: rgba(231,76,60,0.1); border: 1px solid rgba(231,76,60,0.3);
-    border-radius: 12px; padding: 15px 20px; margin-bottom: 20px; text-align: center;
+    border-radius: 12px; padding: 15px 20px; margin-bottom: 20px;
   }
-  .profile-name { font-size: 1.1em; font-weight: bold; color: #e74c3c; margin-bottom: 5px; }
-  .profile-rank { font-size: 0.9em; color: #ccc; }
+  .profile-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+  .profile-name { font-size: 1.1em; font-weight: bold; color: #e74c3c; }
+  .profile-rank { font-size: 0.85em; color: #f39c12; margin-top: 4px; }
+  .profile-select {
+    background: rgba(0,0,0,0.3); color: #fff; border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 6px; padding: 6px 10px; font-size: 0.9em; cursor: pointer;
+  }
   .input-name {
     width: 100%; padding: 12px 15px; border-radius: 10px;
     border: 1px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.08);
@@ -35,18 +41,37 @@
   }
   .input-name:focus { outline: none; border-color: #e74c3c; }
   
-  .level-badge {
-    display: inline-block; padding: 6px 18px; border-radius: 20px;
-    font-weight: bold; font-size: 0.9em; margin-bottom: 15px;
+  /* БЕЙДЖИ */
+  .badges-container { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 15px; justify-content: center; }
+  .badge-icon {
+    width: 45px; height: 45px; border-radius: 50%;
+    display: flex; justify-content: center; align-items: center;
+    font-size: 1.5em; background: rgba(255,255,255,0.1);
+    border: 2px solid rgba(255,255,255,0.2); cursor: help;
+    transition: transform 0.2s, box-shadow 0.2s;
   }
-  .level-1 { background: #f39c12; }
-  .level-2 { background: #e67e22; }
-  .level-3 { background: #e74c3c; }
-  .level-4 { background: #8e44ad; }
+  .badge-icon.earned { background: rgba(243,156,18,0.2); border-color: #f39c12; box-shadow: 0 0 10px rgba(243,156,18,0.5); }
+  .badge-icon:hover { transform: scale(1.1); }
+
+  /* УРОВНИ */
+  .level-badge { display: inline-block; padding: 6px 18px; border-radius: 20px; font-weight: bold; font-size: 0.9em; margin-bottom: 15px; }
+  .level-1 { background: #f39c12; } .level-2 { background: #e67e22; }
+  .level-3 { background: #e74c3c; } .level-4 { background: #8e44ad; }
   .level-5 { background: linear-gradient(90deg, #e74c3c, #8e44ad); }
   .level-6 { background: linear-gradient(90deg, #000, #e74c3c, #000); }
+  .level-7 { background: linear-gradient(90deg, #00b894, #0984e3); } /* Для экзамена */
   
-  .question { font-size: 1.15em; margin-bottom: 20px; line-height: 1.5; min-height: 50px; }
+  /* ВОПРОСЫ */
+  .question-container { position: relative; }
+  .question { font-size: 1.15em; margin-bottom: 20px; line-height: 1.5; min-height: 50px; padding-right: 40px; }
+  .speak-btn {
+    position: absolute; top: 0; right: 0;
+    background: rgba(52,152,219,0.2); border: 1px solid #3498db; color: #fff;
+    width: 35px; height: 35px; border-radius: 50%; cursor: pointer;
+    display: flex; justify-content: center; align-items: center; font-size: 1.2em;
+    transition: background 0.2s;
+  }
+  .speak-btn:hover { background: rgba(52,152,219,0.5); }
   .options { display: flex; flex-direction: column; gap: 10px; }
   .option {
     background: rgba(255,255,255,0.08); border: 2px solid rgba(255,255,255,0.15);
@@ -58,15 +83,16 @@
   .option.wrong { background: rgba(231,76,60,0.4); border-color: #e74c3c; }
   .option.disabled { cursor: default; }
   
+  /* ПРОГРЕСС И ТАЙМЕР */
   .progress-bar { height: 8px; background: rgba(255,255,255,0.1); border-radius: 4px; margin-bottom: 20px; overflow: hidden; }
   .progress-fill { height: 100%; background: linear-gradient(90deg, #e74c3c, #8e44ad); border-radius: 4px; transition: width 0.4s; }
-  
   .stats { display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 0.9em; color: #ccc; flex-wrap: wrap; gap: 8px; }
   .timer { padding: 4px 12px; border-radius: 10px; font-weight: bold; background: rgba(39,174,96,0.3); transition: background 0.3s; }
   .timer.warning { background: rgba(243,156,18,0.4); }
   .timer.danger { background: rgba(231,76,60,0.5); animation: pulse 0.8s infinite; }
   @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.5; } }
   
+  /* КНОПКИ */
   .btn {
     display: block; width: 100%; padding: 15px; margin-top: 20px;
     border: none; border-radius: 12px; font-size: 1.05em; font-weight: bold;
@@ -75,14 +101,10 @@
   }
   .btn:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(231,76,60,0.4); }
   .btn.secondary { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); margin-top: 10px; }
-  .btn.secondary:hover { box-shadow: 0 5px 15px rgba(255,255,255,0.1); }
+  .btn.danger { background: rgba(231,76,60,0.2); border: 1px solid #e74c3c; color: #ff9999; }
+  .btn.danger:hover { background: rgba(231,76,60,0.4); }
   
-  .center { text-align: center; }
-  .result-emoji { font-size: 4.5em; margin: 10px 0; }
-  .result-title { font-size: 1.7em; margin-bottom: 8px; }
-  .result-score { font-size: 2.3em; font-weight: bold; color: #e74c3c; margin: 12px 0; }
-  .result-text { color: #bbb; margin-bottom: 8px; }
-  
+  /* СЕТКА УРОВНЕЙ */
   .level-select { display: grid; grid-template-columns: repeat(auto-fit, minmax(145px, 1fr)); gap: 12px; margin-top: 15px; }
   .level-card {
     padding: 20px 12px; border-radius: 15px; text-align: center; cursor: pointer;
@@ -94,8 +116,15 @@
   .level-card .name { font-weight: bold; margin-bottom: 4px; font-size: 0.9em; }
   .level-card .desc { font-size: 0.75em; color: #aaa; }
   .level-card .best { font-size: 0.72em; color: #f39c12; margin-top: 6px; min-height: 14px; }
-  .hidden { display: none; }
   
+  .hidden { display: none; }
+  .center { text-align: center; }
+  
+  /* РЕЗУЛЬТАТЫ И РАЗБОР */
+  .result-emoji { font-size: 4.5em; margin: 10px 0; }
+  .result-title { font-size: 1.7em; margin-bottom: 8px; }
+  .result-score { font-size: 2.3em; font-weight: bold; color: #e74c3c; margin: 12px 0; }
+  .result-text { color: #bbb; margin-bottom: 8px; }
   .explanation {
     margin-top: 15px; padding: 12px 15px;
     background: rgba(52,152,219,0.15); border-left: 4px solid #3498db;
@@ -109,47 +138,21 @@
   .review-item .ra { font-size: 0.86em; color: #8fe; margin-bottom: 3px; }
   .review-item .ry { font-size: 0.86em; color: #faa; }
   .review-item .re { font-size: 0.8em; color: #aac; margin-top: 6px; font-style: italic; }
+  
+  /* ТАБЛИЦА РЕКОРДОВ И СТАТИСТИКА */
   .section-title { font-size: 1.1em; margin: 15px 0 10px; color: #e74c3c; text-align: center; }
   .best-table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 0.9em; }
   .best-table th, .best-table td { padding: 8px; text-align: left; border-bottom: 1px solid rgba(255,255,255,0.1); }
   .best-table th { color: #e74c3c; }
-
-  /* СТИЛИ ДЛЯ ТЕОРИИ */
-  .theory-card {
-    background: rgba(255,255,255,0.05);
-    border: 1px solid rgba(255,255,255,0.1);
-    border-radius: 12px;
-    margin-bottom: 15px;
-    overflow: hidden;
-  }
-  .theory-header {
-    padding: 15px 20px;
-    background: rgba(255,255,255,0.05);
-    cursor: pointer;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-weight: bold;
-    color: #f39c12;
-    transition: background 0.2s;
-  }
+  
+  /* ТЕОРИЯ */
+  .theory-card { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; margin-bottom: 15px; overflow: hidden; }
+  .theory-header { padding: 15px 20px; background: rgba(255,255,255,0.05); cursor: pointer; display: flex; justify-content: space-between; align-items: center; font-weight: bold; color: #f39c12; transition: background 0.2s; }
   .theory-header:hover { background: rgba(255,255,255,0.1); }
   .theory-header .arrow { transition: transform 0.3s; }
   .theory-header.active .arrow { transform: rotate(180deg); }
-  .theory-content {
-    padding: 0 20px;
-    max-height: 0;
-    overflow: hidden;
-    transition: max-height 0.4s ease-out, padding 0.3s;
-    font-size: 0.95em;
-    line-height: 1.6;
-    color: #ddd;
-  }
-  .theory-content.active {
-    padding: 15px 20px;
-    max-height: 2000px; /* Достаточно для текста */
-    border-top: 1px solid rgba(255,255,255,0.1);
-  }
+  .theory-content { padding: 0 20px; max-height: 0; overflow: hidden; transition: max-height 0.4s ease-out, padding 0.3s; font-size: 0.95em; line-height: 1.6; color: #ddd; }
+  .theory-content.active { padding: 15px 20px; max-height: 2000px; border-top: 1px solid rgba(255,255,255,0.1); }
   .theory-content ul { margin-left: 20px; margin-bottom: 10px; }
   .theory-content li { margin-bottom: 6px; }
   .theory-content strong { color: #fff; }
@@ -162,162 +165,106 @@
 
   <!-- ГЛАВНОЕ МЕНЮ -->
   <div id="menu">
-    <h1>🔧 Тест Автомеханика HARD</h1>
-    <p class="subtitle">Только для тех, кто реально крутит гайки. Проверь себя!</p>
+    <h1>🔧 Тест Автомеханика PRO MAX</h1>
+    <p class="subtitle">Полноценный тренажёр и аттестация для автосервиса</p>
+    
     <div class="profile-box" id="profileBox">
-      <div class="profile-name" id="profileName">👨‍🔧 Гость</div>
-      <div class="profile-rank" id="profileRank">Введи имя, чтобы начать</div>
-      <input type="text" class="input-name" id="nameInput" placeholder="Твоё имя..." maxlength="20">
-      <button class="btn secondary" onclick="saveName()" style="margin-top:0;">💾 Сохранить</button>
+      <div class="profile-header">
+        <div>
+          <div class="profile-name" id="profileName">👨‍🔧 Гость</div>
+          <div class="profile-rank" id="profileRank">Введи имя</div>
+        </div>
+        <select class="profile-select" id="profileSelect" onchange="switchProfile(this.value)">
+          <option value="">Сменить профиль...</option>
+        </select>
+      </div>
+      <input type="text" class="input-name" id="nameInput" placeholder="Новое имя механика..." maxlength="20">
+      <button class="btn secondary" onclick="saveName()" style="margin-top:0; padding:10px;">💾 Войти / Создать профиль</button>
+      
+      <div class="badges-container" id="badgesBox">
+        <!-- Бейджи будут вставлены через JS -->
+      </div>
     </div>
     
-    <button class="btn" onclick="showTheory()" style="background: linear-gradient(90deg, #3498db, #2980b9);">📚 Изучить теорию перед тестом</button>
+    <button class="btn" onclick="showTheory()" style="background: linear-gradient(90deg, #3498db, #2980b9);">📚 Изучить теорию</button>
 
-    <div class="section-title">Выбери уровень</div>
+    <div class="section-title">Тесты по уровням</div>
     <div class="level-select">
-      <div class="level-card" onclick="startLevel(1)">
-        <div class="icon">🟠</div>
-        <div class="name">База</div>
-        <div class="desc">Устройство и термины</div>
-        <div class="best" id="best1"></div>
-      </div>
-      <div class="level-card" onclick="startLevel(2)">
-        <div class="icon">🟡</div>
-        <div class="name">Механик</div>
-        <div class="desc">Системы и диагностика</div>
-        <div class="best" id="best2"></div>
-      </div>
-      <div class="level-card" onclick="startLevel(3)">
-        <div class="icon">🔴</div>
-        <div class="name">Профи</div>
-        <div class="desc">Электроника и коды</div>
-        <div class="best" id="best3"></div>
-      </div>
-      <div class="level-card" onclick="startLevel(4)">
-        <div class="icon">🟣</div>
-        <div class="name">Эксперт</div>
-        <div class="desc">Точные цифры и допуски</div>
-        <div class="best" id="best4"></div>
-      </div>
-      <div class="level-card" onclick="startLevel(5)">
-        <div class="icon">🎯</div>
-        <div class="name">МАРАФОН</div>
-        <div class="desc">15 вопросов, все уровни</div>
-        <div class="best" id="best5"></div>
-      </div>
-      <div class="level-card" onclick="startLevel(6)" style="background: linear-gradient(135deg, rgba(0,0,0,0.4), rgba(231,76,60,0.2));">
-        <div class="icon">💀</div>
-        <div class="name">МАСТЕР-КЛАСС</div>
-        <div class="desc">Хардкор. 20 сек. Без пощады</div>
-        <div class="best" id="best6"></div>
-      </div>
+      <div class="level-card" onclick="startLevel(1)"><div class="icon">🟠</div><div class="name">База</div><div class="desc">Устройство</div><div class="best" id="best1"></div></div>
+      <div class="level-card" onclick="startLevel(2)"><div class="icon">🟡</div><div class="name">Механик</div><div class="desc">Системы</div><div class="best" id="best2"></div></div>
+      <div class="level-card" onclick="startLevel(3)"><div class="icon">🔴</div><div class="name">Профи</div><div class="desc">Электроника</div><div class="best" id="best3"></div></div>
+      <div class="level-card" onclick="startLevel(4)"><div class="icon">🟣</div><div class="name">Эксперт</div><div class="desc">Допуски</div><div class="best" id="best4"></div></div>
+      <div class="level-card" onclick="startLevel(5)"><div class="icon">🎯</div><div class="name">МАРАФОН</div><div class="desc">Все темы</div><div class="best" id="best5"></div></div>
+      <div class="level-card" onclick="startLevel(6)" style="background: linear-gradient(135deg, rgba(0,0,0,0.4), rgba(231,76,60,0.2));"><div class="icon">💀</div><div class="name">ХАРДКОР</div><div class="desc">20 сек.</div><div class="best" id="best6"></div></div>
     </div>
-    <button class="btn secondary" onclick="showBestTable()" style="margin-top:15px;">🏆 Таблица рекордов</button>
+    
+    <button class="btn" onclick="startExam()" style="background: linear-gradient(90deg, #00b894, #0984e3); margin-top:15px;">⏱️ Экзамен (Без подсказок)</button>
+    <button class="btn secondary" onclick="showBestTable()" style="margin-top:10px;">🏆 Статистика и рекорды</button>
   </div>
 
   <!-- ТЕОРИЯ -->
   <div id="theoryScreen" class="hidden">
     <h1>📚 База знаний</h1>
     <p class="subtitle">Изучи матчасть перед тем, как приступить к тестам</p>
-    
     <div id="theoryBox">
-      <!-- 1 -->
       <div class="theory-card">
-        <div class="theory-header" onclick="toggleTheory(this)">
-          <span>⛽ Топливная смесь и коррекции</span>
-          <span class="arrow">▼</span>
-        </div>
+        <div class="theory-header" onclick="toggleTheory(this)"><span>⛽ Топливная смесь и коррекции</span><span class="arrow">▼</span></div>
         <div class="theory-content">
-          <p><strong>Стехиометрия (λ=1)</strong> — идеальное соотношение воздуха и топлива. Для бензина это <code>14.7:1</code> (14.7 кг воздуха на 1 кг бензина).</p>
-          <ul>
-            <li><strong>λ < 1 (Богатая смесь):</strong> много топлива, мало воздуха. Мощность растет, но растет расход и нагар.</li>
-            <li><strong>λ > 1 (Бедная смесь):</strong> мало топлива, много воздуха. Опасна перегревом, детонацией и прогаром клапанов!</li>
-          </ul>
-          <p><strong>Топливные коррекции (Fuel Trims):</strong></p>
-          <ul>
-            <li><strong>STFT (Short Term):</strong> краткосрочная коррекция. Меняется каждую секунду.</li>
-            <li><strong>LTFT (Long Term):</strong> долгосрочная коррекция (адаптация). Если ползет к <code>+25%</code> — это критическая бедность (подсос воздуха, умирает насос, грязный ДМРВ).</li>
-            <li>Если коррекции <code>-10%...-20%</code> — форсунки льют, высокое давление топлива, грязный воздушный фильтр.</li>
-          </ul>
-          <button class="btn theory-btn-test" onclick="startLevel(2)">🎯 Проверить знания (Уровень Механик)</button>
+          <p><strong>Стехиометрия (λ=1)</strong> — идеальное соотношение. Для бензина <code>14.7:1</code>.</p>
+          <ul><li><strong>λ < 1:</strong> Богатая смесь (перерасход, нагар).</li><li><strong>λ > 1:</strong> Бедная (перегрев, прогар клапанов).</li></ul>
+          <p><strong>Коррекции:</strong> STFT (краткосрочная) и LTFT (долгосрочная). Если LTFT близится к <code>+25%</code> — критическая бедность (подсос, насос).</p>
+          <button class="btn theory-btn-test" onclick="startLevel(2)">🎯 Тест: Механик</button>
         </div>
       </div>
-
-      <!-- 2 -->
       <div class="theory-card">
-        <div class="theory-header" onclick="toggleTheory(this)">
-          <span>🧠 Датчики и их проверка</span>
-          <span class="arrow">▼</span>
-        </div>
+        <div class="theory-header" onclick="toggleTheory(this)"><span>🧠 Датчики и проверка</span><span class="arrow">▼</span></div>
         <div class="theory-content">
           <ul>
-            <li><strong>ДМРВ (MAF):</strong> Датчик массового расхода воздуха. Стоит после воздушного фильтра. Симптомы поломки: провалы, бедная смесь (P0171). Проверяется мультиметром (напряжение) и сканером (г/сек).</li>
-            <li><strong>ДПКВ (Crankshaft):</strong> Датчик коленвала. Если отказывает — двигатель глохнет и не заводится (нет искры и впрыска). Индуктивный проверяется на сопротивление (<code>0.5–1.5 кОм</code>).</li>
-            <li><strong>ДПРВ (Camshaft):</strong> Датчик распредвала. По нему ЭБУ определяет такт сжатия для фазированного впрыска.</li>
-            <li><strong>ДТОЖ:</strong> Датчик температуры ОЖ. Если врет (показывает -40°C), ЭБУ бешено льет бензин (переобогащение), двигатель троит.</li>
-            <li><strong>ДК / Лямбда-зонд:</strong> Замеряет кислород в выхлопе. Узкополосный качает от 0.1В до 0.9В. Если завис на 0.45В — датчик умер.</li>
+            <li><strong>ДМРВ (MAF):</strong> Симптомы поломки — провалы, бедная смесь P0171.</li>
+            <li><strong>ДПКВ:</strong> Отказ = нет искры. Сопротивление <code>0.5–1.5 кОм</code>.</li>
+            <li><strong>ДК (Лямбда):</strong> Узкополосный качает 0.1–0.9В. Завис на 0.45В = умер.</li>
           </ul>
-          <button class="btn theory-btn-test" onclick="startLevel(3)">🎯 Проверить знания (Уровень Профи)</button>
+          <button class="btn theory-btn-test" onclick="startLevel(3)">🎯 Тест: Профи</button>
         </div>
       </div>
-
-      <!-- 3 -->
       <div class="theory-card">
-        <div class="theory-header" onclick="toggleTheory(this)">
-          <span>⚠️ Популярные коды ошибок OBD-II</span>
-          <span class="arrow">▼</span>
-        </div>
+        <div class="theory-header" onclick="toggleTheory(this)"><span>⚠️ Коды ошибок OBD-II</span><span class="arrow">▼</span></div>
         <div class="theory-content">
-          <p>Первая буква: <strong>P</strong> — Powertrain (двигатель/трансмиссия).</p>
           <ul>
-            <li><strong>P0171 / P0174:</strong> Бедная смесь (Банк 1 / Банк 2). Ищи подсос воздуха дымогенератором.</li>
-            <li><strong>P0300:</strong> Множественные пропуски зажигания (Random misfire).</li>
-            <li><strong>P0301...P0304:</strong> Пропуск зажигания в конкретном цилиндре (1-й, 2-й и т.д.).</li>
-            <li><strong>P0420:</strong> Низкая эффективность катализатора. ЭБУ сравнивает показания двух лямбд и видит, что каталик не дожигает.</li>
-            <li><strong>P0011 / P0016:</strong> Проблемы с фазами ГРМ. Растянутая цепь или забитый клапан VVT-муфты.</li>
+            <li><strong>P0171/P0174:</strong> Бедная смесь (Банк 1/2).</li>
+            <li><strong>P0300:</strong> Множественные пропуски.</li>
+            <li><strong>P0301–P0304:</strong> Пропуск в конкретном цилиндре.</li>
+            <li><strong>P0420:</strong> Низкая эффективность катализатора.</li>
+            <li><strong>P0011/P0016:</strong> Проблемы с фазами (растянута цепь).</li>
           </ul>
-          <button class="btn theory-btn-test" onclick="startLevel(3)">🎯 Проверить знания (Уровень Профи)</button>
+          <button class="btn theory-btn-test" onclick="startLevel(3)">🎯 Тест: Профи</button>
         </div>
       </div>
-
-      <!-- 4 -->
       <div class="theory-card">
-        <div class="theory-header" onclick="toggleTheory(this)">
-          <span>🌫️ Классические симптомы (Дым, стуки, троение)</span>
-          <span class="arrow">▼</span>
-        </div>
+        <div class="theory-header" onclick="toggleTheory(this)"><span>🌫️ Симптомы (Дым, стуки)</span><span class="arrow">▼</span></div>
         <div class="theory-content">
           <ul>
-            <li><strong>Белый густой дым:</strong> Антифриз попадает в цилиндры (пробита прокладка ГБЦ или трещина в головке).</li>
-            <li><strong>Сизый/масляный дым:</strong> Сгорает масло. Износ маслосъемных колпачков или залегли кольца.</li>
-            <li><strong>Черный дым:</strong> Переобогащение смеси (льют форсунки, высокое давление, грязный фильтр).</li>
-            <li><strong>Троение (двигатель трясется):</strong> Не работает один цилиндр. Отказ катушки, свечи, форсунки или низкая компрессия.</li>
-            <li><strong>Стук на холодную (дизельный лязг):</strong> Поршневые пальцы, износ юбки поршня или гидрокомпенсаторы.</li>
-            <li><strong>Стук под нагрузкой:</strong> Детонация (ранний УОЗ, плохой бензин) или проворот вкладышей.</li>
+            <li><strong>Белый дым:</strong> Антифриз в цилиндрах (прокладка ГБЦ).</li>
+            <li><strong>Сизый:</strong> Сгорает масло (колпачки, кольца).</li>
+            <li><strong>Черный:</strong> Переобогащение.</li>
+            <li><strong>Троение:</strong> Отказ цилиндра (свеча, катушка).</li>
           </ul>
-          <button class="btn theory-btn-test" onclick="startLevel(2)">🎯 Проверить знания (Уровень Механик)</button>
+          <button class="btn theory-btn-test" onclick="startLevel(2)">🎯 Тест: Механик</button>
         </div>
       </div>
-
-      <!-- 5 -->
       <div class="theory-card">
-        <div class="theory-header" onclick="toggleTheory(this)">
-          <span>🛠️ Инструментарий диагноста (Чем и что проверять)</span>
-          <span class="arrow">▼</span>
-        </div>
+        <div class="theory-header" onclick="toggleTheory(this)"><span>🛠️ Инструментарий</span><span class="arrow">▼</span></div>
         <div class="theory-content">
           <ul>
-            <li><strong>Дымогенератор:</strong> Нагнетает дым во впуск. Если дым идет из щелей — там подсос воздуха.</li>
-            <li><strong>Leak-down test (Тест на утечку):</strong> В цилиндр подается сжатый воздух. Слушаешь: шипит в выхлопную (прогар выпускного клапана) или в впуск (впускного) или в радиатор (пробита прокладка).</li>
-            <li><strong>Компрессометр:</strong> Вкручивается вместо свечи. Если разница между цилиндрами больше 2 бар — проблема (кольца или клапаны).</li>
-            <li><strong>Осциллограф:</strong> Показывает форму сигнала ДПКВ, ДПРВ, форсунок. Позволяет увидеть растяжение цепи или забитые форсунки.</li>
-            <li><strong>Мотор-тестер:</strong> Замеряет ток стартера при прокрутке для оценки компрессии по цилиндрам без выкручивания свечей.</li>
+            <li><strong>Дымогенератор:</strong> Поиск подсоса воздуха.</li>
+            <li><strong>Leak-down test:</strong> Подача воздуха в цилиндр, слушаем шипение.</li>
+            <li><strong>Компрессометр:</strong> Разница > 2 бар = проблема.</li>
+            <li><strong>Осциллограф:</strong> Форма сигнала ДПКВ, форсунок.</li>
           </ul>
-          <button class="btn theory-btn-test" onclick="startLevel(4)">🎯 Проверить знания (Уровень Эксперт)</button>
+          <button class="btn theory-btn-test" onclick="startLevel(4)">🎯 Тест: Эксперт</button>
         </div>
       </div>
     </div>
-    
     <button class="btn" onclick="backToMenu()" style="margin-top:20px;">🏠 Назад в меню</button>
   </div>
 
@@ -330,7 +277,12 @@
     </div>
     <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
     <div id="levelBadge" class="level-badge level-1">Уровень</div>
-    <div class="question" id="questionText"></div>
+    
+    <div class="question-container">
+      <button class="speak-btn" onclick="speakQuestion()" title="Озвучить вопрос">🔊</button>
+      <div class="question" id="questionText"></div>
+    </div>
+    
     <div class="options" id="optionsBox"></div>
     <div class="explanation" id="explanation"></div>
     <button class="btn hidden" id="nextBtn" onclick="nextQuestion()">Далее →</button>
@@ -342,120 +294,154 @@
     <div class="result-title" id="resultTitle"></div>
     <div class="result-score" id="resultScore"></div>
     <div class="result-text" id="resultText"></div>
+    
+    <!-- НОВЫЕ БЕЙДЖИ -->
+    <div id="newBadgeBox" class="hidden" style="margin: 15px 0; padding: 10px; background: rgba(243,156,18,0.2); border: 1px dashed #f39c12; border-radius: 10px;">
+      <div style="color: #f39c12; font-weight: bold; margin-bottom: 5px;">🎉 Новое достижение!</div>
+      <div id="newBadgeName" style="font-size: 1.2em;"></div>
+    </div>
+
+    <!-- СТАТИСТИКА ПО ТЕМАМ -->
+    <div id="topicStatsBox" class="hidden" style="margin: 15px 0; text-align: left; background: rgba(0,0,0,0.2); padding: 15px; border-radius: 12px;">
+      <div class="section-title" style="margin-top:0;">📊 Твои знания по темам</div>
+      <div id="topicStatsContent"></div>
+    </div>
+
     <div id="reviewSection" class="hidden">
       <div class="section-title">📋 Разбор ошибок</div>
       <div id="reviewBox"></div>
     </div>
+    
     <button class="btn" onclick="backToMenu()">🏠 В главное меню</button>
     <button class="btn secondary" onclick="restartLevel()">🔁 Пройти ещё раз</button>
   </div>
 
   <!-- РЕКОРДЫ -->
   <div id="bestScreen" class="hidden">
-    <h1>🏆 Таблица рекордов</h1>
+    <h1>🏆 Статистика</h1>
     <div id="bestTableBox"></div>
-    <button class="btn" onclick="backToMenu()" style="margin-top:20px;">🏠 Назад</button>
+    <button class="btn danger" onclick="resetProgress()" style="margin-top:20px;">🗑️ Сбросить прогресс ЭТОГО профиля</button>
+    <button class="btn danger" onclick="resetAllProfiles()" style="margin-top:10px; background: rgba(231,76,60,0.4);">💥 Сбросить ВООБЩЕ ВСЁ (все профили)</button>
+    <button class="btn" onclick="backToMenu()" style="margin-top:10px;">🏠 Назад</button>
   </div>
 
 </div>
 
 <script>
 // ==================== БАЗА ВОПРОСОВ ====================
+// Каждому вопросу добавлена категория (topic)
 const questionsDB = {
-  1: [ // БАЗА
-    { q: "Причина масляного голодания двигателя?", options: ["Забитый маслоприемник", "Неисправный ДМРВ", "Подсос воздуха", "Пробитая прокладка ГБЦ"], correct: 0, exp: "Масляное голодание — это нехватка масла. Самая частая причина — забитый маслоприемник, реже — утечка или отказ насоса." },
-    { q: "Что означает маркировка шины 205/55 R16?", options: ["Ширина 205 мм, профиль 55% от ширины, R16 — посадочный диаметр в дюймах", "Ширина 205 мм, высота 55 мм, диаметр 16 см", "Радиус 205 мм, профиль 55, диск 16 дюймов", "Скоростной индекс 205, нагрузка 55, радиус 16"], correct: 0, exp: "205 — ширина в мм. 55 — высота профиля в % от ширины. R — радиальная конструкция. 16 — диаметр диска в дюймах." },
-    { q: "Какое стехиометрическое соотношение воздух/бензин для бензинового ДВС?", options: ["14.7:1", "12.5:1", "18.0:1", "10.0:1"], correct: 0, exp: "Для полного сгорания 1 кг бензина нужно 14.7 кг воздуха. Это λ=1." },
-    { q: "Что произойдет при обрыве ремня ГРМ на 16-клапанном двигателе?", options: ["Загнет клапаны", "Двигатель просто заглохнет", "Сработает датчик коленвала", "Заклинит генератор"], correct: 0, exp: "На большинстве современных 16v моторов поршни встречаются с клапанами при обрыве ремня. Влечёт дорогой ремонт ГБЦ." },
-    { q: "Какой инструмент используется для проверки компрессии?", options: ["Компрессометр", "Манометр топливной рампы", "Осциллограф", "Дымогенератор"], correct: 0, exp: "Компрессометр вкручивается в свечное отверстие и измеряет максимальное давление сжатия." },
-    { q: "Что означает ошибка P0301?", options: ["Пропуски зажигания в 1-м цилиндре", "Слишком бедная смесь", "Неисправность ДПКВ", "Перегрев двигателя"], correct: 0, exp: "P0301 — Cylinder 1 Misfire Detected. Указывает на пропуски воспламенения именно в первом цилиндре." },
-    { q: "Чем отличается гидрокомпенсатор от обычного толкателя?", options: ["Автоматически убирает зазор клапана за счет давления масла", "Имеет другой диаметр", "Изготовлен из алюминия", "Не требует смазки"], correct: 0, exp: "Гидрокомпенсатор заполняется маслом и выбирает зазор автоматически, избавляя от необходимости регулировки клапанов." },
-    { q: "Для чего нужен клапан EGR?", options: ["Для снижения температуры сгорания и выбросов NOx", "Для увеличения мощности", "Для очистки топлива", "Для подогрева салона"], correct: 0, exp: "EGR направляет часть выхлопных газов обратно во впуск. Это снижает температуру горения и уменьшает образование оксидов азота." },
-    { q: "Какое типичное давление в шинах легкового автомобиля?", options: ["2.0–2.5 бар", "0.5–1.0 бар", "4.0–5.0 бар", "6.0–7.0 бар"], correct: 0, exp: "Стандартное давление для большинства легковых авто — около 2.0–2.5 бар (зависит от модели и нагрузки)." },
-    { q: "Что означает VVT (Variable Valve Timing)?", options: ["Систему изменения фаз газораспределения", "Тип турбины", "Изменение степени сжатия", "Тип АКПП"], correct: 0, exp: "VVT позволяет менять момент открытия и закрытия клапанов в зависимости от оборотов и нагрузки." },
-    { q: "Из-за чего возникает детонация?", options: ["Из-за слишком раннего зажигания или низкого октанового числа", "Из-за позднего зажигания", "Из-за богатой смеси", "Из-за высокого давления масла"], correct: 0, exp: "Детонация — взрывное сгорание. Причины: ранний УОЗ, низкий октан, перегрев, нагар." },
-    { q: "Что такое калильное число свечи?", options: ["Способность свечи отводить тепло", "Напряжение пробоя", "Диаметр резьбы", "Длина искрового зазора"], correct: 0, exp: "Чем выше калильное число, тем 'холоднее' свеча (лучше отводит тепло). Для форсированных моторов нужны 'холодные' свечи." },
-    { q: "Что проверяют дымогенератором?", options: ["Подсос воздуха во впуске", "Компрессию", "Давление масла", "Зазор клапанов"], correct: 0, exp: "Дымогенератор подает дым под давлением в систему, показывая все негерметичности." },
-    { q: "Зачем нужен термостат?", options: ["Регулирует поток антифриза через радиатор", "Включает вентилятор", "Измеряет температуру ОЖ", "Создает давление в системе"], correct: 0, exp: "На холодную термостат закрыт (мотор греется). При нагреве открывается, пуская антифриз через радиатор." },
-    { q: "Какая жидкость используется в гидроусилителе руля (ГУР)?", options: ["Специальная жидкость ATF или PSF", "Моторное масло", "Антифриз", "Тормозная жидкость"], correct: 0, exp: "В ГУР заливается специальная жидкость (часто ATF Dexron). Моторное масло или антифриз разрушат систему." },
-    { q: "Что произойдет при заклинивании термостата в закрытом положении?", options: ["Двигатель перегреется", "Двигатель не нагреется", "Откажет печка", "Порвется ремень"], correct: 0, exp: "Если термостат не открывается, антифриз не идет в радиатор. Мотор быстро перегревается." },
-    { q: "Какой датчик отвечает за расчет нагрузки на двигатель?", options: ["ДМРВ (MAF) или ДАД (MAP)", "ДПКВ", "ДПДЗ", "Датчик детонации"], correct: 0, exp: "ЭБУ рассчитывает цикловое наполнение цилиндров по массовому расходу воздуха (ДМРВ) или разряжению (ДАД)." },
-    { q: "Что означает маркировка масла 5W-30?", options: ["5W — низкотемпературная вязкость, 30 — высокотемпературная", "Объем двигателя 5 литров", "Срок службы 5 месяцев", "Класс API 5, SAE 30"], correct: 0, exp: "5W показывает прокачиваемость на морозе, 30 — вязкость при 100°C. Чем выше второе число — тем гуще масло." },
-    { q: "Для чего нужен адсорбер (EVAP)?", options: ["Улавливает пары бензина из бака", "Фильтрует топливо", "Охлаждает бензин", "Снижает шум впуска"], correct: 0, exp: "Адсорбер собирает пары топлива, чтобы они не попадали в атмосферу, и отправляет их во впуск на сгорание." },
-    { q: "Как часто нужно менять ремень ГРМ?", options: ["Каждые 60–90 тыс. км или по регламенту", "Каждые 200 тыс. км", "Только когда порвется", "Раз в 5 лет независимо от пробега"], correct: 0, exp: "Регламент у всех разный, но обычно 60–90 тыс. км. Лучше менять с роликами и помпой заранее." }
+  1: [
+    { q: "Причина масляного голодания двигателя?", options: ["Забитый маслоприемник", "Неисправный ДМРВ", "Подсос воздуха", "Пробитая прокладка ГБЦ"], correct: 0, topic: "engine", exp: "Масляное голодание — это нехватка масла. Самая частая причина — забитый маслоприемник." },
+    { q: "Что означает маркировка шины 205/55 R16?", options: ["Ширина 205 мм, профиль 55% от ширины, R16 — посадочный диаметр", "Ширина 205 мм, высота 55 мм, диаметр 16 см", "Радиус 205 мм, профиль 55, диск 16 дюймов", "Скоростной индекс 205, нагрузка 55, радиус 16"], correct: 0, topic: "suspension", exp: "205 — ширина в мм. 55 — высота профиля в % от ширины. R — радиальная конструкция. 16 — диаметр диска в дюймах." },
+    { q: "Какое стехиометрическое соотношение воздух/бензин для бензинового ДВС?", options: ["14.7:1", "12.5:1", "18.0:1", "10.0:1"], correct: 0, topic: "diagnostics", exp: "Для полного сгорания 1 кг бензина нужно 14.7 кг воздуха. Это λ=1." },
+    { q: "Что произойдет при обрыве ремня ГРМ на 16-клапанном двигателе?", options: ["Загнет клапаны", "Двигатель просто заглохнет", "Сработает датчик коленвала", "Заклинит генератор"], correct: 0, topic: "engine", exp: "На большинстве современных 16v моторов поршни встречаются с клапанами при обрыве ремня." },
+    { q: "Какой инструмент используется для проверки компрессии?", options: ["Компрессометр", "Манометр топливной рампы", "Осциллограф", "Дымогенератор"], correct: 0, topic: "tools", exp: "Компрессометр вкручивается в свечное отверстие и измеряет максимальное давление сжатия." },
+    { q: "Что означает ошибка P0301?", options: ["Пропуски зажигания в 1-м цилиндре", "Слишком бедная смесь", "Неисправность ДПКВ", "Перегрев двигателя"], correct: 0, topic: "diagnostics", exp: "P0301 — Cylinder 1 Misfire Detected." },
+    { q: "Чем отличается гидрокомпенсатор от обычного толкателя?", options: ["Автоматически убирает зазор клапана за счет давления масла", "Имеет другой диаметр", "Изготовлен из алюминия", "Не требует смазки"], correct: 0, topic: "engine", exp: "Гидрокомпенсатор заполняется маслом и выбирает зазор автоматически." },
+    { q: "Для чего нужен клапан EGR?", options: ["Для снижения температуры сгорания и выбросов NOx", "Для увеличения мощности", "Для очистки топлива", "Для подогрева салона"], correct: 0, topic: "engine", exp: "EGR направляет часть выхлопных газов обратно во впуск." },
+    { q: "Какое типичное давление в шинах легкового автомобиля?", options: ["2.0–2.5 бар", "0.5–1.0 бар", "4.0–5.0 бар", "6.0–7.0 бар"], correct: 0, topic: "suspension", exp: "Стандартное давление — около 2.0–2.5 бар." },
+    { q: "Что означает VVT (Variable Valve Timing)?", options: ["Систему изменения фаз газораспределения", "Тип турбины", "Изменение степени сжатия", "Тип АКПП"], correct: 0, topic: "engine", exp: "VVT позволяет менять момент открытия и закрытия клапанов." },
+    { q: "Из-за чего возникает детонация?", options: ["Из-за слишком раннего зажигания или низкого октанового числа", "Из-за позднего зажигания", "Из-за богатой смеси", "Из-за высокого давления масла"], correct: 0, topic: "diagnostics", exp: "Детонация — взрывное сгорание. Причины: ранний УОЗ, низкий октан." },
+    { q: "Что такое калильное число свечи?", options: ["Способность свечи отводить тепло", "Напряжение пробоя", "Диаметр резьбы", "Длина искрового зазора"], correct: 0, topic: "engine", exp: "Чем выше калильное число, тем 'холоднее' свеча." },
+    { q: "Что проверяют дымогенератором?", options: ["Подсос воздуха во впуске", "Компрессию", "Давление масла", "Зазор клапанов"], correct: 0, topic: "tools", exp: "Дымогенератор подает дым под давлением в систему." },
+    { q: "Зачем нужен термостат?", options: ["Регулирует поток антифриза через радиатор", "Включает вентилятор", "Измеряет температуру ОЖ", "Создает давление в системе"], correct: 0, topic: "engine", exp: "На холодную термостат закрыт. При нагреве открывается." },
+    { q: "Какая жидкость используется в гидроусилителе руля (ГУР)?", options: ["Специальная жидкость ATF или PSF", "Моторное масло", "Антифриз", "Тормозная жидкость"], correct: 0, topic: "suspension", exp: "В ГУР заливается специальная жидкость (часто ATF Dexron)." },
+    { q: "Что произойдет при заклинивании термостата в закрытом положении?", options: ["Двигатель перегреется", "Двигатель не нагреется", "Откажет печка", "Порвется ремень"], correct: 0, topic: "engine", exp: "Если термостат не открывается, антифриз не идет в радиатор." },
+    { q: "Какой датчик отвечает за расчет нагрузки на двигатель?", options: ["ДМРВ (MAF) или ДАД (MAP)", "ДПКВ", "ДПДЗ", "Датчик детонации"], correct: 0, topic: "electric", exp: "ЭБУ рассчитывает наполнение по массовому расходу воздуха (ДМРВ)." },
+    { q: "Что означает маркировка масла 5W-30?", options: ["5W — низкотемпературная вязкость, 30 — высокотемпературная", "Объем двигателя 5 литров", "Срок службы 5 месяцев", "Класс API 5, SAE 30"], correct: 0, topic: "engine", exp: "5W показывает прокачиваемость на морозе, 30 — вязкость при 100°C." },
+    { q: "Для чего нужен адсорбер (EVAP)?", options: ["Улавливает пары бензина из бака", "Фильтрует топливо", "Охлаждает бензин", "Снижает шум впуска"], correct: 0, topic: "engine", exp: "Адсорбер собирает пары топлива, чтобы они не попадали в атмосферу." },
+    { q: "Как часто нужно менять ремень ГРМ?", options: ["Каждые 60–90 тыс. км или по регламенту", "Каждые 200 тыс. км", "Только когда порвется", "Раз в 5 лет независимо от пробега"], correct: 0, topic: "engine", exp: "Регламент обычно 60–90 тыс. км." }
   ],
-  2: [ // МЕХАНИК
-    { q: "Признак пробитой прокладки ГБЦ?", options: ["Белый густой дым из выхлопа и эмульсия на щупе", "Черный дым из выхлопа", "Стук в подвеске", "Скрип тормозов"], correct: 0, exp: "Антифриз попадает в цилиндры (белый дым) и в масло (эмульсия 'майонез' на щупе)." },
-    { q: "Ошибка P0171 означает:", options: ["Слишком бедная смесь (Bank 1)", "Богатая смесь", "Пропуски зажигания", "Отказ ДМРВ"], correct: 0, exp: "P0171 — System Too Lean. ЭБУ добавляет максимум топлива, но лямбда все равно видит много воздуха." },
-    { q: "Причина 'троения' двигателя?", options: ["Пропуски зажигания из-за свечи, катушки, форсунки или компрессии", "Износ тормозных колодок", "Низкое давление в шинах", "Неисправность ABS"], correct: 0, exp: "Троение — не работает один или несколько цилиндров. Проверяют свечи, катушки, форсунки, замеряют компрессию." },
-    { q: "Что означает ошибка P0420?", options: ["Низкая эффективность катализатора", "Отказ лямбда-зонда", "Пропуски зажигания", "Богатая смесь"], correct: 0, exp: "P0420 — Catalyst System Efficiency Below Threshold. ЭБУ видит одинаковые показания с двух лямбд (до и после катализатора)." },
-    { q: "Что произойдет при сильном подсосе воздуха во впуск?", options: ["Бедная смесь, плавают обороты ХХ, ошибка P0171", "Богатая смесь, черный дым", "Откажет генератор", "Застучат клапаны"], correct: 0, exp: "Неучтенный ДМРВ воздух обедняет смесь. ЭБУ пытается добавить топливо, но упирается в лимит коррекции." },
-    { q: "Что регулирует клапан PCV?", options: ["Вентиляцию картерных газов", "Давление в топливной рампе", "Угол опережения зажигания", "Рециркуляцию выхлопа"], correct: 0, exp: "PCV (Positive Crankcase Ventilation) отводит картерные газы во впуск, чтобы не выдавливало сальники." },
-    { q: "Для чего нужен интеркулер?", options: ["Охлаждает сжатый турбиной воздух для повышения плотности", "Охлаждает моторное масло", "Охлаждает антифриз", "Глушит впуск"], correct: 0, exp: "При сжатии воздух нагревается и расширяется. Интеркулер охлаждает его, повышая плотность и количество кислорода." },
-    { q: "Что означает ошибка P0011?", options: ["Неправильное положение распредвала (Timing Over-Advanced)", "Отказ ДПКВ", "Пропуски зажигания", "Богатая смесь"], correct: 0, exp: "P0011 — Camshaft Position Timing Over-Advanced. Часто из-за забитого маслоканала муфты VVT или растянутой цепи." },
-    { q: "Что такое форсунка GDI (прямой впрыск)?", options: ["Впрыскивает топливо прямо в цилиндр под высоким давлением", "Впрыскивает во впускной коллектор", "Распыляет топливо в дросселе", "Это карбюратор"], correct: 0, exp: "GDI (Gasoline Direct Injection) — топливо подается напрямую в камеру сгорания, минуя клапаны." },
-    { q: "Что означает 'лямбда = 1'?", options: ["Стехиометрическая смесь", "Бедная смесь", "Богатая смесь", "Отказ датчика"], correct: 0, exp: "λ=1 — идеальное соотношение 14.7:1. λ<1 — богатая смесь, λ>1 — бедная." },
-    { q: "Что означает 'твин-турбо'?", options: ["Две турбины (параллельно или последовательно)", "Турбина с двумя крыльчатками", "Турбина с электроприводом", "Турбина с изменяемой геометрией"], correct: 0, exp: "Твин-турбо — две турбины. Бывают параллельные (по турбине на ряд цилиндров) или последовательные (маленькая + большая)." },
-    { q: "Почему нельзя затягивать ГБЦ 'на глаз'?", options: ["Нужен динамометрический ключ и правильный порядок затяжки", "Можно порвать ремень ГРМ", "Сработает датчик детонации", "Ничего не будет"], correct: 0, exp: "Затягивается в 2-3 прохода с определенным моментом от центра к краям, чтобы не повело головку." },
-    { q: "Что такое сброс адаптаций в ЭБУ?", options: ["Обнуление обученных параметров коррекции топлива и ХХ", "Прошивка ЭБУ", "Сброс ошибок ABS", "Отключение иммобилайзера"], correct: 0, exp: "Сброс адаптаций стирает топливные коррекции (STFT/LTFT). ЭБУ заново начинает обучаться после ремонта." },
-    { q: "Какой признак износа двухмассового маховика?", options: ["Стук/лязг на холостом ходу, вибрации при трогании", "Белый дым", "Скрип тормозов", "Течь антифриза"], correct: 0, exp: "Двухмассовый маховик (DMF) со временем начинает греметь на ХХ и давать вибрации при старте." },
-    { q: "Что такое LSPI (Low Speed Pre-Ignition)?", options: ["Преждевременное воспламенение на низких оборотах под нагрузкой", "Детонация на высоких оборотах", "Пропуск зажигания", "Гидроудар"], correct: 0, exp: "LSPI — опасное явление на турбо-двигателях с прямым впрыском. Смесь воспламеняется до искры, разрушая поршни." },
-    { q: "Для чего нужен датчик давления в шинах (TPMS)?", options: ["Предупреждает о падении давления", "Регулирует давление", "Накачивает шины", "Измеряет температуру"], correct: 0, exp: "Система контроля давления в шинах (TPMS) зажигает лампу при падении давления ниже нормы." },
-    { q: "Какой датчик определяет положение коленвала?", options: ["ДПКВ", "ДМРВ", "ДПДЗ", "ДТОЖ"], correct: 0, exp: "ДПКВ (Crankshaft Position Sensor) сообщает ЭБУ частоту вращения и положение коленвала для зажигания и впрыска." },
-    { q: "Почему появляется 'белый дым' из выхлопной?", options: ["Попадание антифриза в камеру сгорания", "Богатая смесь", "Износ колец", "Забитый катализатор"], correct: 0, exp: "Белый густой дым (пар) с запахом сладкого — признак пробоя прокладки ГБЦ или трещины в головке." },
-    { q: "Что такое 'гидроудар'?", options: ["Попадание жидкости в цилиндр, вызывающее деформацию шатуна", "Удар подвески о препятствие", "Отказ ГУР", "Удар в АКПП"], correct: 0, exp: "Жидкость не сжимается. При попадании в цилиндр поршень останавливается, шатун гнется." },
-    { q: "Для чего нужен клапан сброса давления (Blow-off) на турбине?", options: ["Сбрасывает избыточное давление при закрытии дросселя", "Сбрасывает масло", "Охлаждает турбину", "Глушит мотор"], correct: 0, exp: "При сбросе газа дроссель закрывается, турбина продолжает дуть. Blow-off сбрасывает воздух, чтобы не было помпажа." }
+  2: [
+    { q: "Признак пробитой прокладки ГБЦ?", options: ["Белый густой дым из выхлопа и эмульсия на щупе", "Черный дым из выхлопа", "Стук в подвеске", "Скрип тормозов"], correct: 0, topic: "engine", exp: "Антифриз попадает в цилиндры и в масло." },
+    { q: "Ошибка P0171 означает:", options: ["Слишком бедная смесь (Bank 1)", "Богатая смесь", "Пропуски зажигания", "Отказ ДМРВ"], correct: 0, topic: "diagnostics", exp: "P0171 — System Too Lean." },
+    { q: "Причина 'троения' двигателя?", options: ["Пропуски зажигания из-за свечи, катушки, форсунки", "Износ тормозных колодок", "Низкое давление в шинах", "Неисправность ABS"], correct: 0, topic: "engine", exp: "Троение — не работает один или несколько цилиндров." },
+    { q: "Что означает ошибка P0420?", options: ["Низкая эффективность катализатора", "Отказ лямбда-зонда", "Пропуски зажигания", "Богатая смесь"], correct: 0, topic: "diagnostics", exp: "P0420 — Catalyst System Efficiency Below Threshold." },
+    { q: "Что произойдет при сильном подсосе воздуха во впуск?", options: ["Бедная смесь, плавают обороты ХХ, ошибка P0171", "Богатая смесь, черный дым", "Откажет генератор", "Застучат клапаны"], correct: 0, topic: "engine", exp: "Неучтенный воздух обедняет смесь." },
+    { q: "Что регулирует клапан PCV?", options: ["Вентиляцию картерных газов", "Давление в топливной рампе", "Угол опережения зажигания", "Рециркуляцию выхлопа"], correct: 0, topic: "engine", exp: "PCV отводит картерные газы во впуск." },
+    { q: "Для чего нужен интеркулер?", options: ["Охлаждает сжатый турбиной воздух для повышения плотности", "Охлаждает моторное масло", "Охлаждает антифриз", "Глушит впуск"], correct: 0, topic: "engine", exp: "Интеркулер охлаждает воздух, повышая плотность." },
+    { q: "Что означает ошибка P0011?", options: ["Неправильное положение распредвала", "Отказ ДПКВ", "Пропуски зажигания", "Богатая смесь"], correct: 0, topic: "diagnostics", exp: "P0011 — Camshaft Position Timing Over-Advanced." },
+    { q: "Что такое форсунка GDI (прямой впрыск)?", options: ["Впрыскивает топливо прямо в цилиндр под высоким давлением", "Впрыскивает во впускной коллектор", "Распыляет топливо в дросселе", "Это карбюратор"], correct: 0, topic: "engine", exp: "GDI — топливо подается напрямую в камеру сгорания." },
+    { q: "Что означает 'лямбда = 1'?", options: ["Стехиометрическая смесь", "Бедная смесь", "Богатая смесь", "Отказ датчика"], correct: 0, topic: "diagnostics", exp: "λ=1 — идеальное соотношение." },
+    { q: "Что означает 'твин-турбо'?", options: ["Две турбины", "Турбина с двумя крыльчатками", "Турбина с электроприводом", "Турбина с изменяемой геометрией"], correct: 0, topic: "engine", exp: "Твин-турбо — две турбины (параллельно или последовательно)." },
+    { q: "Почему нельзя затягивать ГБЦ 'на глаз'?", options: ["Нужен динамометрический ключ и правильный порядок затяжки", "Можно порвать ремень ГРМ", "Сработает датчик детонации", "Ничего не будет"], correct: 0, topic: "engine", exp: "Затягивается с определенным моментом от центра к краям." },
+    { q: "Что такое сброс адаптаций в ЭБУ?", options: ["Обнуление обученных параметров коррекции", "Прошивка ЭБУ", "Сброс ошибок ABS", "Отключение иммобилайзера"], correct: 0, topic: "electric", exp: "Сброс адаптаций стирает топливные коррекции." },
+    { q: "Какой признак износа двухмассового маховика?", options: ["Стук/лязг на холостом ходу, вибрации", "Белый дым", "Скрип тормозов", "Течь антифриза"], correct: 0, topic: "transmission", exp: "Двухмассовый маховик со временем гремит на ХХ." },
+    { q: "Что такое LSPI (Low Speed Pre-Ignition)?", options: ["Преждевременное воспламенение на низких оборотах", "Детонация на высоких оборотах", "Пропуск зажигания", "Гидроудар"], correct: 0, topic: "engine", exp: "LSPI — опасно для турбо-двигателей с прямым впрыском." },
+    { q: "Для чего нужен датчик давления в шинах (TPMS)?", options: ["Предупреждает о падении давления", "Регулирует давление", "Накачивает шины", "Измеряет температуру"], correct: 0, topic: "electric", exp: "TPMS зажигает лампу при падении давления." },
+    { q: "Какой датчик определяет положение коленвала?", options: ["ДПКВ", "ДМРВ", "ДПДЗ", "ДТОЖ"], correct: 0, topic: "electric", exp: "ДПКВ сообщает ЭБУ частоту вращения и положение коленвала." },
+    { q: "Почему появляется 'белый дым' из выхлопной?", options: ["Попадание антифриза в камеру сгорания", "Богатая смесь", "Износ колец", "Забитый катализатор"], correct: 0, topic: "engine", exp: "Белый дым — признак пробоя прокладки ГБЦ." },
+    { q: "Что такое 'гидроудар'?", options: ["Попадание жидкости в цилиндр, деформация шатуна", "Удар подвески о препятствие", "Отказ ГУР", "Удар в АКПП"], correct: 0, topic: "engine", exp: "Жидкость не сжимается. Шатун гнется." },
+    { q: "Для чего нужен клапан сброса давления (Blow-off)?", options: ["Сбрасывает избыточное давление при закрытии дросселя", "Сбрасывает масло", "Охлаждает турбину", "Глушит мотор"], correct: 0, topic: "engine", exp: "Blow-off сбрасывает воздух, чтобы не было помпажа." }
   ],
-  3: [ // ПРОФИ
-    { q: "Что такое 'калильное зажигание'?", options: ["Воспламенение смеси от раскаленных частиц без искры", "Искра от свечи", "Впрыск при холодном пуске", "Раннее зажигание"], correct: 0, exp: "Калильное зажигание не управляется ЭБУ. Свеча или нагар раскаляются и поджигают смесь." },
-    { q: "Какая степень сжатия у современного турбодизеля?", options: ["14–18:1", "8–10:1", "4–6:1", "25–30:1"], correct: 0, exp: "Турбодизели имеют степень сжатия 14–18:1. Атмосферные дизели — 18–22:1. Бензинки — 9–12:1." },
-    { q: "Что означает ошибка P0171 вместе с P0174?", options: ["Бедная смесь в обоих банках (общая причина)", "Отказ двух лямбда-зондов", "Пропуски во всех цилиндрах", "Отказ ДПКВ"], correct: 0, exp: "P0171 (Bank 1) + P0174 (Bank 2) означают, что бедность общая. Ищи подсос воздуха, умирающий бензонасос или грязный ДМРВ." },
-    { q: "Что такое 'перекрытие клапанов'?", options: ["Одновременное открытие впускного и выпускного клапанов", "Увеличенный зазор клапанов", "Сдвиг фаз ГРМ", "Износ кулачка"], correct: 0, exp: "В конце такта выпуска и начале впуска оба клапана приоткрыты. Улучшает наполнение цилиндров." },
-    { q: "Как ЭБУ борется с детонацией?", options: ["Снижает угол опережения зажигания по сигналу датчика детонации", "Увеличивает подачу топлива", "Открывает термостат", "Глушит двигатель"], correct: 0, exp: "Датчик детонации слышит вибрации, ЭБУ сразу откатывает УОЗ назад." },
-    { q: "Какое значение LTFT указывает на критическую бедность смеси?", options: ["+25% и выше", "-10%", "0%", "-25%"], correct: 0, exp: "LTFT (Long Term Fuel Trim) +25% означает, что ЭБУ добавляет 25% топлива и уперся в предел. Смесь очень бедная." },
-    { q: "Зачем нужен широкополосный лямбда-зонд (LSU)?", options: ["Измеряет точный состав смеси (λ) в широком диапазоне", "Просто показывает богато/бедно", "Измеряет температуру выхлопа", "Снижает токсичность"], correct: 0, exp: "В отличие от узкополосного, LSU выдает точное значение λ (например, 0.85 или 1.15) в широком диапазоне." },
-    { q: "Что произойдет при заклинивании клапана EGR в открытом положении?", options: ["Нестабильный ХХ, двигатель может глохнуть", "Перегрев", "Детонация", "Отказ стартера"], correct: 0, exp: "На холостом ходу выхлопные газы сильно разбавляют смесь. Двигатель троит или глохнет." },
-    { q: "Что такое 'адаптация дросселя'?", options: ["Обучение ЭБУ крайних положений заслонки (0% и 100%)", "Прошивка", "Замена датчика", "Чистка заслонки"], correct: 0, exp: "После чистки дросселя нужно обучить ЭБУ, иначе обороты ХХ будут плавать или зависать." },
-    { q: "Что означает ошибка P0016?", options: ["Рассинхронизация коленвала и распредвала (цепь растянута)", "Пропуски зажигания", "Богатая смесь", "Отказ ДМРВ"], correct: 0, exp: "P0016 — Crankshaft/Camshaft Position Correlation. ЭБУ видит, что метки не совпадают. Часто из-за растянутой цепи ГРМ." },
-    { q: "Что такое 'прямой впрыск' и его главная проблема?", options: ["Впрыск в цилиндр; нагар на впускных клапанах", "Впрыск в коллектор; обледенение", "Впрыск в дроссель; подсос", "Карбюратор; износ"], correct: 0, exp: "Топливо не омывает впускные клапаны, поэтому на них оседает нагар от масла и картерных газов." },
-    { q: "Что такое 'Returnless' топливная система?", options: ["Без обратной линии; регулятор давления стоит в баке", "С обраткой", "Без бензонасоса", "С механическим ТНВД"], correct: 0, exp: "В returnless системах нет обратки. Давление регулируется в модуле бензонасоса, а ЭБУ управляет ШИМ-сигналом." },
-    { q: "Зачем нужен маслоотделитель (oil separator)?", options: ["Отделяет масло от картерных газов", "Фильтрует масло", "Охлаждает масло", "Подогревает масло"], correct: 0, exp: "Не дает маслу попадать во впуск вместе с картерными газами. Иначе будет нагар и детонация." },
-    { q: "Что такое 'e-turbo' (электротурбина)?", options: ["Электромотор раскручивает крыльчатку, убирая турбояму", "Турбина с двумя крыльчатками", "Турбина с изменяемой геометрией", "Турбина на дизеле"], correct: 0, exp: "E-turbo (например, на Mercedes) использует электрический мотор для мгновенного раскручивания турбины." },
-    { q: "Какое сопротивление должно быть у первичной обмотки катушки зажигания?", options: ["0.3–1.5 Ом", "5–15 кОм", "1 МОм", "100 Ом"], correct: 0, exp: "Первичная обмотка имеет низкое сопротивление (0.3–1.5 Ом). Вторичная — высокое (5–15 кОм)." },
-    { q: "Что такое 'фазовращатель' (VVT-муфта)?", options: ["Механизм, меняющий угол распредвала относительно цепи", "Датчик положения распредвала", "Клапан EGR", "Турбина"], correct: 0, exp: "Муфта VVT управляется масляным клапаном (OCV) и поворачивает распредвал, меняя фазы газораспределения." },
-    { q: "Что означает 'скважность форсунки 15% на ХХ'?", options: ["Форсунка открыта 15% времени", "Форсунка открыта 85% времени", "Отказ форсунки", "Форсунка закрыта"], correct: 0, exp: "Скважность (Duty Cycle) — время открытия. На ХХ 2–5%, под нагрузкой растет до 80%." },
-    { q: "Почему на турбомоторе с GDI нужен зазор свечи меньше?", options: ["Из-за высокого давления наддува искру сдувает", "Из-за низкой компрессии", "Из-за плохого бензина", "Из-за раннего зажигания"], correct: 0, exp: "Плотный воздух под давлением затрудняет пробой. Зазор уменьшают до 0.5–0.6 мм, чтобы искра не гасла." },
-    { q: "Что такое 'гидрокомпенсатор' и как он работает?", options: ["Плунжер, заполняемый маслом для выбора зазора клапана", "Насос ГУР", "Демпфер коленвала", "Датчик давления масла"], correct: 0, exp: "Масло подается внутрь плунжера, он выдвигается и убирает тепловой зазор." },
-    { q: "Что вызывает ошибку P0300?", options: ["Множественные/случайные пропуски зажигания", "Неисправность АКПП", "Ошибка ABS", "Низкий заряд АКБ"], correct: 0, exp: "P0300 — Random/Multiple Cylinder Misfire. ЭБУ не может определить конкретный цилиндр." }
+  3: [
+    { q: "Что такое 'калильное зажигание'?", options: ["Воспламенение от раскаленных частиц без искры", "Искра от свечи", "Впрыск при холодном пуске", "Раннее зажигание"], correct: 0, topic: "engine", exp: "Свеча или нагар раскаляются и поджигают смесь." },
+    { q: "Какая степень сжатия у современного турбодизеля?", options: ["14–18:1", "8–10:1", "4–6:1", "25–30:1"], correct: 0, topic: "engine", exp: "Турбодизели имеют степень сжатия 14–18:1." },
+    { q: "Что означает ошибка P0171 вместе с P0174?", options: ["Бедная смесь в обоих банках", "Отказ двух лямбда-зондов", "Пропуски во всех цилиндрах", "Отказ ДПКВ"], correct: 0, topic: "diagnostics", exp: "Бедность общая. Ищи подсос или умирающий насос." },
+    { q: "Что такое 'перекрытие клапанов'?", options: ["Одновременное открытие впускного и выпускного клапанов", "Увеличенный зазор", "Сдвиг фаз ГРМ", "Износ кулачка"], correct: 0, topic: "engine", exp: "В конце такта выпуска и начале впуска оба клапана приоткрыты." },
+    { q: "Как ЭБУ борется с детонацией?", options: ["Снижает угол опережения зажигания", "Увеличивает подачу топлива", "Открывает термостат", "Глушит двигатель"], correct: 0, topic: "electric", exp: "Датчик детонации слышит вибрации, ЭБУ откатывает УОЗ." },
+    { q: "Какое значение LTFT указывает на критическую бедность?", options: ["+25% и выше", "-10%", "0%", "-25%"], correct: 0, topic: "diagnostics", exp: "LTFT +25% означает, что ЭБУ уперся в предел обогащения." },
+    { q: "Зачем нужен широкополосный лямбда-зонд (LSU)?", options: ["Измеряет точный состав смеси (λ) в широком диапазоне", "Показывает богато/бедно", "Измеряет температуру", "Снижает токсичность"], correct: 0, topic: "electric", exp: "LSU выдает точное значение λ в широком диапазоне." },
+    { q: "Что произойдет при заклинивании клапана EGR в открытом положении?", options: ["Нестабильный ХХ, двигатель может глохнуть", "Перегрев", "Детонация", "Отказ стартера"], correct: 0, topic: "engine", exp: "Выхлопные газы разбавляют смесь на ХХ." },
+    { q: "Что такое 'адаптация дросселя'?", options: ["Обучение ЭБУ крайних положений заслонки", "Прошивка", "Замена датчика", "Чистка заслонки"], correct: 0, topic: "electric", exp: "После чистки нужно обучить ЭБУ." },
+    { q: "Что означает ошибка P0016?", options: ["Рассинхронизация коленвала и распредвала", "Пропуски зажигания", "Богатая смесь", "Отказ ДМРВ"], correct: 0, topic: "diagnostics", exp: "Часто из-за растянутой цепи ГРМ." },
+    { q: "Что такое 'прямой впрыск' и его проблема?", options: ["Впрыск в цилиндр; нагар на впускных клапанах", "Впрыск в коллектор", "Впрыск в дроссель", "Карбюратор"], correct: 0, topic: "engine", exp: "Топливо не омывает впускные клапаны, оседает нагар." },
+    { q: "Что такое 'Returnless' топливная система?", options: ["Без обратной линии; регулятор в баке", "С обраткой", "Без бензонасоса", "С механическим ТНВД"], correct: 0, topic: "engine", exp: "Нет обратки. Давление регулируется в модуле насоса." },
+    { q: "Зачем нужен маслоотделитель?", options: ["Отделяет масло от картерных газов", "Фильтрует масло", "Охлаждает масло", "Подогревает масло"], correct: 0, topic: "engine", exp: "Не дает маслу попадать во впуск." },
+    { q: "Что такое 'e-turbo' (электротурбина)?", options: ["Электромотор раскручивает крыльчатку", "Турбина с двумя крыльчатками", "Турбина с изменяемой геометрией", "Турбина на дизеле"], correct: 0, topic: "engine", exp: "Убирает турбояму с помощью электрического мотора." },
+    { q: "Какое сопротивление у первичной обмотки катушки?", options: ["0.3–1.5 Ом", "5–15 кОм", "1 МОм", "100 Ом"], correct: 0, topic: "electric", exp: "Первичная — низкое (0.3–1.5 Ом). Вторичная — высокое." },
+    { q: "Что такое 'фазовращатель' (VVT-муфта)?", options: ["Меняет угол распредвала относительно цепи", "Датчик положения", "Клапан EGR", "Турбина"], correct: 0, topic: "engine", exp: "Управляется масляным клапаном (OCV)." },
+    { q: "Что означает 'скважность форсунки 15% на ХХ'?", options: ["Форсунка открыта 15% времени", "Открыта 85% времени", "Отказ форсунки", "Закрыта"], correct: 0, topic: "diagnostics", exp: "Скважность (Duty Cycle) — время открытия." },
+    { q: "Почему на турбо-GDI нужен зазор свечи меньше?", options: ["Из-за высокого давления наддува искру сдувает", "Из-за низкой компрессии", "Из-за плохого бензина", "Из-за раннего зажигания"], correct: 0, topic: "engine", exp: "Плотный воздух затрудняет пробой." },
+    { q: "Что такое 'гидрокомпенсатор'?", options: ["Плунжер для выбора зазора клапана", "Насос ГУР", "Демпфер коленвала", "Датчик давления"], correct: 0, topic: "engine", exp: "Масло выдвигает плунжер и убирает тепловой зазор." },
+    { q: "Что вызывает ошибку P0300?", options: ["Множественные пропуски зажигания", "Неисправность АКПП", "Ошибка ABS", "Низкий заряд АКБ"], correct: 0, topic: "diagnostics", exp: "P0300 — Random/Multiple Cylinder Misfire." }
   ],
-  4: [ // ЭКСПЕРТ
-    { q: "Какой момент затяжки болтов ГБЦ типичен для бензинового ДВС?", options: ["60–100 Н·м в несколько проходов", "10–20 Н·м", "200–300 Н·м", "500 Н·м"], correct: 0, exp: "Обычно затягивается динамометрическим ключом в 2–3 этапа (например, 30 Нм, затем 60 Нм, затем доворот на 90°)." },
-    { q: "Какое сопротивление у индуктивного датчика коленвала (ДПКВ)?", options: ["0.5–1.5 кОм", "10 Ом", "1 МОм", "100 кОм"], correct: 0, exp: "Типичное сопротивление 500–1500 Ом. Проверяется мультиметром и осциллографом." },
-    { q: "Какое рабочее давление в системе прямого впрыска (GDI)?", options: ["50–200 бар", "3–4 бар", "1–2 бар", "500 бар"], correct: 0, exp: "ТНВД создает давление 50–200 бар (на некоторых до 350), чтобы впрыснуть топливо в цилиндр против компрессии." },
-    { q: "Что означает 'угол опережения зажигания 10° до ВМТ'?", options: ["Искра проскакивает за 10 градусов до верхней мертвой точки", "Искра после ВМТ", "Сдвиг фаз на 10 градусов", "Позднее зажигание"], correct: 0, exp: "Смесь поджигается заранее, чтобы пик давления пришелся ровно на ВМТ." },
-    { q: "Что такое 'тест на утечку (leak-down test)'?", options: ["Подача сжатого воздуха в цилиндр для поиска утечек", "Проверка давления масла", "Тест форсунок", "Тест катализатора"], correct: 0, exp: "Поршень ставится в ВМТ, в цилиндр подается воздух. Слушают, откуда шипит: клапаны, кольца или прокладка." },
-    { q: "Какой зазор свечи нужен для турбо-GDI?", options: ["0.5–0.6 мм", "0.8–1.0 мм", "0.2–0.3 мм", "1.5 мм"], correct: 0, exp: "Уменьшенный зазор нужен из-за высокого давления наддува и обедненной смеси, чтобы искру не сдувало." },
-    { q: "Что означает 'лямбда = 0.85'?", options: ["Богатая смесь (λ<1)", "Бедная смесь (λ>1)", "Стехиометрия (λ=1)", "Отказ датчика"], correct: 0, exp: "λ=0.85 означает, что топлива на 15% больше стехиометрии. Это богатая смесь для мощности." },
-    { q: "Что такое 'P0171 с LTFT +25% и STFT +10%'?", options: ["Критическая бедность, ЭБУ на пределе", "Норма", "Богатая смесь", "Отказ лямбда-зонда"], correct: 0, exp: "LTFT на максимуме (25%) — долгосрочная коррекция уперлась в предел. STFT (10%) пытается долить еще. Мотор работает на пределе." },
-    { q: "Какое напряжение выдает узкополосный лямбда-зонд при λ=1?", options: ["0.45 В", "0.1 В", "0.9 В", "5 В"], correct: 0, exp: "Узкополосный датчик (Zirconia) генерирует 0.1 В (бедно), 0.45 В (стехиометрия) и 0.9 В (богато)." },
-    { q: "Что такое 'тест компрессии с добавлением масла'?", options: ["Добавка масла в цилиндр для диагностики износа колец", "Замена масла", "Проверка насоса", "Тест ГБЦ"], correct: 0, exp: "Если после добавки масла компрессия выросла — изношены кольца. Если не изменилась — проблема в клапанах." },
-    { q: "Что такое 'степень сжатия 10.5:1'?", options: ["Отношение полного объема цилиндра к объему камеры сгорания", "Давление наддува", "Мощность на литр", "Ход поршня"], correct: 0, exp: "Объем цилиндра в НМТ делится на объем в ВМТ. Чем выше степень сжатия, тем выше КПД." },
-    { q: "Какое сопротивление у высокоомной бензиновой форсунки?", options: ["12–16 Ом", "1–3 Ом", "100 Ом", "1 МОм"], correct: 0, exp: "Высокоомные форсунки (Saturated) имеют 12–16 Ом. Низкоомные (Peak&Hold) — 1–3 Ом, ими управляют через резистор." },
-    { q: "Что такое 'P0016' на двигателе с цепью ГРМ?", options: ["Рассинхронизация коленвала и распредвала (растянутая цепь)", "Пропуски зажигания", "Отказ ДМРВ", "Богатая смесь"], correct: 0, exp: "ЭБУ сравнивает сигналы ДПКВ и ДПРВ. Если угол расходится — фиксирует P0016." },
-    { q: "Какая типичная компрессия для исправного бензинового ДВС?", options: ["12–14 бар", "6–8 бар", "20–25 бар", "3–5 бар"], correct: 0, exp: "Для обычного мотора норма 12–14 бар. Разница между цилиндрами не должна превышать 1–2 бар." },
-    { q: "Что означает 'скважность 80% на форсунке'?", options: ["Форсунка почти постоянно открыта (предельная нагрузка)", "Форсунка закрыта", "Форсунка неисправна", "Холостой ход"], correct: 0, exp: "80% — форсунка открыта 80% времени. Это говорит о предельной нагрузке или забитости (льют больше, чтобы компенсировать)." },
-    { q: "Какой зазор клапанов у двигателя с гидрокомпенсаторами?", options: ["0 (регулируется автоматически)", "0.15–0.25 мм", "0.5 мм", "1.0 мм"], correct: 0, exp: "Гидрокомпенсаторы автоматически выбирают зазор. Регулировка не требуется." },
-    { q: "Что такое LSPI и чем опасен?", options: ["Низкооборотная преддетонация, разрушающая поршни", "Высокооборотная детонация", "Гидроудар", "Турбояма"], correct: 0, exp: "LSPI (Low Speed Pre-Ignition) — взрыв смеси до искры на низких оборотах. Может сломать перегородки поршней." },
-    { q: "Что означает бедная смесь на ХХ, но норма под нагрузкой?", options: ["Подсос воздуха во впуск (на ХХ разряжение максимальное)", "Слабый бензонасос", "Отказ форсунки", "Износ колец"], correct: 0, exp: "На ХХ дроссель закрыт, разряжение высокое — подсос проявляется сильнее. Под нагрузкой дроссель открыт, разряжение падает." },
-    { q: "Какое напряжение питания у бензиновой форсунки (при включенном зажигании)?", options: ["12 В от главного реле", "5 В от ЭБУ", "0 В", "220 В"], correct: 0, exp: "Форсунка получает 12 В постоянно, а ЭБУ управляет ей, замыкая на массу (импульс)." },
-    { q: "Что такое 'адаптация ХХ'?", options: ["Обучение ЭБУ положения дросселя и оборотов холостого хода", "Прошивка", "Сброс ошибок", "Замена датчика"], correct: 0, exp: "ЭБУ запоминает положение заслонки при 0% и 100%, а также шаги РХХ или угол открытия для стабильного ХХ." }
+  4: [
+    { q: "Какой момент затяжки болтов ГБЦ типичен для бензинового ДВС?", options: ["60–100 Н·м в несколько проходов", "10–20 Н·м", "200–300 Н·м", "500 Н·м"], correct: 0, topic: "engine", exp: "Обычно затягивается в 2–3 этапа." },
+    { q: "Какое сопротивление у индуктивного ДПКВ?", options: ["0.5–1.5 кОм", "10 Ом", "1 МОм", "100 кОм"], correct: 0, topic: "electric", exp: "500–1500 Ом. Проверяется мультиметром." },
+    { q: "Какое рабочее давление в системе GDI?", options: ["50–200 бар", "3–4 бар", "1–2 бар", "500 бар"], correct: 0, topic: "engine", exp: "ТНВД создает 50–200 бар." },
+    { q: "Что означает 'УОЗ 10° до ВМТ'?", options: ["Искра проскакивает за 10 градусов до ВМТ", "Искра после ВМТ", "Сдвиг фаз на 10 градусов", "Позднее зажигание"], correct: 0, topic: "engine", exp: "Смесь поджигается заранее." },
+    { q: "Что такое 'тест на утечку (leak-down test)'?", options: ["Подача сжатого воздуха в цилиндр для поиска утечек", "Проверка давления масла", "Тест форсунок", "Тест катализатора"], correct: 0, topic: "tools", exp: "Слушают, откуда шипит: клапаны, кольца или прокладка." },
+    { q: "Какой зазор свечи нужен для турбо-GDI?", options: ["0.5–0.6 мм", "0.8–1.0 мм", "0.2–0.3 мм", "1.5 мм"], correct: 0, topic: "engine", exp: "Уменьшенный зазор нужен из-за высокого давления наддува." },
+    { q: "Что означает 'лямбда = 0.85'?", options: ["Богатая смесь (λ<1)", "Бедная смесь (λ>1)", "Стехиометрия (λ=1)", "Отказ датчика"], correct: 0, topic: "diagnostics", exp: "Топлива на 15% больше стехиометрии." },
+    { q: "Что такое 'P0171 с LTFT +25% и STFT +10%'?", options: ["Критическая бедность, ЭБУ на пределе", "Норма", "Богатая смесь", "Отказ лямбда-зонда"], correct: 0, topic: "diagnostics", exp: "LTFT на максимуме, STFT пытается долить." },
+    { q: "Какое напряжение узкополосного ДК при λ=1?", options: ["0.45 В", "0.1 В", "0.9 В", "5 В"], correct: 0, topic: "electric", exp: "0.1 В (бедно), 0.45 В (стехиометрия), 0.9 В (богато)." },
+    { q: "Что такое 'тест компрессии с маслом'?", options: ["Добавка масла в цилиндр для диагностики колец", "Замена масла", "Проверка насоса", "Тест ГБЦ"], correct: 0, topic: "tools", exp: "Если компрессия выросла — износ колец." },
+    { q: "Что такое 'степень сжатия 10.5:1'?", options: ["Отношение полного объема к объему камеры", "Давление наддува", "Мощность на литр", "Ход поршня"], correct: 0, topic: "engine", exp: "Отношение объема цилиндра в НМТ к ВМТ." },
+    { q: "Какое сопротивление у высокоомной форсунки?", options: ["12–16 Ом", "1–3 Ом", "100 Ом", "1 МОм"], correct: 0, topic: "electric", exp: "Saturated форсунки — 12–16 Ом." },
+    { q: "Что такое 'P0016' на двигателе с цепью?", options: ["Рассинхронизация коленвала и распредвала", "Пропуски зажигания", "Отказ ДМРВ", "Богатая смесь"], correct: 0, topic: "diagnostics", exp: "ЭБУ сравнивает сигналы ДПКВ и ДПРВ." },
+    { q: "Какая типичная компрессия для исправного ДВС?", options: ["12–14 бар", "6–8 бар", "20–25 бар", "3–5 бар"], correct: 0, topic: "engine", exp: "Разница между цилиндрами не должна превышать 1–2 бар." },
+    { q: "Что означает 'скважность 80% на форсунке'?", options: ["Форсунка почти постоянно открыта", "Закрыта", "Неисправна", "Холостой ход"], correct: 0, topic: "diagnostics", exp: "Предельная нагрузка или забитость." },
+    { q: "Какой зазор клапанов с гидрокомпенсаторами?", options: ["0 (автоматически)", "0.15–0.25 мм", "0.5 мм", "1.0 мм"], correct: 0, topic: "engine", exp: "Регулировка не требуется." },
+    { q: "Что такое LSPI?", options: ["Низкооборотная преддетонация", "Высокооборотная детонация", "Гидроудар", "Турбояма"], correct: 0, topic: "engine", exp: "Разрушает поршни турбомоторов." },
+    { q: "Бедная смесь на ХХ, норма под нагрузкой — причина?", options: ["Подсос воздуха (на ХХ разряжение макс.)", "Слабый бензонасос", "Отказ форсунки", "Износ колец"], correct: 0, topic: "diagnostics", exp: "На ХХ дроссель закрыт, разряжение высокое." },
+    { q: "Какое напряжение питания бензиновой форсунки?", options: ["12 В от главного реле", "5 В от ЭБУ", "0 В", "220 В"], correct: 0, topic: "electric", exp: "ЭБУ управляет ей, замыкая на массу." },
+    { q: "Что такое 'адаптация ХХ'?", options: ["Обучение ЭБУ положения дросселя и оборотов", "Прошивка", "Сброс ошибок", "Замена датчика"], correct: 0, topic: "electric", exp: "ЭБУ запоминает 0% и 100%." }
   ]
 };
 
-questionsDB[5] = [...questionsDB[1], ...questionsDB[2], ...questionsDB[3], ...questionsDB[4]];
-questionsDB[6] = [...questionsDB[3], ...questionsDB[4]];
+// Категории для статистики
+const topicNames = {
+  engine: "⚙️ Двигатель",
+  electric: "⚡ Электрика",
+  diagnostics: "📟 Диагностика",
+  suspension: "🛞 Подвеска/Шины",
+  transmission: "⚙️ Трансмиссия",
+  tools: "🛠️ Инструмент"
+};
 
-// ==================== ПЕРЕМЕШИВАНИЕ ОТВЕТОВ ====================
+// ==================== ДОСТИЖЕНИЯ (БЕЙДЖИ) ====================
+const badgesDB = {
+  first_test: { icon: "🥇", name: "Первая кровь", desc: "Пройти любой тест впервые" },
+  perfect: { icon: "🎯", name: "Снайпер", desc: "Пройти уровень на 100%" },
+  expert: { icon: "💀", name: "Мастер-класс", desc: "Пройти Хардкор на 80%+" },
+  marathon: { icon: "🏃", name: "Марафонец", desc: "Пройти Марафон" },
+  exam_pass: { icon: "📜", name: "Аттестат", desc: "Сдать экзамен на 80%+" },
+  rich: { icon: "💰", name: "Богач", desc: "Набрать 100 правильных ответов" }
+};
+
+// ==================== ПЕРЕМЕШИВАНИЕ ====================
 function shuffleOptions(q) {
   const indices = q.options.map((_, i) => i);
   for (let i = indices.length - 1; i > 0; i--) {
@@ -464,10 +450,10 @@ function shuffleOptions(q) {
   }
   const newOptions = indices.map(i => q.options[i]);
   const newCorrect = indices.indexOf(q.correct);
-  return { q: q.q, options: newOptions, correct: newCorrect, exp: q.exp };
+  return { q: q.q, options: newOptions, correct: newCorrect, exp: q.exp, topic: q.topic };
 }
 
-// ==================== ЛОГИКА ====================
+// ==================== ПЕРЕМЕННЫЕ ====================
 let currentLevel = 1;
 let currentQuestionIndex = 0;
 let score = 0;
@@ -478,10 +464,12 @@ let timeLeft = 30;
 let mistakes = [];
 let playerName = '';
 let totalQ = 10;
+let isExamMode = false;
+let currentTopicStats = {}; // Для статистики
 
-const levelNames = {1: "БАЗА 🟠", 2: "МЕХАНИК 🟡", 3: "ПРОФИ 🔴", 4: "ЭКСПЕРТ 🟣", 5: "МАРАФОН 🎯", 6: "МАСТЕР-КЛАСС 💀"};
-const levelQCount = {1: 10, 2: 10, 3: 10, 4: 10, 5: 15, 6: 10};
-const levelTime = {1: 40, 2: 35, 3: 30, 4: 25, 5: 30, 6: 20};
+const levelNames = {1: "БАЗА 🟠", 2: "МЕХАНИК 🟡", 3: "ПРОФИ 🔴", 4: "ЭКСПЕРТ 🟣", 5: "МАРАФОН 🎯", 6: "ХАРДКОР 💀", 7: "ЭКЗАМЕН 📜"};
+const levelQCount = {1: 10, 2: 10, 3: 10, 4: 10, 5: 15, 6: 10, 7: 20};
+const levelTime = {1: 40, 2: 35, 3: 30, 4: 25, 5: 30, 6: 20, 7: 30};
 
 const AudioCtx = window.AudioContext || window.webkitAudioContext;
 let audioCtx = null;
@@ -514,31 +502,107 @@ function playSound(type) {
   } catch(e) {}
 }
 
-function loadProfile() {
-  playerName = localStorage.getItem('mech_hard_name') || '';
+// ==================== ОЗВУЧКА ====================
+function speakQuestion() {
+  if ('speechSynthesis' in window) {
+    window.speechSynthesis.cancel(); // Останавливаем предыдущее
+    const text = document.getElementById('questionText').textContent;
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = 'ru-RU';
+    utterance.rate = 1.0;
+    window.speechSynthesis.speak(utterance);
+  } else {
+    alert("Твой браузер не поддерживает озвучку.");
+  }
+}
+
+// ==================== ПРОФИЛИ ====================
+function loadProfiles() {
+  const profiles = JSON.parse(localStorage.getItem('mech_profiles') || '[]');
+  const select = document.getElementById('profileSelect');
+  select.innerHTML = '<option value="">Сменить профиль...</option>';
+  profiles.forEach(p => {
+    const opt = document.createElement('option');
+    opt.value = p;
+    opt.textContent = p;
+    select.appendChild(opt);
+  });
+  
+  playerName = localStorage.getItem('mech_current_profile') || '';
+  
+  // Если имени нет — создаем "Гостя" по умолчанию, чтобы не блокировать игру
+  if (!playerName) {
+    playerName = "Гость";
+    localStorage.setItem('mech_current_profile', playerName);
+    let p = JSON.parse(localStorage.getItem('mech_profiles') || '[]');
+    if (!p.includes(playerName)) {
+      p.push(playerName);
+      localStorage.setItem('mech_profiles', JSON.stringify(p));
+    }
+  }
+  
   updateProfileUI();
 }
+
 function saveName() {
   const val = document.getElementById('nameInput').value.trim();
-  if (!val) return;
+  if (!val) {
+    alert("Введите имя!");
+    return;
+  }
+  
+  let profiles = JSON.parse(localStorage.getItem('mech_profiles') || '[]');
+  if (!profiles.includes(val)) {
+    profiles.push(val);
+    localStorage.setItem('mech_profiles', JSON.stringify(profiles));
+  }
+  
+  localStorage.setItem('mech_current_profile', val);
   playerName = val;
-  localStorage.setItem('mech_hard_name', val);
-  updateProfileUI();
-  alert('✅ Имя сохранено: ' + val);
+  document.getElementById('nameInput').value = '';
+  loadProfiles();
+  alert('✅ Вы вошли как: ' + val);
 }
+
+function switchProfile(name) {
+  if (!name) return;
+  localStorage.setItem('mech_current_profile', name);
+  playerName = name;
+  updateProfileUI();
+  document.getElementById('profileSelect').value = '';
+  loadBestScores();
+}
+
 function updateProfileUI() {
   const nameEl = document.getElementById('profileName');
   const rankEl = document.getElementById('profileRank');
-  if (playerName) {
-    nameEl.textContent = '👨‍🔧 ' + playerName;
-    const total = parseInt(localStorage.getItem('mech_hard_total') || 0);
-    rankEl.textContent = getRank(total);
-    document.getElementById('nameInput').value = playerName;
-  } else {
+  const badgesBox = document.getElementById('badgesBox');
+  
+  if (!playerName) {
     nameEl.textContent = '👨‍🔧 Гость';
-    rankEl.textContent = 'Введи имя, чтобы начать';
+    rankEl.textContent = 'Введи имя';
+    badgesBox.innerHTML = '';
+    return;
   }
+  
+  nameEl.textContent = '👨‍🔧 ' + playerName;
+  const total = parseInt(localStorage.getItem('mech_total_' + playerName) || 0);
+  rankEl.textContent = getRank(total) + ' (' + total + ' отв.)';
+  
+  // Бейджи
+  const userBadges = JSON.parse(localStorage.getItem('mech_badges_' + playerName) || '[]');
+  badgesBox.innerHTML = '';
+  Object.keys(badgesDB).forEach(key => {
+    const b = badgesDB[key];
+    const el = document.createElement('div');
+    el.className = 'badge-icon' + (userBadges.includes(key) ? ' earned' : '');
+    el.innerHTML = b.icon;
+    el.title = b.name + ': ' + b.desc;
+    if (!userBadges.includes(key)) el.style.opacity = '0.3';
+    badgesBox.appendChild(el);
+  });
 }
+
 function getRank(totalCorrect) {
   if (totalCorrect >= 150) return '🏅 Гуру автосервиса';
   if (totalCorrect >= 90) return '⭐ Мастер';
@@ -546,37 +610,93 @@ function getRank(totalCorrect) {
   if (totalCorrect >= 15) return '🛠️ Начинающий механик';
   return '🔰 Стажёр';
 }
+
+function awardBadge(badgeKey) {
+  if (!playerName) return;
+  let userBadges = JSON.parse(localStorage.getItem('mech_badges_' + playerName) || '[]');
+  if (!userBadges.includes(badgeKey)) {
+    userBadges.push(badgeKey);
+    localStorage.setItem('mech_badges_' + playerName, JSON.stringify(userBadges));
+    
+    const badge = badgesDB[badgeKey];
+    document.getElementById('newBadgeBox').classList.remove('hidden');
+    document.getElementById('newBadgeName').innerHTML = badge.icon + ' ' + badge.name;
+  }
+}
+
+// ==================== РЕКОРДЫ ====================
 function loadBestScores() {
-  const best = JSON.parse(localStorage.getItem('mech_hard_best') || '{}');
+  if (!playerName) return;
+  const best = JSON.parse(localStorage.getItem('mech_best_' + playerName) || '{}');
   for (let lvl = 1; lvl <= 6; lvl++) {
     const el = document.getElementById('best' + lvl);
     if (best[lvl]) el.textContent = '🏆 ' + best[lvl] + '/' + levelQCount[lvl];
     else el.textContent = '';
   }
 }
+
 function saveBestScore(lvl, scoreVal) {
-  const best = JSON.parse(localStorage.getItem('mech_hard_best') || '{}');
+  if (!playerName) return;
+  const best = JSON.parse(localStorage.getItem('mech_best_' + playerName) || '{}');
   if (!best[lvl] || scoreVal > best[lvl]) {
     best[lvl] = scoreVal;
-    localStorage.setItem('mech_hard_best', JSON.stringify(best));
+    localStorage.setItem('mech_best_' + playerName, JSON.stringify(best));
   }
 }
+
 function showBestTable() {
+  if (!playerName) { alert("Сначала войдите в профиль!"); return; }
   document.getElementById('menu').classList.add('hidden');
   document.getElementById('bestScreen').classList.remove('hidden');
-  const best = JSON.parse(localStorage.getItem('mech_hard_best') || '{}');
+  
+  const best = JSON.parse(localStorage.getItem('mech_best_' + playerName) || '{}');
   let html = '<table class="best-table"><tr><th>Уровень</th><th>Рекорд</th></tr>';
   for (let lvl = 1; lvl <= 6; lvl++) {
     const b = best[lvl];
     html += `<tr><td>${levelNames[lvl]}</td><td>${b ? b + '/' + levelQCount[lvl] : '—'}</td></tr>`;
   }
   html += '</table>';
-  if (playerName) {
-    const total = parseInt(localStorage.getItem('mech_hard_total') || 0);
-    html += `<div class="section-title" style="margin-top:20px;">Профиль: ${playerName}</div>`;
-    html += `<div class="center" style="color:#ccc;">Всего правильных: <b style="color:#e74c3c;">${total}</b><br>Звание: <b style="color:#e74c3c;">${getRank(total)}</b></div>`;
+  
+  const total = parseInt(localStorage.getItem('mech_total_' + playerName) || 0);
+  html += `<div class="section-title" style="margin-top:20px;">Профиль: ${playerName}</div>`;
+  html += `<div class="center" style="color:#ccc;">Всего правильных: <b style="color:#e74c3c;">${total}</b><br>Звание: <b style="color:#e74c3c;">${getRank(total)}</b></div>`;
+  
+  // Статистика по темам
+  const topicStats = JSON.parse(localStorage.getItem('mech_topics_' + playerName) || '{}');
+  if (Object.keys(topicStats).length > 0) {
+    html += `<div class="section-title" style="margin-top:20px;">📊 Статистика по темам</div>`;
+    html += `<table class="best-table"><tr><th>Тема</th><th>Правильно</th><th>Всего</th></tr>`;
+    for (let t in topicStats) {
+      const s = topicStats[t];
+      const name = topicNames[t] || t;
+      html += `<tr><td>${name}</td><td style="color:#27ae60;">${s.correct}</td><td>${s.total}</td></tr>`;
+    }
+    html += `</table>`;
   }
+  
   document.getElementById('bestTableBox').innerHTML = html;
+}
+
+function resetProgress() {
+  if (!playerName) { alert("Нет активного профиля."); return; }
+  if (confirm('⚠️ Удалить ВСЕ рекорды, статистику и бейджи профиля "' + playerName + '"?')) {
+    localStorage.removeItem('mech_total_' + playerName);
+    localStorage.removeItem('mech_best_' + playerName);
+    localStorage.removeItem('mech_badges_' + playerName);
+    localStorage.removeItem('mech_topics_' + playerName);
+    
+    updateProfileUI();
+    loadBestScores();
+    alert('✅ Прогресс профиля сброшен!');
+    backToMenu();
+  }
+}
+
+function resetAllProfiles() {
+  if (confirm('💥 ВНИМАНИЕ! Это удалит ВСЕХ профилей и ВСЮ их статистику. Продолжить?')) {
+    localStorage.clear();
+    location.reload(); // Перезагружаем страницу, чтобы всё сбросилось
+  }
 }
 
 // ==================== ТЕОРИЯ ====================
@@ -587,11 +707,8 @@ function showTheory() {
 function toggleTheory(header) {
   const content = header.nextElementSibling;
   const isActive = header.classList.contains('active');
-  
-  // Закрываем все остальные (аккордеон)
   document.querySelectorAll('.theory-header').forEach(h => h.classList.remove('active'));
   document.querySelectorAll('.theory-content').forEach(c => c.classList.remove('active'));
-  
   if (!isActive) {
     header.classList.add('active');
     content.classList.add('active');
@@ -600,22 +717,52 @@ function toggleTheory(header) {
 
 // ==================== ИГРА ====================
 function startLevel(level) {
+  isExamMode = false;
   currentLevel = level;
   currentQuestionIndex = 0;
   score = 0;
   answered = false;
   mistakes = [];
+  currentTopicStats = {};
   totalQ = levelQCount[level];
   timeLeft = levelTime[level];
-  levelQuestions = [...questionsDB[level]].sort(() => Math.random() - 0.5).slice(0, totalQ);
+  
+  if (level === 5) levelQuestions = [...questionsDB[1], ...questionsDB[2], ...questionsDB[3], ...questionsDB[4]].sort(() => Math.random() - 0.5).slice(0, totalQ);
+  else if (level === 6) levelQuestions = [...questionsDB[3], ...questionsDB[4]].sort(() => Math.random() - 0.5).slice(0, totalQ);
+  else levelQuestions = [...questionsDB[level]].sort(() => Math.random() - 0.5).slice(0, totalQ);
+  
+  initGameScreen(level);
+}
+
+function startExam() {
+  isExamMode = true;
+  currentLevel = 7;
+  currentQuestionIndex = 0;
+  score = 0;
+  answered = false;
+  mistakes = [];
+  currentTopicStats = {};
+  totalQ = levelQCount[7];
+  timeLeft = levelTime[7];
+  
+  // Берем все вопросы из всех уровней
+  levelQuestions = [...questionsDB[1], ...questionsDB[2], ...questionsDB[3], ...questionsDB[4]].sort(() => Math.random() - 0.5).slice(0, totalQ);
+  
+  initGameScreen(7);
+}
+
+function initGameScreen(level) {
   document.getElementById('menu').classList.add('hidden');
   document.getElementById('theoryScreen').classList.add('hidden');
   document.getElementById('result').classList.add('hidden');
   document.getElementById('bestScreen').classList.add('hidden');
   document.getElementById('game').classList.remove('hidden');
+  document.getElementById('newBadgeBox').classList.add('hidden');
+  
   const badge = document.getElementById('levelBadge');
   badge.textContent = levelNames[level];
-  badge.className = 'level-badge level-' + level;
+  badge.className = 'level-badge level-' + (level <= 6 ? level : 7);
+  
   loadQuestion();
 }
 
@@ -647,6 +794,10 @@ function loadQuestion() {
     optionsBox.appendChild(btn);
   });
   
+  // Статистика темы (инициализация)
+  if (!currentTopicStats[q.topic]) currentTopicStats[q.topic] = { total: 0, correct: 0 };
+  currentTopicStats[q.topic].total++;
+  
   timeLeft = levelTime[currentLevel];
   const timerEl = document.getElementById('timer');
   timerEl.textContent = '⏱️ ' + timeLeft;
@@ -669,10 +820,15 @@ function timeOut() {
   const allOptions = document.querySelectorAll('.option');
   allOptions.forEach(o => o.classList.add('disabled'));
   allOptions[q.correct].classList.add('correct');
+  
   mistakes.push({ q: q.q, correct: q.options[q.correct], chosen: '(время вышло)', exp: q.exp });
-  const expBox = document.getElementById('explanation');
-  expBox.textContent = '⏰ Время вышло! 💡 ' + q.exp;
-  expBox.style.display = 'block';
+  
+  if (!isExamMode) {
+    const expBox = document.getElementById('explanation');
+    expBox.textContent = '⏰ Время вышло! 💡 ' + q.exp;
+    expBox.style.display = 'block';
+  }
+  
   document.getElementById('nextBtn').classList.remove('hidden');
 }
 
@@ -680,20 +836,30 @@ function selectAnswer(idx, btn) {
   if (answered) return;
   answered = true;
   clearInterval(timerInterval);
+  
   const q = levelQuestions[currentQuestionIndex];
   const allOptions = document.querySelectorAll('.option');
   allOptions.forEach(o => o.classList.add('disabled'));
+  
   if (idx === q.correct) {
-    btn.classList.add('correct'); score++; playSound('correct');
+    btn.classList.add('correct'); 
+    score++; 
+    playSound('correct');
+    currentTopicStats[q.topic].correct++;
     document.getElementById('scoreText').textContent = `Счёт: ${score}`;
   } else {
-    btn.classList.add('wrong'); allOptions[q.correct].classList.add('correct');
+    btn.classList.add('wrong'); 
+    allOptions[q.correct].classList.add('correct');
     playSound('wrong');
     mistakes.push({ q: q.q, correct: q.options[q.correct], chosen: q.options[idx], exp: q.exp });
   }
-  const expBox = document.getElementById('explanation');
-  expBox.textContent = '💡 ' + q.exp;
-  expBox.style.display = 'block';
+  
+  if (!isExamMode) {
+    const expBox = document.getElementById('explanation');
+    expBox.textContent = '💡 ' + q.exp;
+    expBox.style.display = 'block';
+  }
+  
   document.getElementById('nextBtn').classList.remove('hidden');
 }
 
@@ -707,21 +873,67 @@ function showResult() {
   clearInterval(timerInterval);
   document.getElementById('game').classList.add('hidden');
   document.getElementById('result').classList.remove('hidden');
+  
   const percent = Math.round(score / totalQ * 100);
-  saveBestScore(currentLevel, score);
-  const oldTotal = parseInt(localStorage.getItem('mech_hard_total') || 0);
-  localStorage.setItem('mech_hard_total', oldTotal + score);
-  updateProfileUI();
+  
+  if (!isExamMode) {
+    saveBestScore(currentLevel, score);
+  }
+  
+  const oldTotal = parseInt(localStorage.getItem('mech_total_' + playerName) || 0);
+  localStorage.setItem('mech_total_' + playerName, oldTotal + score);
+  
+  const globalTopicStats = JSON.parse(localStorage.getItem('mech_topics_' + playerName) || '{}');
+  for (let t in currentTopicStats) {
+    if (!globalTopicStats[t]) globalTopicStats[t] = { total: 0, correct: 0 };
+    globalTopicStats[t].total += currentTopicStats[t].total;
+    globalTopicStats[t].correct += currentTopicStats[t].correct;
+  }
+  localStorage.setItem('mech_topics_' + playerName, JSON.stringify(globalTopicStats));
+  
   let emoji, title, text;
   if (percent === 100) { emoji = "🏆"; title = "Идеально!"; text = "Ты настоящий мастер своего дела! 👨‍🔧"; }
   else if (percent >= 80) { emoji = "🌟"; title = "Отличный результат!"; text = "Высокий уровень знаний. Продолжай в том же духе!"; }
   else if (percent >= 60) { emoji = "👍"; title = "Хороший результат!"; text = "Есть небольшие пробелы, но база крепкая."; }
   else if (percent >= 40) { emoji = "🔧"; title = "Неплохо, но..."; text = "Стоит повторить теорию и попробовать снова."; }
   else { emoji = "📚"; title = "Нужно учиться!"; text = "Не расстраивайся — повтори материалы и возвращайся!"; }
+  
   document.getElementById('resultEmoji').textContent = emoji;
   document.getElementById('resultTitle').textContent = title;
   document.getElementById('resultScore').textContent = `${score} / ${totalQ} (${percent}%)`;
   document.getElementById('resultText').textContent = text;
+  
+  awardBadge('first_test');
+  if (percent === 100) awardBadge('perfect');
+  if (currentLevel === 6 && percent >= 80) awardBadge('expert');
+  if (currentLevel === 5) awardBadge('marathon');
+  if (isExamMode && percent >= 80) awardBadge('exam_pass');
+  if (oldTotal + score >= 100) awardBadge('rich');
+  
+  const topicStatsBox = document.getElementById('topicStatsBox');
+  const topicStatsContent = document.getElementById('topicStatsContent');
+  if (Object.keys(currentTopicStats).length > 0) {
+    topicStatsBox.classList.remove('hidden');
+    let statsHtml = '';
+    for (let t in currentTopicStats) {
+      const s = currentTopicStats[t];
+      const p = Math.round(s.correct / s.total * 100);
+      const color = p >= 70 ? '#27ae60' : (p >= 40 ? '#f39c12' : '#e74c3c');
+      statsHtml += `<div style="margin-bottom: 8px;">
+        <div style="display:flex; justify-content:space-between; font-size:0.9em; margin-bottom:4px;">
+          <span>${topicNames[t] || t}</span>
+          <span style="color:${color}; font-weight:bold;">${s.correct}/${s.total} (${p}%)</span>
+        </div>
+        <div style="background:rgba(255,255,255,0.1); height:6px; border-radius:3px;">
+          <div style="width:${p}%; background:${color}; height:100%; border-radius:3px;"></div>
+        </div>
+      </div>`;
+    }
+    topicStatsContent.innerHTML = statsHtml;
+  } else {
+    topicStatsBox.classList.add('hidden');
+  }
+  
   const reviewSection = document.getElementById('reviewSection');
   const reviewBox = document.getElementById('reviewBox');
   if (mistakes.length > 0) {
@@ -734,10 +946,19 @@ function showResult() {
         <div class="re">💡 ${m.exp}</div>
       </div>
     `).join('');
-  } else reviewSection.classList.add('hidden');
+  } else {
+    reviewSection.classList.add('hidden');
+  }
+  
+  updateProfileUI();
+  loadBestScores();
 }
 
-function restartLevel() { startLevel(currentLevel); }
+function restartLevel() { 
+  if (isExamMode) startExam();
+  else startLevel(currentLevel); 
+}
+
 function backToMenu() {
   clearInterval(timerInterval);
   document.getElementById('result').classList.add('hidden');
@@ -748,7 +969,7 @@ function backToMenu() {
   loadBestScores();
 }
 
-loadProfile();
+loadProfiles();
 loadBestScores();
 </script>
 </body>

@@ -2,12 +2,23 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>🔧 Автомеханик v5.2 PRO</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Тест Автомеханика PRO</title>
+
+<!-- SEO и Мета-теги для красивого превью в мессенджерах -->
+<meta name="description" content="Профессиональный тест и тренажер для автомехаников. Проверь свои знания, пройди кейсы по диагностике и получи звание Мастера!">
+<meta property="og:title" content="🔧 Тест Автомеханика PRO">
+<meta property="og:description" content="Проверь свои знания, пройди кейсы по диагностике и получи звание Мастера!">
+<meta property="og:type" content="website">
+<meta name="theme-color" content="#0f0c29">
+
+<!-- Иконка для добавления на главный экран телефона (PWA) -->
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔧</text></svg>">
+
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Arial, sans-serif; }
-  body { background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); min-height: 100vh; display: flex; justify-content: center; align-items: center; padding: 15px; color: #fff; user-select: none; }
-  .container { background: rgba(255,255,255,0.05); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; padding: 20px; max-width: 600px; width: 100%; box-shadow: 0 20px 60px rgba(0,0,0,0.6); max-height: 95vh; overflow-y: auto; }
+  body { background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); min-height: 100vh; display: flex; justify-content: center; align-items: center; padding: 10px; color: #fff; user-select: none; -webkit-tap-highlight-color: transparent; }
+  .container { background: rgba(255,255,255,0.05); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; padding: 20px; max-width: 600px; width: 100%; box-shadow: 0 20px 60px rgba(0,0,0,0.6); max-height: 98vh; overflow-y: auto; }
   
   h1 { text-align: center; font-size: 1.6em; margin-bottom: 15px; background: linear-gradient(90deg, #e74c3c, #8e44ad, #3498db); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
   
@@ -308,6 +319,15 @@
 </div>
 
 <script>
+// ЗАЩИТА ОТ СЛУЧАЙНОГО ВЫХОДА ВО ВРЕМЯ ТЕСТА
+window.addEventListener('beforeunload', function (e) {
+  const gameScreen = document.getElementById('game');
+  if (gameScreen && !gameScreen.classList.contains('hidden')) {
+    e.preventDefault();
+    e.returnValue = '';
+  }
+});
+
 // ==================== БАЗА ВОПРОСОВ ====================
 const questionsDB = {
   1: [

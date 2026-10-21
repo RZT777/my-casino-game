@@ -113,11 +113,54 @@
   .best-table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 0.9em; }
   .best-table th, .best-table td { padding: 8px; text-align: left; border-bottom: 1px solid rgba(255,255,255,0.1); }
   .best-table th { color: #e74c3c; }
+
+  /* СТИЛИ ДЛЯ ТЕОРИИ */
+  .theory-card {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 12px;
+    margin-bottom: 15px;
+    overflow: hidden;
+  }
+  .theory-header {
+    padding: 15px 20px;
+    background: rgba(255,255,255,0.05);
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: bold;
+    color: #f39c12;
+    transition: background 0.2s;
+  }
+  .theory-header:hover { background: rgba(255,255,255,0.1); }
+  .theory-header .arrow { transition: transform 0.3s; }
+  .theory-header.active .arrow { transform: rotate(180deg); }
+  .theory-content {
+    padding: 0 20px;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s ease-out, padding 0.3s;
+    font-size: 0.95em;
+    line-height: 1.6;
+    color: #ddd;
+  }
+  .theory-content.active {
+    padding: 15px 20px;
+    max-height: 2000px; /* Достаточно для текста */
+    border-top: 1px solid rgba(255,255,255,0.1);
+  }
+  .theory-content ul { margin-left: 20px; margin-bottom: 10px; }
+  .theory-content li { margin-bottom: 6px; }
+  .theory-content strong { color: #fff; }
+  .theory-content code { background: rgba(0,0,0,0.3); padding: 2px 6px; border-radius: 4px; color: #8fe; font-family: monospace; }
+  .theory-btn-test { margin-top: 10px; padding: 10px; font-size: 0.9em; }
 </style>
 </head>
 <body>
 <div class="container">
 
+  <!-- ГЛАВНОЕ МЕНЮ -->
   <div id="menu">
     <h1>🔧 Тест Автомеханика HARD</h1>
     <p class="subtitle">Только для тех, кто реально крутит гайки. Проверь себя!</p>
@@ -127,6 +170,9 @@
       <input type="text" class="input-name" id="nameInput" placeholder="Твоё имя..." maxlength="20">
       <button class="btn secondary" onclick="saveName()" style="margin-top:0;">💾 Сохранить</button>
     </div>
+    
+    <button class="btn" onclick="showTheory()" style="background: linear-gradient(90deg, #3498db, #2980b9);">📚 Изучить теорию перед тестом</button>
+
     <div class="section-title">Выбери уровень</div>
     <div class="level-select">
       <div class="level-card" onclick="startLevel(1)">
@@ -169,6 +215,113 @@
     <button class="btn secondary" onclick="showBestTable()" style="margin-top:15px;">🏆 Таблица рекордов</button>
   </div>
 
+  <!-- ТЕОРИЯ -->
+  <div id="theoryScreen" class="hidden">
+    <h1>📚 База знаний</h1>
+    <p class="subtitle">Изучи матчасть перед тем, как приступить к тестам</p>
+    
+    <div id="theoryBox">
+      <!-- 1 -->
+      <div class="theory-card">
+        <div class="theory-header" onclick="toggleTheory(this)">
+          <span>⛽ Топливная смесь и коррекции</span>
+          <span class="arrow">▼</span>
+        </div>
+        <div class="theory-content">
+          <p><strong>Стехиометрия (λ=1)</strong> — идеальное соотношение воздуха и топлива. Для бензина это <code>14.7:1</code> (14.7 кг воздуха на 1 кг бензина).</p>
+          <ul>
+            <li><strong>λ < 1 (Богатая смесь):</strong> много топлива, мало воздуха. Мощность растет, но растет расход и нагар.</li>
+            <li><strong>λ > 1 (Бедная смесь):</strong> мало топлива, много воздуха. Опасна перегревом, детонацией и прогаром клапанов!</li>
+          </ul>
+          <p><strong>Топливные коррекции (Fuel Trims):</strong></p>
+          <ul>
+            <li><strong>STFT (Short Term):</strong> краткосрочная коррекция. Меняется каждую секунду.</li>
+            <li><strong>LTFT (Long Term):</strong> долгосрочная коррекция (адаптация). Если ползет к <code>+25%</code> — это критическая бедность (подсос воздуха, умирает насос, грязный ДМРВ).</li>
+            <li>Если коррекции <code>-10%...-20%</code> — форсунки льют, высокое давление топлива, грязный воздушный фильтр.</li>
+          </ul>
+          <button class="btn theory-btn-test" onclick="startLevel(2)">🎯 Проверить знания (Уровень Механик)</button>
+        </div>
+      </div>
+
+      <!-- 2 -->
+      <div class="theory-card">
+        <div class="theory-header" onclick="toggleTheory(this)">
+          <span>🧠 Датчики и их проверка</span>
+          <span class="arrow">▼</span>
+        </div>
+        <div class="theory-content">
+          <ul>
+            <li><strong>ДМРВ (MAF):</strong> Датчик массового расхода воздуха. Стоит после воздушного фильтра. Симптомы поломки: провалы, бедная смесь (P0171). Проверяется мультиметром (напряжение) и сканером (г/сек).</li>
+            <li><strong>ДПКВ (Crankshaft):</strong> Датчик коленвала. Если отказывает — двигатель глохнет и не заводится (нет искры и впрыска). Индуктивный проверяется на сопротивление (<code>0.5–1.5 кОм</code>).</li>
+            <li><strong>ДПРВ (Camshaft):</strong> Датчик распредвала. По нему ЭБУ определяет такт сжатия для фазированного впрыска.</li>
+            <li><strong>ДТОЖ:</strong> Датчик температуры ОЖ. Если врет (показывает -40°C), ЭБУ бешено льет бензин (переобогащение), двигатель троит.</li>
+            <li><strong>ДК / Лямбда-зонд:</strong> Замеряет кислород в выхлопе. Узкополосный качает от 0.1В до 0.9В. Если завис на 0.45В — датчик умер.</li>
+          </ul>
+          <button class="btn theory-btn-test" onclick="startLevel(3)">🎯 Проверить знания (Уровень Профи)</button>
+        </div>
+      </div>
+
+      <!-- 3 -->
+      <div class="theory-card">
+        <div class="theory-header" onclick="toggleTheory(this)">
+          <span>⚠️ Популярные коды ошибок OBD-II</span>
+          <span class="arrow">▼</span>
+        </div>
+        <div class="theory-content">
+          <p>Первая буква: <strong>P</strong> — Powertrain (двигатель/трансмиссия).</p>
+          <ul>
+            <li><strong>P0171 / P0174:</strong> Бедная смесь (Банк 1 / Банк 2). Ищи подсос воздуха дымогенератором.</li>
+            <li><strong>P0300:</strong> Множественные пропуски зажигания (Random misfire).</li>
+            <li><strong>P0301...P0304:</strong> Пропуск зажигания в конкретном цилиндре (1-й, 2-й и т.д.).</li>
+            <li><strong>P0420:</strong> Низкая эффективность катализатора. ЭБУ сравнивает показания двух лямбд и видит, что каталик не дожигает.</li>
+            <li><strong>P0011 / P0016:</strong> Проблемы с фазами ГРМ. Растянутая цепь или забитый клапан VVT-муфты.</li>
+          </ul>
+          <button class="btn theory-btn-test" onclick="startLevel(3)">🎯 Проверить знания (Уровень Профи)</button>
+        </div>
+      </div>
+
+      <!-- 4 -->
+      <div class="theory-card">
+        <div class="theory-header" onclick="toggleTheory(this)">
+          <span>🌫️ Классические симптомы (Дым, стуки, троение)</span>
+          <span class="arrow">▼</span>
+        </div>
+        <div class="theory-content">
+          <ul>
+            <li><strong>Белый густой дым:</strong> Антифриз попадает в цилиндры (пробита прокладка ГБЦ или трещина в головке).</li>
+            <li><strong>Сизый/масляный дым:</strong> Сгорает масло. Износ маслосъемных колпачков или залегли кольца.</li>
+            <li><strong>Черный дым:</strong> Переобогащение смеси (льют форсунки, высокое давление, грязный фильтр).</li>
+            <li><strong>Троение (двигатель трясется):</strong> Не работает один цилиндр. Отказ катушки, свечи, форсунки или низкая компрессия.</li>
+            <li><strong>Стук на холодную (дизельный лязг):</strong> Поршневые пальцы, износ юбки поршня или гидрокомпенсаторы.</li>
+            <li><strong>Стук под нагрузкой:</strong> Детонация (ранний УОЗ, плохой бензин) или проворот вкладышей.</li>
+          </ul>
+          <button class="btn theory-btn-test" onclick="startLevel(2)">🎯 Проверить знания (Уровень Механик)</button>
+        </div>
+      </div>
+
+      <!-- 5 -->
+      <div class="theory-card">
+        <div class="theory-header" onclick="toggleTheory(this)">
+          <span>🛠️ Инструментарий диагноста (Чем и что проверять)</span>
+          <span class="arrow">▼</span>
+        </div>
+        <div class="theory-content">
+          <ul>
+            <li><strong>Дымогенератор:</strong> Нагнетает дым во впуск. Если дым идет из щелей — там подсос воздуха.</li>
+            <li><strong>Leak-down test (Тест на утечку):</strong> В цилиндр подается сжатый воздух. Слушаешь: шипит в выхлопную (прогар выпускного клапана) или в впуск (впускного) или в радиатор (пробита прокладка).</li>
+            <li><strong>Компрессометр:</strong> Вкручивается вместо свечи. Если разница между цилиндрами больше 2 бар — проблема (кольца или клапаны).</li>
+            <li><strong>Осциллограф:</strong> Показывает форму сигнала ДПКВ, ДПРВ, форсунок. Позволяет увидеть растяжение цепи или забитые форсунки.</li>
+            <li><strong>Мотор-тестер:</strong> Замеряет ток стартера при прокрутке для оценки компрессии по цилиндрам без выкручивания свечей.</li>
+          </ul>
+          <button class="btn theory-btn-test" onclick="startLevel(4)">🎯 Проверить знания (Уровень Эксперт)</button>
+        </div>
+      </div>
+    </div>
+    
+    <button class="btn" onclick="backToMenu()" style="margin-top:20px;">🏠 Назад в меню</button>
+  </div>
+
+  <!-- ИГРА -->
   <div id="game" class="hidden">
     <div class="stats">
       <span id="progressText">Вопрос 1/10</span>
@@ -183,6 +336,7 @@
     <button class="btn hidden" id="nextBtn" onclick="nextQuestion()">Далее →</button>
   </div>
 
+  <!-- РЕЗУЛЬТАТ -->
   <div id="result" class="hidden center">
     <div class="result-emoji" id="resultEmoji">🏆</div>
     <div class="result-title" id="resultTitle"></div>
@@ -196,6 +350,7 @@
     <button class="btn secondary" onclick="restartLevel()">🔁 Пройти ещё раз</button>
   </div>
 
+  <!-- РЕКОРДЫ -->
   <div id="bestScreen" class="hidden">
     <h1>🏆 Таблица рекордов</h1>
     <div id="bestTableBox"></div>
@@ -424,6 +579,26 @@ function showBestTable() {
   document.getElementById('bestTableBox').innerHTML = html;
 }
 
+// ==================== ТЕОРИЯ ====================
+function showTheory() {
+  document.getElementById('menu').classList.add('hidden');
+  document.getElementById('theoryScreen').classList.remove('hidden');
+}
+function toggleTheory(header) {
+  const content = header.nextElementSibling;
+  const isActive = header.classList.contains('active');
+  
+  // Закрываем все остальные (аккордеон)
+  document.querySelectorAll('.theory-header').forEach(h => h.classList.remove('active'));
+  document.querySelectorAll('.theory-content').forEach(c => c.classList.remove('active'));
+  
+  if (!isActive) {
+    header.classList.add('active');
+    content.classList.add('active');
+  }
+}
+
+// ==================== ИГРА ====================
 function startLevel(level) {
   currentLevel = level;
   currentQuestionIndex = 0;
@@ -434,6 +609,7 @@ function startLevel(level) {
   timeLeft = levelTime[level];
   levelQuestions = [...questionsDB[level]].sort(() => Math.random() - 0.5).slice(0, totalQ);
   document.getElementById('menu').classList.add('hidden');
+  document.getElementById('theoryScreen').classList.add('hidden');
   document.getElementById('result').classList.add('hidden');
   document.getElementById('bestScreen').classList.add('hidden');
   document.getElementById('game').classList.remove('hidden');
@@ -567,6 +743,7 @@ function backToMenu() {
   document.getElementById('result').classList.add('hidden');
   document.getElementById('game').classList.add('hidden');
   document.getElementById('bestScreen').classList.add('hidden');
+  document.getElementById('theoryScreen').classList.add('hidden');
   document.getElementById('menu').classList.remove('hidden');
   loadBestScores();
 }

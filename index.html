@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>🔧 Автомеханик v5.1 PRO</title>
+<title>🔧 Автомеханик v5.2 PRO</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Arial, sans-serif; }
   body { background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); min-height: 100vh; display: flex; justify-content: center; align-items: center; padding: 15px; color: #fff; user-select: none; }
@@ -112,6 +112,9 @@
   .acc-content strong { color: #fff; }
   .acc-content code { background: rgba(0,0,0,0.3); padding: 2px 6px; border-radius: 4px; color: #8fe; font-family: monospace; }
 
+  /* КАЛЬКУЛЯТОР */
+  .calc-panel { animation: slideUp 0.3s; }
+
   .hidden { display: none !important; }
 </style>
 </head>
@@ -152,15 +155,81 @@
     
     <button class="btn" style="background: linear-gradient(90deg, #00b894, #0984e3); margin-top:15px;" onclick="startLevel('exam')">⏱️ Экзамен (20 вопросов)</button>
     
-    <div class="section-title">База знаний и прочее</div>
+    <div class="section-title">Инструменты</div>
     <div class="menu-grid" style="grid-template-columns: 1fr 1fr 1fr 1fr; gap: 5px;">
       <button class="menu-btn btn-theory" onclick="showTheory()" style="font-size:0.8em; padding:10px 2px;">📚<br>Теория</button>
       <button class="menu-btn btn-shop" onclick="showShop()" style="font-size:0.8em; padding:10px 2px;">🛒<br>Магазин</button>
       <button class="menu-btn btn-cards" onclick="showCards()" style="font-size:0.8em; padding:10px 2px;">🃏<br>Карточки</button>
       <button class="menu-btn btn-errors" id="btnErrors" onclick="startErrorWork()" style="font-size:0.8em; padding:10px 2px;">🩺<br>Ошибки</button>
     </div>
+    <button class="menu-btn" style="background: #2c3e50; font-size:0.9em; padding:12px; margin-top:10px; width:100%;" onclick="showCalculator()">🧮 Калькулятор мастера</button>
     
     <button class="btn secondary" onclick="showBestTable()" style="margin-top:15px;">🏆 Статистика</button>
+  </div>
+
+  <!-- КАЛЬКУЛЯТОР -->
+  <div id="calcScreen" class="hidden">
+    <h1>🧮 Калькулятор мастера</h1>
+    
+    <div style="display: flex; gap: 5px; margin-bottom: 15px;">
+      <button class="btn secondary" onclick="switchCalc('tires')" id="btnCalcTires" style="margin-top:0; padding:8px; font-size:0.85em; border-color:#3498db; color:#3498db;">Шины</button>
+      <button class="btn secondary" onclick="switchCalc('engine')" id="btnCalcEngine" style="margin-top:0; padding:8px; font-size:0.85em;">Объём</button>
+      <button class="btn secondary" onclick="switchCalc('cr')" id="btnCalcCR" style="margin-top:0; padding:8px; font-size:0.85em;">Сжатие</button>
+    </div>
+
+    <div id="calcTires" class="calc-panel">
+      <p style="font-size:0.9em; color:#aaa; margin-bottom:10px;">Сравнение старого и нового размера.</p>
+      <div style="display: flex; gap: 10px;">
+        <div style="flex:1;">
+          <label style="font-size:0.8em; color:#ccc;">Старые</label>
+          <input type="text" id="tire1" class="input-name" placeholder="205/55 R16" value="205/55 R16">
+        </div>
+        <div style="flex:1;">
+          <label style="font-size:0.8em; color:#ccc;">Новые</label>
+          <input type="text" id="tire2" class="input-name" placeholder="215/60 R16" value="215/60 R16">
+        </div>
+      </div>
+      <button class="btn" onclick="calcTires()" style="margin-top:10px; padding:10px;">Рассчитать</button>
+      <div id="tireResult" style="margin-top:15px; padding:15px; background:rgba(0,0,0,0.3); border-radius:10px; font-size:0.9em; line-height:1.6;"></div>
+    </div>
+
+    <div id="calcEngine" class="calc-panel hidden">
+      <p style="font-size:0.9em; color:#aaa; margin-bottom:10px;">Расчет рабочего объёма двигателя (V = π/4 × D² × S × цилиндры).</p>
+      <div style="display: flex; gap: 10px; margin-bottom: 10px;">
+        <div style="flex:1;">
+          <label style="font-size:0.8em; color:#ccc;">Диаметр (мм)</label>
+          <input type="number" id="engD" class="input-name" value="80">
+        </div>
+        <div style="flex:1;">
+          <label style="font-size:0.8em; color:#ccc;">Ход (мм)</label>
+          <input type="number" id="engS" class="input-name" value="80">
+        </div>
+        <div style="flex:1;">
+          <label style="font-size:0.8em; color:#ccc;">Цилиндры</label>
+          <input type="number" id="engC" class="input-name" value="4">
+        </div>
+      </div>
+      <button class="btn" onclick="calcEngine()" style="margin-top:0; padding:10px;">Рассчитать</button>
+      <div id="engResult" style="margin-top:15px; padding:15px; background:rgba(0,0,0,0.3); border-radius:10px; font-size:1.1em; text-align:center;"></div>
+    </div>
+
+    <div id="calcCR" class="calc-panel hidden">
+      <p style="font-size:0.9em; color:#aaa; margin-bottom:10px;">Степень сжатия (CR = (V_цил + V_камеры) / V_камеры).</p>
+      <div style="display: flex; gap: 10px; margin-bottom: 10px;">
+        <div style="flex:1;">
+          <label style="font-size:0.8em; color:#ccc;">Объём цилиндра (см³)</label>
+          <input type="number" id="crV1" class="input-name" value="500">
+        </div>
+        <div style="flex:1;">
+          <label style="font-size:0.8em; color:#ccc;">Объём камеры (см³)</label>
+          <input type="number" id="crV2" class="input-name" value="50">
+        </div>
+      </div>
+      <button class="btn" onclick="calcCR()" style="margin-top:0; padding:10px;">Рассчитать</button>
+      <div id="crResult" style="margin-top:15px; padding:15px; background:rgba(0,0,0,0.3); border-radius:10px; font-size:1.1em; text-align:center;"></div>
+    </div>
+
+    <button class="btn secondary" onclick="backToMenu()" style="margin-top:20px;">🏠 Назад</button>
   </div>
 
   <div id="shopScreen" class="hidden">
@@ -184,7 +253,7 @@
     <button class="btn secondary" onclick="backToMenu()">🏠 Назад</button>
   </div>
 
-  <!-- ОБНОВЛЕННАЯ ТЕОРИЯ -->
+  <!-- ТЕОРИЯ -->
   <div id="theoryScreen" class="hidden">
     <h1>📚 База знаний</h1>
     <p style="text-align:center; margin-bottom:15px; color:#aaa; font-size:0.9em;">Шпаргалки для реальной работы. Нажми на тему, чтобы раскрыть.</p>
@@ -241,7 +310,7 @@
 <script>
 // ==================== БАЗА ВОПРОСОВ ====================
 const questionsDB = {
-  1: [ // БАЗА
+  1: [
     { q: "Какова наиболее частая причина масляного голодания двигателя?", options: ["Забитый маслоприемник", "Неисправный ДМРВ", "Подсос воздуха", "Пробитая прокладка ГБЦ"], correct: 0, topic: "engine", exp: "Масляное голодание — нехватка масла. Из-за забитого маслоприемника насос не может прокачать нужный объем, трущиеся детали остаются без смазки." },
     { q: "Что означает маркировка шины 205/55 R16?", options: ["Ширина 205 мм, профиль 55%, R16 — диаметр", "Ширина 205, высота 55, диаметр 16 см", "Радиус 205, профиль 55, диск 16", "Индекс 205, нагрузка 55, радиус 16"], correct: 0, topic: "suspension", exp: "205 — ширина протектора в мм. 55 — высота профиля в % от ширины. R — радиальная конструкция. 16 — посадочный диаметр диска в дюймах." },
     { q: "Какое стехиометрическое соотношение воздух/бензин для бензинового ДВС?", options: ["14.7:1", "12.5:1", "18:1", "10:1"], correct: 0, topic: "diagnostics", exp: "Для полного сгорания 1 кг бензина требуется 14.7 кг воздуха. Это идеальный баланс (λ=1)." },
@@ -263,7 +332,7 @@ const questionsDB = {
     { q: "Что означает 'гидроудар'?", options: ["Попадание жидкости в цилиндр", "Удар подвески о препятствие", "Отказ ГУР", "Удар в АКПП"], correct: 0, topic: "engine", exp: "Жидкость не сжимается. При попадании воды в цилиндр поршень останавливается, а инерция гнет шатун." },
     { q: "Что означает 'твин-турбо'?", options: ["Две турбины в системе", "Турбина с двумя крыльчатками", "Турбина с электроприводом", "Турбина с изменяемой геометрией"], correct: 0, topic: "engine", exp: "Твин-турбо — две турбины. Могут работать параллельно или последовательно." }
   ],
-  2: [ // МЕХАНИК
+  2: [
     { q: "Какая жидкость используется в АКПП?", options: ["ATF (Automatic Transmission Fluid)", "Моторное масло", "Антифриз", "Тормозная"], correct: 0, topic: "transmission", exp: "В АКПП используется специальная жидкость ATF. Она смазывает, охлаждает и передает давление." },
     { q: "Что означает 'вариатор' (CVT)?", options: ["Бесступенчатая коробка передач", "Тип АКПП с двойным сцеплением", "Механическая коробка", "Роботизированная"], correct: 0, topic: "transmission", exp: "Вариатор (CVT) использует клиновой ремень и конусы для плавного изменения передаточного числа без фиксированных передач." },
     { q: "Какой основной признак износа сцепления?", options: ["Пробуксовка при разгоне", "Стук в подвеске", "Белый дым", "Скрип тормозов"], correct: 0, topic: "transmission", exp: "Изношенное сцепление не передает полный момент. Обороты растут, а машина ускоряется медленно." },
@@ -272,7 +341,7 @@ const questionsDB = {
   ]
 };
 
-// ==================== БАЗА КЕЙСОВ (15 ШТУК) ====================
+// ==================== БАЗА КЕЙСОВ ====================
 const casesDB = [
   { q: "Клиент жалуется на белый густой дым из выхлопной трубы и сладковатый запах. Что проверить?", options: ["Прокладку ГБЦ", "Маслосъемные кольца", "ДМРВ", "Катализатор"], correct: 0, exp: "Антифриз, попадая в цилиндры, сгорает и дает белый пар с запахом сладкого. Это признак пробоя прокладки ГБЦ." },
   { q: "Двигатель троит на холодную, после прогрева работает ровно. Ошибок нет. Куда смотреть?", options: ["Форсунки или свечи", "Компрессию", "Катализатор", "Генератор"], correct: 0, exp: "На холодную зазоры больше, и забитые форсунки или уставшие свечи могут давать сбой. После прогрева смесь лучше распыляется." },
@@ -473,7 +542,7 @@ function showCards() {
   }
 }
 
-// ТЕОРИЯ (ОБНОВЛЕННАЯ)
+// ТЕОРИЯ
 function showTheory() {
   document.getElementById('menu').classList.add('hidden');
   document.getElementById('theoryScreen').classList.remove('hidden');
@@ -574,6 +643,99 @@ function toggleTheory(header) {
   }
 }
 
+// КАЛЬКУЛЯТОР
+function showCalculator() {
+  document.getElementById('menu').classList.add('hidden');
+  document.getElementById('calcScreen').classList.remove('hidden');
+  switchCalc('tires');
+}
+
+function switchCalc(type) {
+  document.querySelectorAll('.calc-panel').forEach(p => p.classList.add('hidden'));
+  document.getElementById('btnCalcTires').style.borderColor = 'rgba(255,255,255,0.2)';
+  document.getElementById('btnCalcTires').style.color = '#fff';
+  document.getElementById('btnCalcEngine').style.borderColor = 'rgba(255,255,255,0.2)';
+  document.getElementById('btnCalcEngine').style.color = '#fff';
+  document.getElementById('btnCalcCR').style.borderColor = 'rgba(255,255,255,0.2)';
+  document.getElementById('btnCalcCR').style.color = '#fff';
+
+  if (type === 'tires') {
+    document.getElementById('calcTires').classList.remove('hidden');
+    document.getElementById('btnCalcTires').style.borderColor = '#3498db';
+    document.getElementById('btnCalcTires').style.color = '#3498db';
+  } else if (type === 'engine') {
+    document.getElementById('calcEngine').classList.remove('hidden');
+    document.getElementById('btnCalcEngine').style.borderColor = '#3498db';
+    document.getElementById('btnCalcEngine').style.color = '#3498db';
+  } else if (type === 'cr') {
+    document.getElementById('calcCR').classList.remove('hidden');
+    document.getElementById('btnCalcCR').style.borderColor = '#3498db';
+    document.getElementById('btnCalcCR').style.color = '#3498db';
+  }
+}
+
+function parseTire(str) {
+  const match = str.match(/(\d{3})\/(\d{2})\s*R?(\d{2})/i);
+  if (!match) return null;
+  return { w: parseInt(match[1]), p: parseInt(match[2]), r: parseInt(match[3]) };
+}
+
+function calcTires() {
+  const t1 = parseTire(document.getElementById('tire1').value);
+  const t2 = parseTire(document.getElementById('tire2').value);
+  const resBox = document.getElementById('tireResult');
+
+  if (!t1 || !t2) {
+    resBox.innerHTML = '<span style="color:#e74c3c;">Ошибка: введи в формате 205/55 R16</span>';
+    return;
+  }
+  const h1 = (t1.w * t1.p) / 100;
+  const h2 = (t2.w * t2.p) / 100;
+  const d1 = (t1.r * 25.4) + 2 * h1;
+  const d2 = (t2.r * 25.4) + 2 * h2;
+  const diff = d2 - d1;
+  const clearance = diff / 2;
+  const speedErr = ((d2 - d1) / d1) * 100;
+
+  let color = Math.abs(speedErr) > 3 ? '#e74c3c' : '#27ae60';
+
+  resBox.innerHTML = `
+    <div><strong>Диаметр старого:</strong> ${d1.toFixed(1)} мм</div>
+    <div><strong>Диаметр нового:</strong> ${d2.toFixed(1)} мм</div>
+    <hr style="border-color:rgba(255,255,255,0.1); margin:8px 0;">
+    <div><strong>Разница клиренса:</strong> <span style="color:${diff > 0 ? '#27ae60' : '#e74c3c'}">${clearance > 0 ? '+' : ''}${clearance.toFixed(1)} мм</span></div>
+    <div><strong>Погрешность спидометра:</strong> <span style="color:${color}">${speedErr > 0 ? '+' : ''}${speedErr.toFixed(2)}%</span></div>
+    <div style="font-size:0.85em; color:#aaa; margin-top:8px;">${Math.abs(speedErr) > 3 ? '⚠️ Погрешность > 3%. Рекомендуется калибровка.' : '✅ Размер в пределах допустимого.'}</div>
+  `;
+}
+
+function calcEngine() {
+  const d = parseFloat(document.getElementById('engD').value);
+  const s = parseFloat(document.getElementById('engS').value);
+  const c = parseInt(document.getElementById('engC').value);
+  const resBox = document.getElementById('engResult');
+
+  if (!d || !s || !c || d <= 0 || s <= 0 || c <= 0) {
+    resBox.innerHTML = '<span style="color:#e74c3c;">Ошибка: заполни все поля</span>';
+    return;
+  }
+  const vol = (Math.PI / 4) * (d/10)**2 * (s/10) * c;
+  resBox.innerHTML = `<strong>Объём двигателя:</strong> <span style="color:#f39c12; font-size:1.2em;">${vol.toFixed(1)} см³</span><br><span style="font-size:0.8em; color:#aaa;">(или ${(vol/1000).toFixed(2)} литра)</span>`;
+}
+
+function calcCR() {
+  const v1 = parseFloat(document.getElementById('crV1').value);
+  const v2 = parseFloat(document.getElementById('crV2').value);
+  const resBox = document.getElementById('crResult');
+
+  if (!v1 || !v2 || v1 <= 0 || v2 <= 0) {
+    resBox.innerHTML = '<span style="color:#e74c3c;">Ошибка: заполни все поля</span>';
+    return;
+  }
+  const cr = (v1 + v2) / v2;
+  resBox.innerHTML = `<strong>Степень сжатия:</strong> <span style="color:#f39c12; font-size:1.2em;">${cr.toFixed(2)}:1</span>`;
+}
+
 // ИГРА
 function startLevel(type) {
   clearInterval(timerInterval);
@@ -642,7 +804,7 @@ function startErrorWork() {
 }
 
 function initGameScreen() {
-  ['menu','shopScreen','theoryScreen','bestScreen','result','cardsScreen'].forEach(id => document.getElementById(id).classList.add('hidden'));
+  ['menu','shopScreen','theoryScreen','bestScreen','result','cardsScreen', 'calcScreen'].forEach(id => document.getElementById(id).classList.add('hidden'));
   document.getElementById('game').classList.remove('hidden');
   document.getElementById('helpButtons').classList.toggle('hidden', currentGameType === 'exam' || currentGameType === 'infinite');
   document.getElementById('joker5050').disabled = false;
@@ -817,7 +979,7 @@ function showResult() {
 function restartLevel() { backToMenu(); }
 function backToMenu() {
   clearInterval(timerInterval);
-  ['result','game','bestScreen','theoryScreen','shopScreen','cardsScreen'].forEach(id => document.getElementById(id).classList.add('hidden'));
+  ['result','game','bestScreen','theoryScreen','shopScreen','cardsScreen','calcScreen'].forEach(id => document.getElementById(id).classList.add('hidden'));
   document.getElementById('menu').classList.remove('hidden');
   updateUI(); loadBestScores(); loadJokers();
 }

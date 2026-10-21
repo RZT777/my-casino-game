@@ -3,161 +3,113 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>🔧 Тест Автомеханика PRO MAX</title>
+<title>🔧 Тест Автомеханика v4.0</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Arial, sans-serif; }
-  body {
-    background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
-    min-height: 100vh; display: flex; justify-content: center; align-items: center;
-    padding: 20px; color: #fff;
-  }
-  .container {
-    background: rgba(255,255,255,0.05); backdrop-filter: blur(10px);
-    border: 1px solid rgba(255,255,255,0.1); border-radius: 20px;
-    padding: 35px; max-width: 850px; width: 100%;
-    box-shadow: 0 20px 60px rgba(0,0,0,0.6); max-height: 95vh; overflow-y: auto;
-  }
-  h1 { text-align: center; font-size: 2em; margin-bottom: 8px;
-       background: linear-gradient(90deg, #e74c3c, #8e44ad, #3498db);
-       -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-  .subtitle { text-align: center; color: #aaa; margin-bottom: 25px; font-size: 0.95em; }
+  body { background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); min-height: 100vh; display: flex; justify-content: center; align-items: center; padding: 20px; color: #fff; }
+  .container { background: rgba(255,255,255,0.05); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; padding: 30px; max-width: 850px; width: 100%; box-shadow: 0 20px 60px rgba(0,0,0,0.6); max-height: 95vh; overflow-y: auto; }
+  h1 { text-align: center; font-size: 2em; margin-bottom: 8px; background: linear-gradient(90deg, #e74c3c, #8e44ad, #3498db); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+  .subtitle { text-align: center; color: #aaa; margin-bottom: 20px; font-size: 0.95em; }
   
+  /* ЭКОНОМИКА */
+  .economy-bar { display: flex; justify-content: space-between; align-items: center; background: rgba(243,156,18,0.1); border: 1px solid rgba(243,156,18,0.3); border-radius: 12px; padding: 10px 15px; margin-bottom: 15px; flex-wrap: wrap; gap: 10px; }
+  .coins { font-size: 1.1em; font-weight: bold; color: #f39c12; }
+  .rank-badge { background: #e74c3c; padding: 4px 10px; border-radius: 10px; font-size: 0.85em; font-weight: bold; }
+  .xp-bar { flex-grow: 1; min-width: 100px; height: 8px; background: rgba(255,255,255,0.1); border-radius: 4px; overflow: hidden; }
+  .xp-fill { height: 100%; background: linear-gradient(90deg, #f39c12, #e67e22); transition: width 0.3s; }
+
   /* ПРОФИЛЬ */
-  .profile-box {
-    background: rgba(231,76,60,0.1); border: 1px solid rgba(231,76,60,0.3);
-    border-radius: 12px; padding: 15px 20px; margin-bottom: 20px;
-  }
+  .profile-box { background: rgba(231,76,60,0.1); border: 1px solid rgba(231,76,60,0.3); border-radius: 12px; padding: 15px; margin-bottom: 15px; }
   .profile-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
   .profile-name { font-size: 1.1em; font-weight: bold; color: #e74c3c; }
-  .profile-rank { font-size: 0.85em; color: #f39c12; margin-top: 4px; }
-  .profile-select {
-    background: rgba(0,0,0,0.3); color: #fff; border: 1px solid rgba(255,255,255,0.2);
-    border-radius: 6px; padding: 6px 10px; font-size: 0.9em; cursor: pointer;
-  }
-  .input-name {
-    width: 100%; padding: 12px 15px; border-radius: 10px;
-    border: 1px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.08);
-    color: #fff; font-size: 1em; margin-bottom: 10px;
-  }
-  .input-name:focus { outline: none; border-color: #e74c3c; }
-  
-  /* БЕЙДЖИ */
-  .badges-container { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 15px; justify-content: center; }
-  .badge-icon {
-    width: 45px; height: 45px; border-radius: 50%;
-    display: flex; justify-content: center; align-items: center;
-    font-size: 1.5em; background: rgba(255,255,255,0.1);
-    border: 2px solid rgba(255,255,255,0.2); cursor: help;
-    transition: transform 0.2s, box-shadow 0.2s;
-  }
-  .badge-icon.earned { background: rgba(243,156,18,0.2); border-color: #f39c12; box-shadow: 0 0 10px rgba(243,156,18,0.5); }
-  .badge-icon:hover { transform: scale(1.1); }
+  .profile-select { background: #222; color: #fff; border: 1px solid rgba(255,255,255,0.2); border-radius: 6px; padding: 6px; font-size: 0.85em; }
+  .input-name { width: 100%; padding: 10px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.08); color: #fff; margin-bottom: 10px; }
 
-  /* УРОВНИ */
-  .level-badge { display: inline-block; padding: 6px 18px; border-radius: 20px; font-weight: bold; font-size: 0.9em; margin-bottom: 15px; }
-  .level-1 { background: #f39c12; } .level-2 { background: #e67e22; }
-  .level-3 { background: #e74c3c; } .level-4 { background: #8e44ad; }
-  .level-5 { background: linear-gradient(90deg, #e74c3c, #8e44ad); }
-  .level-6 { background: linear-gradient(90deg, #000, #e74c3c, #000); }
-  .level-7 { background: linear-gradient(90deg, #00b894, #0984e3); } /* Для экзамена */
-  
-  /* ВОПРОСЫ */
-  .question-container { position: relative; }
-  .question { font-size: 1.15em; margin-bottom: 20px; line-height: 1.5; min-height: 50px; padding-right: 40px; }
-  .speak-btn {
-    position: absolute; top: 0; right: 0;
-    background: rgba(52,152,219,0.2); border: 1px solid #3498db; color: #fff;
-    width: 35px; height: 35px; border-radius: 50%; cursor: pointer;
-    display: flex; justify-content: center; align-items: center; font-size: 1.2em;
-    transition: background 0.2s;
-  }
-  .speak-btn:hover { background: rgba(52,152,219,0.5); }
-  .options { display: flex; flex-direction: column; gap: 10px; }
-  .option {
-    background: rgba(255,255,255,0.08); border: 2px solid rgba(255,255,255,0.15);
-    border-radius: 12px; padding: 14px 18px; cursor: pointer;
-    transition: all 0.25s; font-size: 0.98em; text-align: left; color: #fff;
-  }
-  .option:hover:not(.disabled) { background: rgba(231,76,60,0.2); border-color: #e74c3c; transform: translateX(5px); }
+  /* БЛОКИ МЕНЮ */
+  .menu-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; }
+  .menu-btn { padding: 12px; border-radius: 10px; border: none; font-weight: bold; cursor: pointer; color: #fff; text-align: center; transition: transform 0.2s; }
+  .menu-btn:hover { transform: translateY(-2px); }
+  .btn-theory { background: #3498db; }
+  .btn-shop { background: #9b59b6; }
+  .btn-cards { background: #e67e22; }
+  .btn-errors { background: #c0392b; }
+
+  /* СТРИК */
+  .streak-box { background: rgba(0,0,0,0.3); border-radius: 12px; padding: 12px; text-align: center; margin-bottom: 15px; }
+  .streak-days { display: flex; justify-content: center; gap: 8px; margin-top: 10px; }
+  .day { width: 35px; height: 35px; border-radius: 50%; display: flex; justify-content: center; align-items: center; background: rgba(255,255,255,0.1); border: 2px solid rgba(255,255,255,0.2); font-weight: bold; }
+  .day.active { background: #e74c3c; border-color: #fff; }
+  .day.today { border-color: #f39c12; }
+
+  /* ЗАДАНИЯ */
+  .tasks-box { background: rgba(0,0,0,0.2); border-radius: 12px; padding: 15px; margin-bottom: 15px; font-size: 0.9em; }
+  .task-item { display: flex; justify-content: space-between; margin-bottom: 8px; padding-bottom: 5px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+  .task-done { color: #27ae60; font-weight: bold; }
+
+  /* СЕТКА УРОВНЕЙ */
+  .level-select { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; }
+  .level-card { padding: 15px; border-radius: 12px; text-align: center; cursor: pointer; border: 2px solid rgba(255,255,255,0.15); background: rgba(255,255,255,0.05); }
+  .level-card:hover { border-color: #e74c3c; }
+  .level-card .icon { font-size: 1.8em; }
+  .level-card .best { font-size: 0.75em; color: #f39c12; margin-top: 5px; }
+
+  /* ИГРА */
+  .game-screen .stats { display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 0.9em; color: #ccc; }
+  .timer { padding: 4px 10px; border-radius: 8px; font-weight: bold; background: rgba(39,174,96,0.3); }
+  .timer.danger { background: rgba(231,76,60,0.5); }
+  .progress-bar { height: 6px; background: rgba(255,255,255,0.1); border-radius: 4px; margin-bottom: 15px; overflow: hidden; }
+  .progress-fill { height: 100%; background: #e74c3c; transition: width 0.3s; }
+
+  .question-container { position: relative; margin-bottom: 15px; }
+  .question { font-size: 1.1em; line-height: 1.5; padding-right: 35px; }
+  .speak-btn { position: absolute; top: 0; right: 0; background: rgba(52,152,219,0.2); border: 1px solid #3498db; color: #fff; width: 30px; height: 30px; border-radius: 50%; cursor: pointer; }
+  .options { display: flex; flex-direction: column; gap: 8px; }
+  .option { background: rgba(255,255,255,0.08); border: 2px solid rgba(255,255,255,0.15); border-radius: 10px; padding: 12px 15px; cursor: pointer; transition: all 0.2s; text-align: left; color: #fff; }
+  .option:hover:not(.disabled) { background: rgba(231,76,60,0.2); }
   .option.correct { background: rgba(39,174,96,0.4); border-color: #27ae60; }
   .option.wrong { background: rgba(231,76,60,0.4); border-color: #e74c3c; }
-  .option.disabled { cursor: default; }
+  .option.disabled { cursor: default; opacity: 0.6; }
+  .option.hidden-by-joker { opacity: 0.1; pointer-events: none; }
+
+  .help-buttons { display: flex; gap: 10px; margin-top: 15px; }
+  .help-btn { flex: 1; padding: 10px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2); background: rgba(0,0,0,0.3); color: #fff; cursor: pointer; }
+  .help-btn:hover:not(:disabled) { background: rgba(243,156,18,0.3); }
+  .help-btn:disabled { opacity: 0.3; }
+
+  .explanation { margin-top: 15px; padding: 12px; background: rgba(52,152,219,0.15); border-left: 4px solid #3498db; border-radius: 6px; display: none; font-size: 0.9em; }
+  .btn { display: block; width: 100%; padding: 14px; margin-top: 15px; border: none; border-radius: 10px; font-size: 1em; font-weight: bold; cursor: pointer; background: linear-gradient(90deg, #e74c3c, #8e44ad); color: #fff; }
+  .btn.secondary { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); }
   
-  /* ПРОГРЕСС И ТАЙМЕР */
-  .progress-bar { height: 8px; background: rgba(255,255,255,0.1); border-radius: 4px; margin-bottom: 20px; overflow: hidden; }
-  .progress-fill { height: 100%; background: linear-gradient(90deg, #e74c3c, #8e44ad); border-radius: 4px; transition: width 0.4s; }
-  .stats { display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 0.9em; color: #ccc; flex-wrap: wrap; gap: 8px; }
-  .timer { padding: 4px 12px; border-radius: 10px; font-weight: bold; background: rgba(39,174,96,0.3); transition: background 0.3s; }
-  .timer.warning { background: rgba(243,156,18,0.4); }
-  .timer.danger { background: rgba(231,76,60,0.5); animation: pulse 0.8s infinite; }
-  @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.5; } }
-  
-  /* КНОПКИ */
-  .btn {
-    display: block; width: 100%; padding: 15px; margin-top: 20px;
-    border: none; border-radius: 12px; font-size: 1.05em; font-weight: bold;
-    cursor: pointer; background: linear-gradient(90deg, #e74c3c, #8e44ad); color: #fff;
-    transition: transform 0.2s, box-shadow 0.2s;
-  }
-  .btn:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(231,76,60,0.4); }
-  .btn.secondary { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); margin-top: 10px; }
-  .btn.danger { background: rgba(231,76,60,0.2); border: 1px solid #e74c3c; color: #ff9999; }
-  .btn.danger:hover { background: rgba(231,76,60,0.4); }
-  
-  /* СЕТКА УРОВНЕЙ */
-  .level-select { display: grid; grid-template-columns: repeat(auto-fit, minmax(145px, 1fr)); gap: 12px; margin-top: 15px; }
-  .level-card {
-    padding: 20px 12px; border-radius: 15px; text-align: center; cursor: pointer;
-    border: 2px solid rgba(255,255,255,0.15); transition: all 0.25s;
-    background: rgba(255,255,255,0.05);
-  }
-  .level-card:hover { transform: translateY(-5px); border-color: #e74c3c; }
-  .level-card .icon { font-size: 2.2em; margin-bottom: 8px; }
-  .level-card .name { font-weight: bold; margin-bottom: 4px; font-size: 0.9em; }
-  .level-card .desc { font-size: 0.75em; color: #aaa; }
-  .level-card .best { font-size: 0.72em; color: #f39c12; margin-top: 6px; min-height: 14px; }
-  
-  .hidden { display: none; }
+  /* РЕЗУЛЬТАТЫ */
   .center { text-align: center; }
+  .result-emoji { font-size: 4em; margin: 10px 0; }
+  .result-score { font-size: 2em; font-weight: bold; color: #e74c3c; }
+  .review-item { background: rgba(255,255,255,0.06); border-radius: 10px; padding: 12px; margin-bottom: 8px; text-align: left; border-left: 4px solid #e74c3c; font-size: 0.9em; }
+
+  /* ТАБЛИЦЫ */
+  .data-table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 0.9em; }
+  .data-table th, .data-table td { padding: 8px; text-align: left; border-bottom: 1px solid rgba(255,255,255,0.1); }
   
-  /* РЕЗУЛЬТАТЫ И РАЗБОР */
-  .result-emoji { font-size: 4.5em; margin: 10px 0; }
-  .result-title { font-size: 1.7em; margin-bottom: 8px; }
-  .result-score { font-size: 2.3em; font-weight: bold; color: #e74c3c; margin: 12px 0; }
-  .result-text { color: #bbb; margin-bottom: 8px; }
-  .explanation {
-    margin-top: 15px; padding: 12px 15px;
-    background: rgba(52,152,219,0.15); border-left: 4px solid #3498db;
-    border-radius: 6px; font-size: 0.9em; color: #cde; display: none;
-  }
-  .review-item {
-    background: rgba(255,255,255,0.06); border-radius: 12px; padding: 14px 16px;
-    margin-bottom: 10px; text-align: left; border-left: 4px solid #e74c3c;
-  }
-  .review-item .rq { font-weight: bold; margin-bottom: 6px; font-size: 0.93em; }
-  .review-item .ra { font-size: 0.86em; color: #8fe; margin-bottom: 3px; }
-  .review-item .ry { font-size: 0.86em; color: #faa; }
-  .review-item .re { font-size: 0.8em; color: #aac; margin-top: 6px; font-style: italic; }
-  
-  /* ТАБЛИЦА РЕКОРДОВ И СТАТИСТИКА */
-  .section-title { font-size: 1.1em; margin: 15px 0 10px; color: #e74c3c; text-align: center; }
-  .best-table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 0.9em; }
-  .best-table th, .best-table td { padding: 8px; text-align: left; border-bottom: 1px solid rgba(255,255,255,0.1); }
-  .best-table th { color: #e74c3c; }
-  
+  /* КАРТОЧКИ */
+  .cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 10px; }
+  .card-item { background: rgba(0,0,0,0.4); border: 2px solid #f39c12; border-radius: 10px; padding: 10px; text-align: center; }
+  .card-item.empty { border-color: rgba(255,255,255,0.1); background: rgba(255,255,255,0.05); opacity: 0.5; }
+  .card-icon { font-size: 2em; margin-bottom: 5px; }
+  .card-name { font-size: 0.8em; font-weight: bold; }
+
+  /* МАГАЗИН */
+  .shop-item { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 12px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
+  .shop-buy { background: #f39c12; color: #000; font-weight: bold; border: none; border-radius: 6px; padding: 6px 12px; cursor: pointer; }
+  .shop-buy:disabled { background: #555; color: #888; }
+
   /* ТЕОРИЯ */
-  .theory-card { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; margin-bottom: 15px; overflow: hidden; }
-  .theory-header { padding: 15px 20px; background: rgba(255,255,255,0.05); cursor: pointer; display: flex; justify-content: space-between; align-items: center; font-weight: bold; color: #f39c12; transition: background 0.2s; }
-  .theory-header:hover { background: rgba(255,255,255,0.1); }
-  .theory-header .arrow { transition: transform 0.3s; }
-  .theory-header.active .arrow { transform: rotate(180deg); }
-  .theory-content { padding: 0 20px; max-height: 0; overflow: hidden; transition: max-height 0.4s ease-out, padding 0.3s; font-size: 0.95em; line-height: 1.6; color: #ddd; }
-  .theory-content.active { padding: 15px 20px; max-height: 2000px; border-top: 1px solid rgba(255,255,255,0.1); }
-  .theory-content ul { margin-left: 20px; margin-bottom: 10px; }
-  .theory-content li { margin-bottom: 6px; }
-  .theory-content strong { color: #fff; }
-  .theory-content code { background: rgba(0,0,0,0.3); padding: 2px 6px; border-radius: 4px; color: #8fe; font-family: monospace; }
-  .theory-btn-test { margin-top: 10px; padding: 10px; font-size: 0.9em; }
+  .theory-card { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; margin-bottom: 10px; overflow: hidden; }
+  .theory-header { padding: 12px 15px; cursor: pointer; display: flex; justify-content: space-between; font-weight: bold; color: #f39c12; }
+  .theory-content { padding: 0 15px; max-height: 0; overflow: hidden; transition: max-height 0.3s, padding 0.3s; font-size: 0.9em; line-height: 1.5; }
+  .theory-content.active { padding: 12px 15px; max-height: 1000px; border-top: 1px solid rgba(255,255,255,0.1); }
+  .locked { opacity: 0.5; filter: grayscale(1); cursor: not-allowed; }
+
+  .hidden { display: none; }
 </style>
 </head>
 <body>
@@ -165,125 +117,115 @@
 
   <!-- ГЛАВНОЕ МЕНЮ -->
   <div id="menu">
-    <h1>🔧 Тест Автомеханика PRO MAX</h1>
-    <p class="subtitle">Полноценный тренажёр и аттестация для автосервиса</p>
+    <h1>🔧 Автомеханик v4.0</h1>
     
-    <div class="profile-box" id="profileBox">
-      <div class="profile-header">
-        <div>
-          <div class="profile-name" id="profileName">👨‍🔧 Гость</div>
-          <div class="profile-rank" id="profileRank">Введи имя</div>
-        </div>
-        <select class="profile-select" id="profileSelect" onchange="switchProfile(this.value)">
-          <option value="">Сменить профиль...</option>
-        </select>
-      </div>
-      <input type="text" class="input-name" id="nameInput" placeholder="Новое имя механика..." maxlength="20">
-      <button class="btn secondary" onclick="saveName()" style="margin-top:0; padding:10px;">💾 Войти / Создать профиль</button>
-      
-      <div class="badges-container" id="badgesBox">
-        <!-- Бейджи будут вставлены через JS -->
-      </div>
+    <div class="economy-bar">
+      <div class="coins">🔩 <span id="coinsDisplay">0</span></div>
+      <div class="xp-bar" title="Опыт"><div class="xp-fill" id="xpFill"></div></div>
+      <div class="rank-badge" id="rankDisplay">Новичок</div>
     </div>
-    
-    <button class="btn" onclick="showTheory()" style="background: linear-gradient(90deg, #3498db, #2980b9);">📚 Изучить теорию</button>
 
-    <div class="section-title">Тесты по уровням</div>
+    <div class="profile-box">
+      <div class="profile-header">
+        <div class="profile-name" id="profileName">👨‍🔧 Гость</div>
+        <select class="profile-select" id="profileSelect" onchange="switchProfile(this.value)"><option value="">Сменить...</option></select>
+      </div>
+      <input type="text" class="input-name" id="nameInput" placeholder="Ввести имя..." maxlength="20">
+      <button class="btn secondary" onclick="saveName()" style="margin-top:0; padding:8px;">💾 Войти</button>
+    </div>
+
+    <div class="menu-grid">
+      <button class="menu-btn btn-theory" onclick="showTheory()">📚 Теория</button>
+      <button class="menu-btn btn-shop" onclick="showShop()">🛒 Магазин</button>
+      <button class="menu-btn btn-cards" onclick="showCards()">🃏 Карточки</button>
+      <button class="menu-btn btn-errors" id="btnErrors" onclick="startErrorWork()">🩺 Работа над ошибками</button>
+    </div>
+
+    <div class="streak-box" id="dailyBox">
+      <div style="font-size:0.9em; color:#f39c12;">Ежедневный вход</div>
+      <div class="streak-days" id="streakDays"></div>
+      <button class="btn" id="claimBtn" onclick="claimDaily()" style="padding:8px; font-size:0.9em;">🎁 Забрать награду</button>
+    </div>
+
+    <div class="tasks-box" id="tasksBox">
+      <div style="font-weight:bold; color:#f39c12; margin-bottom:8px;">📅 Задания на сегодня</div>
+      <div id="tasksList"></div>
+    </div>
+
+    <button class="btn" onclick="startDailyQuestion()" style="background: linear-gradient(90deg, #f39c12, #e67e22); margin-top:0;">❓ Вопрос дня (+50 🔩)</button>
+
+    <div class="section-title" style="margin: 15px 0 10px; text-align:center; color:#e74c3c;">Тесты по уровням</div>
     <div class="level-select">
-      <div class="level-card" onclick="startLevel(1)"><div class="icon">🟠</div><div class="name">База</div><div class="desc">Устройство</div><div class="best" id="best1"></div></div>
-      <div class="level-card" onclick="startLevel(2)"><div class="icon">🟡</div><div class="name">Механик</div><div class="desc">Системы</div><div class="best" id="best2"></div></div>
-      <div class="level-card" onclick="startLevel(3)"><div class="icon">🔴</div><div class="name">Профи</div><div class="desc">Электроника</div><div class="best" id="best3"></div></div>
-      <div class="level-card" onclick="startLevel(4)"><div class="icon">🟣</div><div class="name">Эксперт</div><div class="desc">Допуски</div><div class="best" id="best4"></div></div>
-      <div class="level-card" onclick="startLevel(5)"><div class="icon">🎯</div><div class="name">МАРАФОН</div><div class="desc">Все темы</div><div class="best" id="best5"></div></div>
-      <div class="level-card" onclick="startLevel(6)" style="background: linear-gradient(135deg, rgba(0,0,0,0.4), rgba(231,76,60,0.2));"><div class="icon">💀</div><div class="name">ХАРДКОР</div><div class="desc">20 сек.</div><div class="best" id="best6"></div></div>
+      <div class="level-card" onclick="startLevel(1)"><div class="icon">🟠</div><div class="name">База</div><div class="best" id="best1"></div></div>
+      <div class="level-card" onclick="startLevel(2)"><div class="icon">🟡</div><div class="name">Механик</div><div class="best" id="best2"></div></div>
+      <div class="level-card" onclick="startLevel(3)"><div class="icon">🔴</div><div class="name">Профи</div><div class="best" id="best3"></div></div>
+      <div class="level-card" onclick="startLevel(4)"><div class="icon">🟣</div><div class="name">Эксперт</div><div class="best" id="best4"></div></div>
+      <div class="level-card" onclick="startLevel(5)"><div class="icon">🎯</div><div class="name">Марафон</div><div class="best" id="best5"></div></div>
+      <div class="level-card" onclick="startLevel(6)" style="background: rgba(0,0,0,0.3);"><div class="icon">💀</div><div class="name">Хардкор</div><div class="best" id="best6"></div></div>
     </div>
     
-    <button class="btn" onclick="startExam()" style="background: linear-gradient(90deg, #00b894, #0984e3); margin-top:15px;">⏱️ Экзамен (Без подсказок)</button>
-    <button class="btn secondary" onclick="showBestTable()" style="margin-top:10px;">🏆 Статистика и рекорды</button>
+    <button class="btn" onclick="startExam()" style="background: linear-gradient(90deg, #00b894, #0984e3);">⏱️ Экзамен</button>
+    <button class="btn secondary" onclick="showBestTable()">🏆 Статистика</button>
+  </div>
+
+  <!-- МАГАЗИН -->
+  <div id="shopScreen" class="hidden">
+    <h1>🛒 Магазин</h1>
+    <p class="subtitle" style="color: #f39c12;">Твой баланс: <b id="shopCoins">0</b> 🔩</p>
+    <div class="shop-item">
+      <div><h4>🎯 50/50</h4><p style="font-size:0.8em; color:#aaa;">Убирает 2 неверных</p></div>
+      <button class="shop-buy" onclick="buyJoker('5050', 30)" id="buy5050">30 🔩</button>
+    </div>
+    <div class="shop-item">
+      <div><h4>⏱️ +15 секунд</h4><p style="font-size:0.8em; color:#aaa;">Добавляет время</p></div>
+      <button class="shop-buy" onclick="buyJoker('time', 20)" id="buyTime">20 🔩</button>
+    </div>
+    <button class="btn" onclick="backToMenu()">🏠 Назад</button>
+  </div>
+
+  <!-- КАРТОЧКИ -->
+  <div id="cardsScreen" class="hidden">
+    <h1>🃏 Коллекция</h1>
+    <p class="subtitle">Собрано: <span id="cardsCount">0/10</span></p>
+    <div class="cards-grid" id="cardsGrid"></div>
+    <button class="btn" onclick="backToMenu()">🏠 Назад</button>
   </div>
 
   <!-- ТЕОРИЯ -->
   <div id="theoryScreen" class="hidden">
-    <h1>📚 База знаний</h1>
-    <p class="subtitle">Изучи матчасть перед тем, как приступить к тестам</p>
-    <div id="theoryBox">
-      <div class="theory-card">
-        <div class="theory-header" onclick="toggleTheory(this)"><span>⛽ Топливная смесь и коррекции</span><span class="arrow">▼</span></div>
-        <div class="theory-content">
-          <p><strong>Стехиометрия (λ=1)</strong> — идеальное соотношение. Для бензина <code>14.7:1</code>.</p>
-          <ul><li><strong>λ < 1:</strong> Богатая смесь (перерасход, нагар).</li><li><strong>λ > 1:</strong> Бедная (перегрев, прогар клапанов).</li></ul>
-          <p><strong>Коррекции:</strong> STFT (краткосрочная) и LTFT (долгосрочная). Если LTFT близится к <code>+25%</code> — критическая бедность (подсос, насос).</p>
-          <button class="btn theory-btn-test" onclick="startLevel(2)">🎯 Тест: Механик</button>
-        </div>
-      </div>
-      <div class="theory-card">
-        <div class="theory-header" onclick="toggleTheory(this)"><span>🧠 Датчики и проверка</span><span class="arrow">▼</span></div>
-        <div class="theory-content">
-          <ul>
-            <li><strong>ДМРВ (MAF):</strong> Симптомы поломки — провалы, бедная смесь P0171.</li>
-            <li><strong>ДПКВ:</strong> Отказ = нет искры. Сопротивление <code>0.5–1.5 кОм</code>.</li>
-            <li><strong>ДК (Лямбда):</strong> Узкополосный качает 0.1–0.9В. Завис на 0.45В = умер.</li>
-          </ul>
-          <button class="btn theory-btn-test" onclick="startLevel(3)">🎯 Тест: Профи</button>
-        </div>
-      </div>
-      <div class="theory-card">
-        <div class="theory-header" onclick="toggleTheory(this)"><span>⚠️ Коды ошибок OBD-II</span><span class="arrow">▼</span></div>
-        <div class="theory-content">
-          <ul>
-            <li><strong>P0171/P0174:</strong> Бедная смесь (Банк 1/2).</li>
-            <li><strong>P0300:</strong> Множественные пропуски.</li>
-            <li><strong>P0301–P0304:</strong> Пропуск в конкретном цилиндре.</li>
-            <li><strong>P0420:</strong> Низкая эффективность катализатора.</li>
-            <li><strong>P0011/P0016:</strong> Проблемы с фазами (растянута цепь).</li>
-          </ul>
-          <button class="btn theory-btn-test" onclick="startLevel(3)">🎯 Тест: Профи</button>
-        </div>
-      </div>
-      <div class="theory-card">
-        <div class="theory-header" onclick="toggleTheory(this)"><span>🌫️ Симптомы (Дым, стуки)</span><span class="arrow">▼</span></div>
-        <div class="theory-content">
-          <ul>
-            <li><strong>Белый дым:</strong> Антифриз в цилиндрах (прокладка ГБЦ).</li>
-            <li><strong>Сизый:</strong> Сгорает масло (колпачки, кольца).</li>
-            <li><strong>Черный:</strong> Переобогащение.</li>
-            <li><strong>Троение:</strong> Отказ цилиндра (свеча, катушка).</li>
-          </ul>
-          <button class="btn theory-btn-test" onclick="startLevel(2)">🎯 Тест: Механик</button>
-        </div>
-      </div>
-      <div class="theory-card">
-        <div class="theory-header" onclick="toggleTheory(this)"><span>🛠️ Инструментарий</span><span class="arrow">▼</span></div>
-        <div class="theory-content">
-          <ul>
-            <li><strong>Дымогенератор:</strong> Поиск подсоса воздуха.</li>
-            <li><strong>Leak-down test:</strong> Подача воздуха в цилиндр, слушаем шипение.</li>
-            <li><strong>Компрессометр:</strong> Разница > 2 бар = проблема.</li>
-            <li><strong>Осциллограф:</strong> Форма сигнала ДПКВ, форсунок.</li>
-          </ul>
-          <button class="btn theory-btn-test" onclick="startLevel(4)">🎯 Тест: Эксперт</button>
-        </div>
-      </div>
-    </div>
-    <button class="btn" onclick="backToMenu()" style="margin-top:20px;">🏠 Назад в меню</button>
+    <h1>📚 Теория</h1>
+    <p class="subtitle">Темы открываются с ростом звания</p>
+    <div id="theoryList"></div>
+    <button class="btn" onclick="backToMenu()">🏠 Назад</button>
+  </div>
+
+  <!-- СТАТИСТИКА -->
+  <div id="bestScreen" class="hidden">
+    <h1>🏆 Статистика</h1>
+    <div id="bestTableBox"></div>
+    <button class="btn" onclick="backToMenu()">🏠 Назад</button>
   </div>
 
   <!-- ИГРА -->
-  <div id="game" class="hidden">
+  <div id="game" class="hidden game-screen">
     <div class="stats">
       <span id="progressText">Вопрос 1/10</span>
       <span id="scoreText">Счёт: 0</span>
       <span class="timer" id="timer">⏱️ 30</span>
     </div>
     <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
-    <div id="levelBadge" class="level-badge level-1">Уровень</div>
     
     <div class="question-container">
-      <button class="speak-btn" onclick="speakQuestion()" title="Озвучить вопрос">🔊</button>
+      <button class="speak-btn" onclick="speakQuestion()">🔊</button>
       <div class="question" id="questionText"></div>
     </div>
-    
     <div class="options" id="optionsBox"></div>
+    
+    <div class="help-buttons" id="helpButtons">
+      <button class="help-btn" id="joker5050" onclick="useJoker('5050')">🎯 50/50 (<span id="cnt5050">0</span>)</button>
+      <button class="help-btn" id="jokerTime" onclick="useJoker('time')">⏱️ +15с (<span id="cntTime">0</span>)</button>
+    </div>
+
     <div class="explanation" id="explanation"></div>
     <button class="btn hidden" id="nextBtn" onclick="nextQuestion()">Далее →</button>
   </div>
@@ -293,335 +235,442 @@
     <div class="result-emoji" id="resultEmoji">🏆</div>
     <div class="result-title" id="resultTitle"></div>
     <div class="result-score" id="resultScore"></div>
-    <div class="result-text" id="resultText"></div>
-    
-    <!-- НОВЫЕ БЕЙДЖИ -->
-    <div id="newBadgeBox" class="hidden" style="margin: 15px 0; padding: 10px; background: rgba(243,156,18,0.2); border: 1px dashed #f39c12; border-radius: 10px;">
-      <div style="color: #f39c12; font-weight: bold; margin-bottom: 5px;">🎉 Новое достижение!</div>
-      <div id="newBadgeName" style="font-size: 1.2em;"></div>
-    </div>
-
-    <!-- СТАТИСТИКА ПО ТЕМАМ -->
-    <div id="topicStatsBox" class="hidden" style="margin: 15px 0; text-align: left; background: rgba(0,0,0,0.2); padding: 15px; border-radius: 12px;">
-      <div class="section-title" style="margin-top:0;">📊 Твои знания по темам</div>
-      <div id="topicStatsContent"></div>
-    </div>
-
+    <div style="margin: 10px 0; color: #f39c12;">🪙 <span id="resultCoins">0</span> | ⚡ <span id="resultXP">0</span> XP</div>
+    <div id="cardDropBox" class="hidden" style="margin: 10px; padding: 10px; border: 1px dashed #f39c12; border-radius: 8px; color: #f39c12;"></div>
     <div id="reviewSection" class="hidden">
-      <div class="section-title">📋 Разбор ошибок</div>
+      <div style="color:#e74c3c; margin-top:15px; font-weight:bold;">📋 Разбор ошибок</div>
       <div id="reviewBox"></div>
     </div>
-    
-    <button class="btn" onclick="backToMenu()">🏠 В главное меню</button>
-    <button class="btn secondary" onclick="restartLevel()">🔁 Пройти ещё раз</button>
-  </div>
-
-  <!-- РЕКОРДЫ -->
-  <div id="bestScreen" class="hidden">
-    <h1>🏆 Статистика</h1>
-    <div id="bestTableBox"></div>
-    <button class="btn danger" onclick="resetProgress()" style="margin-top:20px;">🗑️ Сбросить прогресс ЭТОГО профиля</button>
-    <button class="btn danger" onclick="resetAllProfiles()" style="margin-top:10px; background: rgba(231,76,60,0.4);">💥 Сбросить ВООБЩЕ ВСЁ (все профили)</button>
-    <button class="btn" onclick="backToMenu()" style="margin-top:10px;">🏠 Назад</button>
+    <button class="btn" onclick="backToMenu()">🏠 В меню</button>
+    <button class="btn secondary" onclick="restartLevel()">🔁 Ещё раз</button>
   </div>
 
 </div>
 
 <script>
-// ==================== БАЗА ВОПРОСОВ ====================
-// Каждому вопросу добавлена категория (topic)
+// ==================== БАЗА ====================
 const questionsDB = {
-  1: [
-    { q: "Причина масляного голодания двигателя?", options: ["Забитый маслоприемник", "Неисправный ДМРВ", "Подсос воздуха", "Пробитая прокладка ГБЦ"], correct: 0, topic: "engine", exp: "Масляное голодание — это нехватка масла. Самая частая причина — забитый маслоприемник." },
-    { q: "Что означает маркировка шины 205/55 R16?", options: ["Ширина 205 мм, профиль 55% от ширины, R16 — посадочный диаметр", "Ширина 205 мм, высота 55 мм, диаметр 16 см", "Радиус 205 мм, профиль 55, диск 16 дюймов", "Скоростной индекс 205, нагрузка 55, радиус 16"], correct: 0, topic: "suspension", exp: "205 — ширина в мм. 55 — высота профиля в % от ширины. R — радиальная конструкция. 16 — диаметр диска в дюймах." },
-    { q: "Какое стехиометрическое соотношение воздух/бензин для бензинового ДВС?", options: ["14.7:1", "12.5:1", "18.0:1", "10.0:1"], correct: 0, topic: "diagnostics", exp: "Для полного сгорания 1 кг бензина нужно 14.7 кг воздуха. Это λ=1." },
-    { q: "Что произойдет при обрыве ремня ГРМ на 16-клапанном двигателе?", options: ["Загнет клапаны", "Двигатель просто заглохнет", "Сработает датчик коленвала", "Заклинит генератор"], correct: 0, topic: "engine", exp: "На большинстве современных 16v моторов поршни встречаются с клапанами при обрыве ремня." },
-    { q: "Какой инструмент используется для проверки компрессии?", options: ["Компрессометр", "Манометр топливной рампы", "Осциллограф", "Дымогенератор"], correct: 0, topic: "tools", exp: "Компрессометр вкручивается в свечное отверстие и измеряет максимальное давление сжатия." },
-    { q: "Что означает ошибка P0301?", options: ["Пропуски зажигания в 1-м цилиндре", "Слишком бедная смесь", "Неисправность ДПКВ", "Перегрев двигателя"], correct: 0, topic: "diagnostics", exp: "P0301 — Cylinder 1 Misfire Detected." },
-    { q: "Чем отличается гидрокомпенсатор от обычного толкателя?", options: ["Автоматически убирает зазор клапана за счет давления масла", "Имеет другой диаметр", "Изготовлен из алюминия", "Не требует смазки"], correct: 0, topic: "engine", exp: "Гидрокомпенсатор заполняется маслом и выбирает зазор автоматически." },
-    { q: "Для чего нужен клапан EGR?", options: ["Для снижения температуры сгорания и выбросов NOx", "Для увеличения мощности", "Для очистки топлива", "Для подогрева салона"], correct: 0, topic: "engine", exp: "EGR направляет часть выхлопных газов обратно во впуск." },
-    { q: "Какое типичное давление в шинах легкового автомобиля?", options: ["2.0–2.5 бар", "0.5–1.0 бар", "4.0–5.0 бар", "6.0–7.0 бар"], correct: 0, topic: "suspension", exp: "Стандартное давление — около 2.0–2.5 бар." },
-    { q: "Что означает VVT (Variable Valve Timing)?", options: ["Систему изменения фаз газораспределения", "Тип турбины", "Изменение степени сжатия", "Тип АКПП"], correct: 0, topic: "engine", exp: "VVT позволяет менять момент открытия и закрытия клапанов." },
-    { q: "Из-за чего возникает детонация?", options: ["Из-за слишком раннего зажигания или низкого октанового числа", "Из-за позднего зажигания", "Из-за богатой смеси", "Из-за высокого давления масла"], correct: 0, topic: "diagnostics", exp: "Детонация — взрывное сгорание. Причины: ранний УОЗ, низкий октан." },
-    { q: "Что такое калильное число свечи?", options: ["Способность свечи отводить тепло", "Напряжение пробоя", "Диаметр резьбы", "Длина искрового зазора"], correct: 0, topic: "engine", exp: "Чем выше калильное число, тем 'холоднее' свеча." },
-    { q: "Что проверяют дымогенератором?", options: ["Подсос воздуха во впуске", "Компрессию", "Давление масла", "Зазор клапанов"], correct: 0, topic: "tools", exp: "Дымогенератор подает дым под давлением в систему." },
-    { q: "Зачем нужен термостат?", options: ["Регулирует поток антифриза через радиатор", "Включает вентилятор", "Измеряет температуру ОЖ", "Создает давление в системе"], correct: 0, topic: "engine", exp: "На холодную термостат закрыт. При нагреве открывается." },
-    { q: "Какая жидкость используется в гидроусилителе руля (ГУР)?", options: ["Специальная жидкость ATF или PSF", "Моторное масло", "Антифриз", "Тормозная жидкость"], correct: 0, topic: "suspension", exp: "В ГУР заливается специальная жидкость (часто ATF Dexron)." },
-    { q: "Что произойдет при заклинивании термостата в закрытом положении?", options: ["Двигатель перегреется", "Двигатель не нагреется", "Откажет печка", "Порвется ремень"], correct: 0, topic: "engine", exp: "Если термостат не открывается, антифриз не идет в радиатор." },
-    { q: "Какой датчик отвечает за расчет нагрузки на двигатель?", options: ["ДМРВ (MAF) или ДАД (MAP)", "ДПКВ", "ДПДЗ", "Датчик детонации"], correct: 0, topic: "electric", exp: "ЭБУ рассчитывает наполнение по массовому расходу воздуха (ДМРВ)." },
-    { q: "Что означает маркировка масла 5W-30?", options: ["5W — низкотемпературная вязкость, 30 — высокотемпературная", "Объем двигателя 5 литров", "Срок службы 5 месяцев", "Класс API 5, SAE 30"], correct: 0, topic: "engine", exp: "5W показывает прокачиваемость на морозе, 30 — вязкость при 100°C." },
-    { q: "Для чего нужен адсорбер (EVAP)?", options: ["Улавливает пары бензина из бака", "Фильтрует топливо", "Охлаждает бензин", "Снижает шум впуска"], correct: 0, topic: "engine", exp: "Адсорбер собирает пары топлива, чтобы они не попадали в атмосферу." },
-    { q: "Как часто нужно менять ремень ГРМ?", options: ["Каждые 60–90 тыс. км или по регламенту", "Каждые 200 тыс. км", "Только когда порвется", "Раз в 5 лет независимо от пробега"], correct: 0, topic: "engine", exp: "Регламент обычно 60–90 тыс. км." }
+  1: [ // База
+    { q: "Причина масляного голодания двигателя?", options: ["Забитый маслоприемник", "Неисправный ДМРВ", "Подсос воздуха", "Пробитая прокладка ГБЦ"], correct: 0, topic: "engine", exp: "Масляное голодание — нехватка масла из-за забитого маслоприемника." },
+    { q: "Маркировка шины 205/55 R16?", options: ["Ширина 205, профиль 55%, R16", "Ширина 205, высота 55, R16", "Радиус 205, профиль 55", "Индекс 205, нагрузка 55"], correct: 0, topic: "suspension", exp: "205 — ширина, 55 — профиль в %." },
+    { q: "Стехиометрия для бензина?", options: ["14.7:1", "12.5:1", "18:1", "10:1"], correct: 0, topic: "diagnostics", exp: "14.7 кг воздуха на 1 кг бензина." },
+    { q: "Обрыв ремня ГРМ на 16v?", options: ["Загнет клапаны", "Заглохнет", "Сработает ДПКВ", "Заклинит генератор"], correct: 0, topic: "engine", exp: "Поршни встречаются с клапанами." },
+    { q: "Инструмент для компрессии?", options: ["Компрессометр", "Манометр", "Осциллограф", "Дымогенератор"], correct: 0, topic: "tools", exp: "Вкручивается вместо свечи." },
+    { q: "Ошибка P0301?", options: ["Пропуски в 1-м цилиндре", "Бедная смесь", "Отказ ДПКВ", "Перегрев"], correct: 0, topic: "diagnostics", exp: "Cylinder 1 Misfire." },
+    { q: "Зачем гидрокомпенсатор?", options: ["Убирает зазор маслом", "Другой диаметр", "Без смазки", "Из алюминия"], correct: 0, topic: "engine", exp: "Заполняется маслом." },
+    { q: "Клапан EGR?", options: ["Снижает NOx", "Мощность", "Очистка", "Подогрев"], correct: 0, topic: "engine", exp: "Выхлоп во впуск." },
+    { q: "Давление в шинах?", options: ["2.0–2.5 бар", "0.5–1.0", "4.0–5.0", "6.0–7.0"], correct: 0, topic: "suspension", exp: "Около 2.2 бар." },
+    { q: "Что такое VVT?", options: ["Изменение фаз", "Турбина", "Сжатие", "АКПП"], correct: 0, topic: "engine", exp: "Variable Valve Timing." },
+    { q: "Причина детонации?", options: ["Ранний УОЗ", "Поздний УОЗ", "Богатая", "Давление масла"], correct: 0, topic: "diagnostics", exp: "Взрывное сгорание." },
+    { q: "Калильное число?", options: ["Теплоотвод", "Пробой", "Резьба", "Зазор"], correct: 0, topic: "engine", exp: "Чем выше — тем холоднее." },
+    { q: "Дымогенератор?", options: ["Подсос воздуха", "Компрессия", "Масло", "Клапаны"], correct: 0, topic: "tools", exp: "Подает дым." },
+    { q: "Термостат?", options: ["Поток антифриза", "Вентилятор", "Температура", "Давление"], correct: 0, topic: "engine", exp: "Открывается при нагреве." },
+    { q: "Жидкость ГУР?", options: ["ATF", "Масло", "Антифриз", "Тормозная"], correct: 0, topic: "suspension", exp: "Специальная жидкость." },
+    { q: "Заклинил термостат?", options: ["Перегрев", "Недогрев", "Печка", "Ремень"], correct: 0, topic: "engine", exp: "Нет циркуляции." },
+    { q: "Датчик нагрузки?", options: ["ДМРВ", "ДПКВ", "ДПДЗ", "ДД"], correct: 0, topic: "electric", exp: "Расход воздуха." },
+    { q: "5W-30?", options: ["Вязкость", "Объем", "Срок", "API"], correct: 0, topic: "engine", exp: "Температурный диапазон." },
+    { q: "Адсорбер?", options: ["Пары бензина", "Топливо", "Охлаждение", "Шум"], correct: 0, topic: "engine", exp: "EVAP." },
+    { q: "Замена ГРМ?", options: ["60–90 тыс.", "200 тыс.", "Когда порвется", "5 лет"], correct: 0, topic: "engine", exp: "По регламенту." }
   ],
-  2: [
-    { q: "Признак пробитой прокладки ГБЦ?", options: ["Белый густой дым из выхлопа и эмульсия на щупе", "Черный дым из выхлопа", "Стук в подвеске", "Скрип тормозов"], correct: 0, topic: "engine", exp: "Антифриз попадает в цилиндры и в масло." },
-    { q: "Ошибка P0171 означает:", options: ["Слишком бедная смесь (Bank 1)", "Богатая смесь", "Пропуски зажигания", "Отказ ДМРВ"], correct: 0, topic: "diagnostics", exp: "P0171 — System Too Lean." },
-    { q: "Причина 'троения' двигателя?", options: ["Пропуски зажигания из-за свечи, катушки, форсунки", "Износ тормозных колодок", "Низкое давление в шинах", "Неисправность ABS"], correct: 0, topic: "engine", exp: "Троение — не работает один или несколько цилиндров." },
-    { q: "Что означает ошибка P0420?", options: ["Низкая эффективность катализатора", "Отказ лямбда-зонда", "Пропуски зажигания", "Богатая смесь"], correct: 0, topic: "diagnostics", exp: "P0420 — Catalyst System Efficiency Below Threshold." },
-    { q: "Что произойдет при сильном подсосе воздуха во впуск?", options: ["Бедная смесь, плавают обороты ХХ, ошибка P0171", "Богатая смесь, черный дым", "Откажет генератор", "Застучат клапаны"], correct: 0, topic: "engine", exp: "Неучтенный воздух обедняет смесь." },
-    { q: "Что регулирует клапан PCV?", options: ["Вентиляцию картерных газов", "Давление в топливной рампе", "Угол опережения зажигания", "Рециркуляцию выхлопа"], correct: 0, topic: "engine", exp: "PCV отводит картерные газы во впуск." },
-    { q: "Для чего нужен интеркулер?", options: ["Охлаждает сжатый турбиной воздух для повышения плотности", "Охлаждает моторное масло", "Охлаждает антифриз", "Глушит впуск"], correct: 0, topic: "engine", exp: "Интеркулер охлаждает воздух, повышая плотность." },
-    { q: "Что означает ошибка P0011?", options: ["Неправильное положение распредвала", "Отказ ДПКВ", "Пропуски зажигания", "Богатая смесь"], correct: 0, topic: "diagnostics", exp: "P0011 — Camshaft Position Timing Over-Advanced." },
-    { q: "Что такое форсунка GDI (прямой впрыск)?", options: ["Впрыскивает топливо прямо в цилиндр под высоким давлением", "Впрыскивает во впускной коллектор", "Распыляет топливо в дросселе", "Это карбюратор"], correct: 0, topic: "engine", exp: "GDI — топливо подается напрямую в камеру сгорания." },
-    { q: "Что означает 'лямбда = 1'?", options: ["Стехиометрическая смесь", "Бедная смесь", "Богатая смесь", "Отказ датчика"], correct: 0, topic: "diagnostics", exp: "λ=1 — идеальное соотношение." },
-    { q: "Что означает 'твин-турбо'?", options: ["Две турбины", "Турбина с двумя крыльчатками", "Турбина с электроприводом", "Турбина с изменяемой геометрией"], correct: 0, topic: "engine", exp: "Твин-турбо — две турбины (параллельно или последовательно)." },
-    { q: "Почему нельзя затягивать ГБЦ 'на глаз'?", options: ["Нужен динамометрический ключ и правильный порядок затяжки", "Можно порвать ремень ГРМ", "Сработает датчик детонации", "Ничего не будет"], correct: 0, topic: "engine", exp: "Затягивается с определенным моментом от центра к краям." },
-    { q: "Что такое сброс адаптаций в ЭБУ?", options: ["Обнуление обученных параметров коррекции", "Прошивка ЭБУ", "Сброс ошибок ABS", "Отключение иммобилайзера"], correct: 0, topic: "electric", exp: "Сброс адаптаций стирает топливные коррекции." },
-    { q: "Какой признак износа двухмассового маховика?", options: ["Стук/лязг на холостом ходу, вибрации", "Белый дым", "Скрип тормозов", "Течь антифриза"], correct: 0, topic: "transmission", exp: "Двухмассовый маховик со временем гремит на ХХ." },
-    { q: "Что такое LSPI (Low Speed Pre-Ignition)?", options: ["Преждевременное воспламенение на низких оборотах", "Детонация на высоких оборотах", "Пропуск зажигания", "Гидроудар"], correct: 0, topic: "engine", exp: "LSPI — опасно для турбо-двигателей с прямым впрыском." },
-    { q: "Для чего нужен датчик давления в шинах (TPMS)?", options: ["Предупреждает о падении давления", "Регулирует давление", "Накачивает шины", "Измеряет температуру"], correct: 0, topic: "electric", exp: "TPMS зажигает лампу при падении давления." },
-    { q: "Какой датчик определяет положение коленвала?", options: ["ДПКВ", "ДМРВ", "ДПДЗ", "ДТОЖ"], correct: 0, topic: "electric", exp: "ДПКВ сообщает ЭБУ частоту вращения и положение коленвала." },
-    { q: "Почему появляется 'белый дым' из выхлопной?", options: ["Попадание антифриза в камеру сгорания", "Богатая смесь", "Износ колец", "Забитый катализатор"], correct: 0, topic: "engine", exp: "Белый дым — признак пробоя прокладки ГБЦ." },
-    { q: "Что такое 'гидроудар'?", options: ["Попадание жидкости в цилиндр, деформация шатуна", "Удар подвески о препятствие", "Отказ ГУР", "Удар в АКПП"], correct: 0, topic: "engine", exp: "Жидкость не сжимается. Шатун гнется." },
-    { q: "Для чего нужен клапан сброса давления (Blow-off)?", options: ["Сбрасывает избыточное давление при закрытии дросселя", "Сбрасывает масло", "Охлаждает турбину", "Глушит мотор"], correct: 0, topic: "engine", exp: "Blow-off сбрасывает воздух, чтобы не было помпажа." }
+  2: [ // Механик
+    { q: "Признак пробитой прокладки ГБЦ?", options: ["Белый дым и эмульсия", "Черный дым", "Стук", "Скрип"], correct: 0, topic: "engine", exp: "Антифриз в масле." },
+    { q: "P0171?", options: ["Бедная смесь", "Богатая", "Пропуски", "Отказ ДМРВ"], correct: 0, topic: "diagnostics", exp: "System Too Lean." },
+    { q: "Троение?", options: ["Пропуски", "Колодки", "Шины", "ABS"], correct: 0, topic: "engine", exp: "Отказ цилиндра." },
+    { q: "P0420?", options: ["Катализатор", "Лямбда", "Пропуски", "Богатая"], correct: 0, topic: "diagnostics", exp: "Catalyst Efficiency." },
+    { q: "Подсос воздуха?", options: ["Бедная смесь", "Богатая", "Генератор", "Клапаны"], correct: 0, topic: "engine", exp: "Неучтенный воздух." },
+    { q: "PCV?", options: ["Картерные газы", "Топливо", "Зажигание", "EGR"], correct: 0, topic: "engine", exp: "Вентиляция картера." },
+    { q: "Интеркулер?", options: ["Охлаждает воздух", "Масло", "Антифриз", "Впуск"], correct: 0, topic: "engine", exp: "Плотность воздуха." },
+    { q: "P0011?", options: ["Положение распредвала", "ДПКВ", "Пропуски", "Богатая"], correct: 0, topic: "diagnostics", exp: "Timing Over-Advanced." },
+    { q: "GDI?", options: ["Прямой впрыск", "Коллектор", "Дроссель", "Карбюратор"], correct: 0, topic: "engine", exp: "В цилиндр." },
+    { q: "Лямбда = 1?", options: ["Стехиометрия", "Бедная", "Богатая", "Отказ"], correct: 0, topic: "diagnostics", exp: "Идеал." },
+    { q: "Твин-турбо?", options: ["Две турбины", "Две крыльчатки", "Электро", "Геометрия"], correct: 0, topic: "engine", exp: "Параллельно/последовательно." },
+    { q: "Затяжка ГБЦ?", options: ["Динамометрическим", "На глаз", "Молотком", "Не важна"], correct: 0, topic: "engine", exp: "По схеме." },
+    { q: "Сброс адаптаций?", options: ["Коррекции", "Прошивка", "ABS", "Иммобилайзер"], correct: 0, topic: "electric", exp: "Обнуление." },
+    { q: "Двухмассовый маховик?", options: ["Стук/вибрации", "Дым", "Скрип", "Течь"], correct: 0, topic: "transmission", exp: "Износ." },
+    { q: "LSPI?", options: ["Преддетонация", "Детонация", "Пропуск", "Гидроудар"], correct: 0, topic: "engine", exp: "На низах." },
+    { q: "TPMS?", options: ["Давление шин", "Регулировка", "Накачка", "Температура"], correct: 0, topic: "electric", exp: "Контроль." },
+    { q: "ДПКВ?", options: ["Коленвал", "Воздух", "Дроссель", "Температура"], correct: 0, topic: "electric", exp: "Crankshaft." },
+    { q: "Белый дым?", options: ["Антифриз", "Богатая", "Кольца", "Катализатор"], correct: 0, topic: "engine", exp: "ГБЦ." },
+    { q: "Гидроудар?", options: ["Жидкость в цилиндре", "Подвеска", "ГУР", "АКПП"], correct: 0, topic: "engine", exp: "Шатун." },
+    { q: "Blow-off?", options: ["Сброс давления", "Масло", "Охлаждение", "Глушение"], correct: 0, topic: "engine", exp: "Турбина." }
   ],
-  3: [
-    { q: "Что такое 'калильное зажигание'?", options: ["Воспламенение от раскаленных частиц без искры", "Искра от свечи", "Впрыск при холодном пуске", "Раннее зажигание"], correct: 0, topic: "engine", exp: "Свеча или нагар раскаляются и поджигают смесь." },
-    { q: "Какая степень сжатия у современного турбодизеля?", options: ["14–18:1", "8–10:1", "4–6:1", "25–30:1"], correct: 0, topic: "engine", exp: "Турбодизели имеют степень сжатия 14–18:1." },
-    { q: "Что означает ошибка P0171 вместе с P0174?", options: ["Бедная смесь в обоих банках", "Отказ двух лямбда-зондов", "Пропуски во всех цилиндрах", "Отказ ДПКВ"], correct: 0, topic: "diagnostics", exp: "Бедность общая. Ищи подсос или умирающий насос." },
-    { q: "Что такое 'перекрытие клапанов'?", options: ["Одновременное открытие впускного и выпускного клапанов", "Увеличенный зазор", "Сдвиг фаз ГРМ", "Износ кулачка"], correct: 0, topic: "engine", exp: "В конце такта выпуска и начале впуска оба клапана приоткрыты." },
-    { q: "Как ЭБУ борется с детонацией?", options: ["Снижает угол опережения зажигания", "Увеличивает подачу топлива", "Открывает термостат", "Глушит двигатель"], correct: 0, topic: "electric", exp: "Датчик детонации слышит вибрации, ЭБУ откатывает УОЗ." },
-    { q: "Какое значение LTFT указывает на критическую бедность?", options: ["+25% и выше", "-10%", "0%", "-25%"], correct: 0, topic: "diagnostics", exp: "LTFT +25% означает, что ЭБУ уперся в предел обогащения." },
-    { q: "Зачем нужен широкополосный лямбда-зонд (LSU)?", options: ["Измеряет точный состав смеси (λ) в широком диапазоне", "Показывает богато/бедно", "Измеряет температуру", "Снижает токсичность"], correct: 0, topic: "electric", exp: "LSU выдает точное значение λ в широком диапазоне." },
-    { q: "Что произойдет при заклинивании клапана EGR в открытом положении?", options: ["Нестабильный ХХ, двигатель может глохнуть", "Перегрев", "Детонация", "Отказ стартера"], correct: 0, topic: "engine", exp: "Выхлопные газы разбавляют смесь на ХХ." },
-    { q: "Что такое 'адаптация дросселя'?", options: ["Обучение ЭБУ крайних положений заслонки", "Прошивка", "Замена датчика", "Чистка заслонки"], correct: 0, topic: "electric", exp: "После чистки нужно обучить ЭБУ." },
-    { q: "Что означает ошибка P0016?", options: ["Рассинхронизация коленвала и распредвала", "Пропуски зажигания", "Богатая смесь", "Отказ ДМРВ"], correct: 0, topic: "diagnostics", exp: "Часто из-за растянутой цепи ГРМ." },
-    { q: "Что такое 'прямой впрыск' и его проблема?", options: ["Впрыск в цилиндр; нагар на впускных клапанах", "Впрыск в коллектор", "Впрыск в дроссель", "Карбюратор"], correct: 0, topic: "engine", exp: "Топливо не омывает впускные клапаны, оседает нагар." },
-    { q: "Что такое 'Returnless' топливная система?", options: ["Без обратной линии; регулятор в баке", "С обраткой", "Без бензонасоса", "С механическим ТНВД"], correct: 0, topic: "engine", exp: "Нет обратки. Давление регулируется в модуле насоса." },
-    { q: "Зачем нужен маслоотделитель?", options: ["Отделяет масло от картерных газов", "Фильтрует масло", "Охлаждает масло", "Подогревает масло"], correct: 0, topic: "engine", exp: "Не дает маслу попадать во впуск." },
-    { q: "Что такое 'e-turbo' (электротурбина)?", options: ["Электромотор раскручивает крыльчатку", "Турбина с двумя крыльчатками", "Турбина с изменяемой геометрией", "Турбина на дизеле"], correct: 0, topic: "engine", exp: "Убирает турбояму с помощью электрического мотора." },
-    { q: "Какое сопротивление у первичной обмотки катушки?", options: ["0.3–1.5 Ом", "5–15 кОм", "1 МОм", "100 Ом"], correct: 0, topic: "electric", exp: "Первичная — низкое (0.3–1.5 Ом). Вторичная — высокое." },
-    { q: "Что такое 'фазовращатель' (VVT-муфта)?", options: ["Меняет угол распредвала относительно цепи", "Датчик положения", "Клапан EGR", "Турбина"], correct: 0, topic: "engine", exp: "Управляется масляным клапаном (OCV)." },
-    { q: "Что означает 'скважность форсунки 15% на ХХ'?", options: ["Форсунка открыта 15% времени", "Открыта 85% времени", "Отказ форсунки", "Закрыта"], correct: 0, topic: "diagnostics", exp: "Скважность (Duty Cycle) — время открытия." },
-    { q: "Почему на турбо-GDI нужен зазор свечи меньше?", options: ["Из-за высокого давления наддува искру сдувает", "Из-за низкой компрессии", "Из-за плохого бензина", "Из-за раннего зажигания"], correct: 0, topic: "engine", exp: "Плотный воздух затрудняет пробой." },
-    { q: "Что такое 'гидрокомпенсатор'?", options: ["Плунжер для выбора зазора клапана", "Насос ГУР", "Демпфер коленвала", "Датчик давления"], correct: 0, topic: "engine", exp: "Масло выдвигает плунжер и убирает тепловой зазор." },
-    { q: "Что вызывает ошибку P0300?", options: ["Множественные пропуски зажигания", "Неисправность АКПП", "Ошибка ABS", "Низкий заряд АКБ"], correct: 0, topic: "diagnostics", exp: "P0300 — Random/Multiple Cylinder Misfire." }
+  3: [ // Профи
+    { q: "Калильное зажигание?", options: ["От раскаленных частиц", "Искра", "Впрыск", "Раннее"], correct: 0, topic: "engine", exp: "Без искры." },
+    { q: "Степень сжатия дизеля?", options: ["14–18:1", "8–10", "4–6", "25–30"], correct: 0, topic: "engine", exp: "Турбо." },
+    { q: "P0171 + P0174?", options: ["Оба банка бедные", "Две лямбды", "Пропуски", "ДПКВ"], correct: 0, topic: "diagnostics", exp: "Общая причина." },
+    { q: "Перекрытие клапанов?", options: ["Одновременное открытие", "Зазор", "Фазы", "Кулачок"], correct: 0, topic: "engine", exp: "Конец выпуска." },
+    { q: "Борьба с детонацией?", options: ["Снижение УОЗ", "Топливо", "Термостат", "Глушение"], correct: 0, topic: "electric", exp: "Датчик." },
+    { q: "LTFT бедности?", options: ["+25%", "-10%", "0%", "-25%"], correct: 0, topic: "diagnostics", exp: "Предел." },
+    { q: "Широкополосный ДК?", options: ["Точный λ", "Богато/бедно", "Температура", "Токсичность"], correct: 0, topic: "electric", exp: "LSU." },
+    { q: "EGR открыт?", options: ["Нестабильный ХХ", "Перегрев", "Детонация", "Стартер"], correct: 0, topic: "engine", exp: "Разбавление." },
+    { q: "Адаптация дросселя?", options: ["Обучение", "Прошивка", "Замена", "Чистка"], correct: 0, topic: "electric", exp: "0% и 100%." },
+    { q: "P0016?", options: ["Рассинхронизация", "Пропуски", "Богатая", "ДМРВ"], correct: 0, topic: "diagnostics", exp: "Цепь." },
+    { q: "Проблема GDI?", options: ["Нагар на клапанах", "Обледенение", "Подсос", "Карбюратор"], correct: 0, topic: "engine", exp: "Не омывает." },
+    { q: "Returnless?", options: ["Без обратки", "С обраткой", "Без насоса", "ТНВД"], correct: 0, topic: "engine", exp: "Регулятор в баке." },
+    { q: "Маслоотделитель?", options: ["Отделяет масло", "Фильтр", "Охлаждение", "Подогрев"], correct: 0, topic: "engine", exp: "Картерные газы." },
+    { q: "e-turbo?", options: ["Электромотор", "Две крыльчатки", "Геометрия", "Дизель"], correct: 0, topic: "engine", exp: "Турбояма." },
+    { q: "Первичная обмотка?", options: ["0.3–1.5 Ом", "5–15 кОм", "1 МОм", "100 Ом"], correct: 0, topic: "electric", exp: "Низкое." },
+    { q: "Фазовращатель?", options: ["Угол распредвала", "Датчик", "EGR", "Турбина"], correct: 0, topic: "engine", exp: "OCV." },
+    { q: "Скважность 15%?", options: ["Открыта 15%", "85%", "Отказ", "Закрыта"], correct: 0, topic: "diagnostics", exp: "Duty Cycle." },
+    { q: "Зазор турбо-GDI?", options: ["0.5–0.6", "0.8–1.0", "0.2–0.3", "1.5"], correct: 0, topic: "engine", exp: "Меньше." },
+    { q: "Гидрокомпенсатор?", options: ["Плунжер", "Насос", "Демпфер", "Датчик"], correct: 0, topic: "engine", exp: "Масло." },
+    { q: "P0300?", options: ["Множественные пропуски", "АКПП", "ABS", "АКБ"], correct: 0, topic: "diagnostics", exp: "Random." }
   ],
-  4: [
-    { q: "Какой момент затяжки болтов ГБЦ типичен для бензинового ДВС?", options: ["60–100 Н·м в несколько проходов", "10–20 Н·м", "200–300 Н·м", "500 Н·м"], correct: 0, topic: "engine", exp: "Обычно затягивается в 2–3 этапа." },
-    { q: "Какое сопротивление у индуктивного ДПКВ?", options: ["0.5–1.5 кОм", "10 Ом", "1 МОм", "100 кОм"], correct: 0, topic: "electric", exp: "500–1500 Ом. Проверяется мультиметром." },
-    { q: "Какое рабочее давление в системе GDI?", options: ["50–200 бар", "3–4 бар", "1–2 бар", "500 бар"], correct: 0, topic: "engine", exp: "ТНВД создает 50–200 бар." },
-    { q: "Что означает 'УОЗ 10° до ВМТ'?", options: ["Искра проскакивает за 10 градусов до ВМТ", "Искра после ВМТ", "Сдвиг фаз на 10 градусов", "Позднее зажигание"], correct: 0, topic: "engine", exp: "Смесь поджигается заранее." },
-    { q: "Что такое 'тест на утечку (leak-down test)'?", options: ["Подача сжатого воздуха в цилиндр для поиска утечек", "Проверка давления масла", "Тест форсунок", "Тест катализатора"], correct: 0, topic: "tools", exp: "Слушают, откуда шипит: клапаны, кольца или прокладка." },
-    { q: "Какой зазор свечи нужен для турбо-GDI?", options: ["0.5–0.6 мм", "0.8–1.0 мм", "0.2–0.3 мм", "1.5 мм"], correct: 0, topic: "engine", exp: "Уменьшенный зазор нужен из-за высокого давления наддува." },
-    { q: "Что означает 'лямбда = 0.85'?", options: ["Богатая смесь (λ<1)", "Бедная смесь (λ>1)", "Стехиометрия (λ=1)", "Отказ датчика"], correct: 0, topic: "diagnostics", exp: "Топлива на 15% больше стехиометрии." },
-    { q: "Что такое 'P0171 с LTFT +25% и STFT +10%'?", options: ["Критическая бедность, ЭБУ на пределе", "Норма", "Богатая смесь", "Отказ лямбда-зонда"], correct: 0, topic: "diagnostics", exp: "LTFT на максимуме, STFT пытается долить." },
-    { q: "Какое напряжение узкополосного ДК при λ=1?", options: ["0.45 В", "0.1 В", "0.9 В", "5 В"], correct: 0, topic: "electric", exp: "0.1 В (бедно), 0.45 В (стехиометрия), 0.9 В (богато)." },
-    { q: "Что такое 'тест компрессии с маслом'?", options: ["Добавка масла в цилиндр для диагностики колец", "Замена масла", "Проверка насоса", "Тест ГБЦ"], correct: 0, topic: "tools", exp: "Если компрессия выросла — износ колец." },
-    { q: "Что такое 'степень сжатия 10.5:1'?", options: ["Отношение полного объема к объему камеры", "Давление наддува", "Мощность на литр", "Ход поршня"], correct: 0, topic: "engine", exp: "Отношение объема цилиндра в НМТ к ВМТ." },
-    { q: "Какое сопротивление у высокоомной форсунки?", options: ["12–16 Ом", "1–3 Ом", "100 Ом", "1 МОм"], correct: 0, topic: "electric", exp: "Saturated форсунки — 12–16 Ом." },
-    { q: "Что такое 'P0016' на двигателе с цепью?", options: ["Рассинхронизация коленвала и распредвала", "Пропуски зажигания", "Отказ ДМРВ", "Богатая смесь"], correct: 0, topic: "diagnostics", exp: "ЭБУ сравнивает сигналы ДПКВ и ДПРВ." },
-    { q: "Какая типичная компрессия для исправного ДВС?", options: ["12–14 бар", "6–8 бар", "20–25 бар", "3–5 бар"], correct: 0, topic: "engine", exp: "Разница между цилиндрами не должна превышать 1–2 бар." },
-    { q: "Что означает 'скважность 80% на форсунке'?", options: ["Форсунка почти постоянно открыта", "Закрыта", "Неисправна", "Холостой ход"], correct: 0, topic: "diagnostics", exp: "Предельная нагрузка или забитость." },
-    { q: "Какой зазор клапанов с гидрокомпенсаторами?", options: ["0 (автоматически)", "0.15–0.25 мм", "0.5 мм", "1.0 мм"], correct: 0, topic: "engine", exp: "Регулировка не требуется." },
-    { q: "Что такое LSPI?", options: ["Низкооборотная преддетонация", "Высокооборотная детонация", "Гидроудар", "Турбояма"], correct: 0, topic: "engine", exp: "Разрушает поршни турбомоторов." },
-    { q: "Бедная смесь на ХХ, норма под нагрузкой — причина?", options: ["Подсос воздуха (на ХХ разряжение макс.)", "Слабый бензонасос", "Отказ форсунки", "Износ колец"], correct: 0, topic: "diagnostics", exp: "На ХХ дроссель закрыт, разряжение высокое." },
-    { q: "Какое напряжение питания бензиновой форсунки?", options: ["12 В от главного реле", "5 В от ЭБУ", "0 В", "220 В"], correct: 0, topic: "electric", exp: "ЭБУ управляет ей, замыкая на массу." },
-    { q: "Что такое 'адаптация ХХ'?", options: ["Обучение ЭБУ положения дросселя и оборотов", "Прошивка", "Сброс ошибок", "Замена датчика"], correct: 0, topic: "electric", exp: "ЭБУ запоминает 0% и 100%." }
+  4: [ // Эксперт
+    { q: "Момент ГБЦ?", options: ["60–100 Н·м", "10–20", "200–300", "500"], correct: 0, topic: "engine", exp: "В проходах." },
+    { q: "ДПКВ?", options: ["0.5–1.5 кОм", "10 Ом", "1 МОм", "100 кОм"], correct: 0, topic: "electric", exp: "Индуктивный." },
+    { q: "GDI давление?", options: ["50–200 бар", "3–4", "1–2", "500"], correct: 0, topic: "engine", exp: "ТНВД." },
+    { q: "УОЗ 10°?", options: ["До ВМТ", "После", "Фазы", "Позднее"], correct: 0, topic: "engine", exp: "Пик в ВМТ." },
+    { q: "Leak-down?", options: ["Воздух в цилиндр", "Масло", "Форсунки", "Катализатор"], correct: 0, topic: "tools", exp: "Утечки." },
+    { q: "Зазор турбо-GDI?", options: ["0.5–0.6", "0.8–1.0", "0.2–0.3", "1.5"], correct: 0, topic: "engine", exp: "Наддув." },
+    { q: "Лямбда 0.85?", options: ["Богатая", "Бедная", "Стехиометрия", "Отказ"], correct: 0, topic: "diagnostics", exp: "Топливо." },
+    { q: "LTFT +25%?", options: ["Критическая бедность", "Норма", "Богатая", "ДК"], correct: 0, topic: "diagnostics", exp: "Предел." },
+    { q: "ДК при λ=1?", options: ["0.45 В", "0.1", "0.9", "5"], correct: 0, topic: "electric", exp: "Zirconia." },
+    { q: "Компрессия с маслом?", options: ["Кольца", "Замена", "Насос", "ГБЦ"], correct: 0, topic: "tools", exp: "Выросла." },
+    { q: "10.5:1?", options: ["Объемы", "Наддув", "Мощность", "Ход"], correct: 0, topic: "engine", exp: "Отношение." },
+    { q: "Форсунка?", options: ["12–16 Ом", "1–3", "100", "1 МОм"], correct: 0, topic: "electric", exp: "Высокоомная." },
+    { q: "P0016?", options: ["Рассинхронизация", "Пропуски", "ДМРВ", "Богатая"], correct: 0, topic: "diagnostics", exp: "Цепь." },
+    { q: "Компрессия?", options: ["12–14", "6–8", "20–25", "3–5"], correct: 0, topic: "engine", exp: "Норма." },
+    { q: "Скважность 80%?", options: ["Почти открыта", "Закрыта", "Отказ", "ХХ"], correct: 0, topic: "diagnostics", exp: "Нагрузка." },
+    { q: "Зазор с гидриками?", options: ["0", "0.15–0.25", "0.5", "1.0"], correct: 0, topic: "engine", exp: "Авто." },
+    { q: "LSPI?", options: ["На низах", "На верхах", "Гидроудар", "Турбояма"], correct: 0, topic: "engine", exp: "Разрушение." },
+    { q: "Бедная на ХХ?", options: ["Подсос", "Насос", "Форсунка", "Кольца"], correct: 0, topic: "diagnostics", exp: "Разряжение." },
+    { q: "Питание форсунки?", options: ["12 В", "5 В", "0 В", "220 В"], correct: 0, topic: "electric", exp: "Масса." },
+    { q: "Адаптация ХХ?", options: ["0% и 100%", "Прошивка", "Сброс", "Замена"], correct: 0, topic: "electric", exp: "Обучение." }
   ]
 };
 
-// Категории для статистики
-const topicNames = {
-  engine: "⚙️ Двигатель",
-  electric: "⚡ Электрика",
-  diagnostics: "📟 Диагностика",
-  suspension: "🛞 Подвеска/Шины",
-  transmission: "⚙️ Трансмиссия",
-  tools: "🛠️ Инструмент"
+// База карточек
+const cardsDB = {
+  "ДМРВ": { icon: "🌬️", desc: "Датчик массового расхода воздуха. Отказ ведет к бедной смеси." },
+  "ДПКВ": { icon: "🎯", desc: "Датчик коленвала. Без него нет искры." },
+  "ДПРВ": { icon: "🔄", desc: "Датчик распредвала. Фазированный впрыск." },
+  "Лямбда": { icon: "💨", desc: "Кислородный датчик. Замеряет λ." },
+  "P0171": { icon: "⚠️", desc: "Бедная смесь (Bank 1)." },
+  "P0300": { icon: "🔥", desc: "Множественные пропуски зажигания." },
+  "P0420": { icon: "🛡️", desc: "Низкая эффективность катализатора." },
+  "P0016": { icon: "⏱️", desc: "Рассинхронизация валов (цепь)." },
+  "GDI": { icon: "⛽", desc: "Прямой впрыск. Проблема — нагар." },
+  "EGR": { icon: "♻️", desc: "Рециркуляция газов. Снижает NOx." }
 };
 
-// ==================== ДОСТИЖЕНИЯ (БЕЙДЖИ) ====================
+// Бейджи
 const badgesDB = {
-  first_test: { icon: "🥇", name: "Первая кровь", desc: "Пройти любой тест впервые" },
-  perfect: { icon: "🎯", name: "Снайпер", desc: "Пройти уровень на 100%" },
-  expert: { icon: "💀", name: "Мастер-класс", desc: "Пройти Хардкор на 80%+" },
-  marathon: { icon: "🏃", name: "Марафонец", desc: "Пройти Марафон" },
-  exam_pass: { icon: "📜", name: "Аттестат", desc: "Сдать экзамен на 80%+" },
-  rich: { icon: "💰", name: "Богач", desc: "Набрать 100 правильных ответов" }
+  first_test: { icon: "🥇", name: "Первая кровь" },
+  perfect: { icon: "🎯", name: "Снайпер" },
+  rich: { icon: "💰", name: "Богач" }
 };
 
-// ==================== ПЕРЕМЕШИВАНИЕ ====================
-function shuffleOptions(q) {
-  const indices = q.options.map((_, i) => i);
-  for (let i = indices.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [indices[i], indices[j]] = [indices[j], indices[i]];
-  }
-  const newOptions = indices.map(i => q.options[i]);
-  const newCorrect = indices.indexOf(q.correct);
-  return { q: q.q, options: newOptions, correct: newCorrect, exp: q.exp, topic: q.topic };
-}
+// Звания
+const ranks = [
+  { name: "Новичок", minXP: 0 },
+  { name: "Механик", minXP: 100 },
+  { name: "Диагност", minXP: 300 },
+  { name: "Мастер", minXP: 700 },
+  { name: "Гуру", minXP: 1500 }
+];
 
 // ==================== ПЕРЕМЕННЫЕ ====================
-let currentLevel = 1;
-let currentQuestionIndex = 0;
-let score = 0;
-let answered = false;
-let levelQuestions = [];
-let timerInterval = null;
-let timeLeft = 30;
-let mistakes = [];
-let playerName = '';
-let totalQ = 10;
-let isExamMode = false;
-let currentTopicStats = {}; // Для статистики
+let currentLevel = 1, currentQuestionIndex = 0, score = 0, answered = false;
+let levelQuestions = [], timerInterval = null, timeLeft = 30, mistakes = [];
+let playerName = '', totalQ = 10, isExamMode = false, isDailyQuestion = false, isErrorWork = false;
+let jokers = { 5050: 0, time: 0 };
+let coinsEarnedInGame = 0, xpEarnedInGame = 0;
+let currentGameType = 'normal'; // normal, exam, daily, errors
 
-const levelNames = {1: "БАЗА 🟠", 2: "МЕХАНИК 🟡", 3: "ПРОФИ 🔴", 4: "ЭКСПЕРТ 🟣", 5: "МАРАФОН 🎯", 6: "ХАРДКОР 💀", 7: "ЭКЗАМЕН 📜"};
-const levelQCount = {1: 10, 2: 10, 3: 10, 4: 10, 5: 15, 6: 10, 7: 20};
-const levelTime = {1: 40, 2: 35, 3: 30, 4: 25, 5: 30, 6: 20, 7: 30};
+const levelNames = { 1: "БАЗА", 2: "МЕХАНИК", 3: "ПРОФИ", 4: "ЭКСПЕРТ", 5: "МАРАФОН", 6: "ХАРДКОР", 7: "ЭКЗАМЕН" };
+const levelQCount = { 1: 10, 2: 10, 3: 10, 4: 10, 5: 15, 6: 10, 7: 20 };
+const levelTime = { 1: 40, 2: 35, 3: 30, 4: 25, 5: 30, 6: 20, 7: 30 };
 
 const AudioCtx = window.AudioContext || window.webkitAudioContext;
 let audioCtx = null;
 function playSound(type) {
   try {
     if (!audioCtx) audioCtx = new AudioCtx();
-    const osc = audioCtx.createOscillator();
-    const gain = audioCtx.createGain();
+    const osc = audioCtx.createOscillator(), gain = audioCtx.createGain();
     osc.connect(gain); gain.connect(audioCtx.destination);
     if (type === 'correct') {
-      osc.frequency.setValueAtTime(660, audioCtx.currentTime);
-      osc.frequency.exponentialRampToValueAtTime(990, audioCtx.currentTime + 0.15);
-      gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
-      osc.start(); osc.stop(audioCtx.currentTime + 0.3);
-    } else if (type === 'wrong') {
-      osc.type = 'sawtooth';
-      osc.frequency.setValueAtTime(300, audioCtx.currentTime);
-      osc.frequency.exponentialRampToValueAtTime(120, audioCtx.currentTime + 0.25);
-      gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.35);
-      osc.start(); osc.stop(audioCtx.currentTime + 0.35);
-    } else if (type === 'timeout') {
-      osc.type = 'square';
-      osc.frequency.setValueAtTime(200, audioCtx.currentTime);
-      gain.gain.setValueAtTime(0.12, audioCtx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.5);
-      osc.start(); osc.stop(audioCtx.currentTime + 0.5);
+      osc.frequency.setValueAtTime(660, audioCtx.currentTime); osc.frequency.exponentialRampToValueAtTime(990, audioCtx.currentTime + 0.15);
+      gain.gain.setValueAtTime(0.15, audioCtx.currentTime); gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
+    } else {
+      osc.type = 'sawtooth'; osc.frequency.setValueAtTime(300, audioCtx.currentTime); osc.frequency.exponentialRampToValueAtTime(120, audioCtx.currentTime + 0.25);
+      gain.gain.setValueAtTime(0.15, audioCtx.currentTime); gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.35);
     }
+    osc.start(); osc.stop(audioCtx.currentTime + 0.4);
   } catch(e) {}
 }
 
-// ==================== ОЗВУЧКА ====================
 function speakQuestion() {
   if ('speechSynthesis' in window) {
-    window.speechSynthesis.cancel(); // Останавливаем предыдущее
-    const text = document.getElementById('questionText').textContent;
-    const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = 'ru-RU';
-    utterance.rate = 1.0;
-    window.speechSynthesis.speak(utterance);
-  } else {
-    alert("Твой браузер не поддерживает озвучку.");
+    window.speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(document.getElementById('questionText').textContent);
+    u.lang = 'ru-RU'; window.speechSynthesis.speak(u);
   }
 }
 
-// ==================== ПРОФИЛИ ====================
+// ==================== УТИЛИТЫ ====================
+function getTodayStr() { const d = new Date(); return d.getFullYear() + '-' + (d.getMonth()+1) + '-' + d.getDate(); }
+function getYesterdayStr() { const d = new Date(); d.setDate(d.getDate() - 1); return d.getFullYear() + '-' + (d.getMonth()+1) + '-' + d.getDate(); }
+
+// ==================== ПРОФИЛЬ ====================
 function loadProfiles() {
   const profiles = JSON.parse(localStorage.getItem('mech_profiles') || '[]');
   const select = document.getElementById('profileSelect');
-  select.innerHTML = '<option value="">Сменить профиль...</option>';
-  profiles.forEach(p => {
-    const opt = document.createElement('option');
-    opt.value = p;
-    opt.textContent = p;
-    select.appendChild(opt);
-  });
+  select.innerHTML = '<option value="">Сменить...</option>';
+  profiles.forEach(p => { const o = document.createElement('option'); o.value = p; o.textContent = p; select.appendChild(o); });
   
-  playerName = localStorage.getItem('mech_current_profile') || '';
-  
-  // Если имени нет — создаем "Гостя" по умолчанию, чтобы не блокировать игру
-  if (!playerName) {
-    playerName = "Гость";
+  playerName = localStorage.getItem('mech_current_profile') || 'Гость';
+  if (!localStorage.getItem('mech_current_profile')) {
     localStorage.setItem('mech_current_profile', playerName);
     let p = JSON.parse(localStorage.getItem('mech_profiles') || '[]');
-    if (!p.includes(playerName)) {
-      p.push(playerName);
-      localStorage.setItem('mech_profiles', JSON.stringify(p));
-    }
+    if (!p.includes(playerName)) { p.push(playerName); localStorage.setItem('mech_profiles', JSON.stringify(p)); }
   }
-  
-  updateProfileUI();
+  updateUI();
 }
 
 function saveName() {
   const val = document.getElementById('nameInput').value.trim();
-  if (!val) {
-    alert("Введите имя!");
-    return;
-  }
-  
+  if (!val) return;
   let profiles = JSON.parse(localStorage.getItem('mech_profiles') || '[]');
-  if (!profiles.includes(val)) {
-    profiles.push(val);
-    localStorage.setItem('mech_profiles', JSON.stringify(profiles));
-  }
-  
+  if (!profiles.includes(val)) { profiles.push(val); localStorage.setItem('mech_profiles', JSON.stringify(profiles)); }
   localStorage.setItem('mech_current_profile', val);
   playerName = val;
   document.getElementById('nameInput').value = '';
-  loadProfiles();
-  alert('✅ Вы вошли как: ' + val);
+  loadProfiles(); loadBestScores(); loadDailyStatus(); loadJokers(); loadTasks();
 }
 
 function switchProfile(name) {
   if (!name) return;
   localStorage.setItem('mech_current_profile', name);
   playerName = name;
-  updateProfileUI();
+  updateUI(); loadBestScores(); loadDailyStatus(); loadJokers(); loadTasks();
   document.getElementById('profileSelect').value = '';
-  loadBestScores();
 }
 
-function updateProfileUI() {
-  const nameEl = document.getElementById('profileName');
-  const rankEl = document.getElementById('profileRank');
-  const badgesBox = document.getElementById('badgesBox');
+// ==================== ЭКОНОМИКА ====================
+function getCoins() { return parseInt(localStorage.getItem('mech_coins_' + playerName) || 0); }
+function addCoins(n) { localStorage.setItem('mech_coins_' + playerName, getCoins() + n); updateUI(); }
+function getXP() { return parseInt(localStorage.getItem('mech_xp_' + playerName) || 0); }
+function addXP(n) { localStorage.setItem('mech_xp_' + playerName, getXP() + n); updateUI(); }
+function getRank() { const xp = getXP(); let r = ranks[0]; for (let i of ranks) { if (xp >= i.minXP) r = i; } return r.name; }
+
+function updateUI() {
+  if (!playerName) return;
+  document.getElementById('profileName').textContent = '👨‍🔧 ' + playerName;
+  document.getElementById('coinsDisplay').textContent = getCoins();
+  document.getElementById('rankDisplay').textContent = getRank();
   
-  if (!playerName) {
-    nameEl.textContent = '👨‍🔧 Гость';
-    rankEl.textContent = 'Введи имя';
-    badgesBox.innerHTML = '';
-    return;
+  const xp = getXP();
+  let nextRank = ranks.find(r => r.minXP > xp);
+  let prevRankXP = 0; let nextRankXP = 100;
+  if (nextRank) {
+    prevRankXP = ranks[ranks.indexOf(nextRank) - 1].minXP;
+    nextRankXP = nextRank.minXP;
+  } else {
+    nextRankXP = xp;
+    prevRankXP = xp;
+  }
+  const percent = ((xp - prevRankXP) / (nextRankXP - prevRankXP)) * 100;
+  document.getElementById('xpFill').style.width = Math.min(percent, 100) + '%';
+  
+  // Кнопка работы над ошибками
+  const errs = JSON.parse(localStorage.getItem('mech_errors_' + playerName) || '[]');
+  const btn = document.getElementById('btnErrors');
+  if (errs.length === 0) { btn.disabled = true; btn.style.opacity = '0.5'; } 
+  else { btn.disabled = false; btn.style.opacity = '1'; btn.textContent = '🩺 Ошибки (' + errs.length + ')'; }
+}
+
+// ==================== БЕЙДЖИ ====================
+function awardBadge(key) {
+  let b = JSON.parse(localStorage.getItem('mech_badges_' + playerName) || '[]');
+  if (!b.includes(key)) {
+    b.push(key); localStorage.setItem('mech_badges_' + playerName, JSON.stringify(b));
+    alert('🎉 Новое достижение: ' + badgesDB[key].name);
+  }
+}
+
+// ==================== СТРИК ====================
+function loadDailyStatus() {
+  const lastClaim = localStorage.getItem('mech_last_claim_' + playerName);
+  const streak = parseInt(localStorage.getItem('mech_streak_' + playerName) || 0);
+  const today = getTodayStr(); const yesterday = getYesterdayStr();
+  const daysBox = document.getElementById('streakDays'); const claimBtn = document.getElementById('claimBtn');
+  
+  daysBox.innerHTML = '';
+  for (let i = 1; i <= 7; i++) {
+    const d = document.createElement('div'); d.className = 'day'; d.textContent = i;
+    if (i <= streak) d.classList.add('active');
+    if (lastClaim === yesterday && i === streak + 1) d.classList.add('today');
+    if (lastClaim !== today && i === streak + 1 && lastClaim !== yesterday) d.classList.add('today');
+    daysBox.appendChild(d);
+  }
+
+  if (lastClaim === today) {
+    claimBtn.disabled = true; claimBtn.textContent = '✅ Получено'; claimBtn.style.opacity = '0.5';
+  } else {
+    claimBtn.disabled = false; claimBtn.textContent = '🎁 Забрать ' + ((streak >= 6) ? 150 : (streak + 1) * 20) + ' 🔩';
+    claimBtn.style.opacity = '1';
+  }
+}
+
+function claimDaily() {
+  const today = getTodayStr(); const yesterday = getYesterdayStr();
+  const lastClaim = localStorage.getItem('mech_last_claim_' + playerName);
+  if (lastClaim === today) return;
+  
+  let streak = parseInt(localStorage.getItem('mech_streak_' + playerName) || 0);
+  if (lastClaim === yesterday) streak++; else streak = 1;
+  
+  const reward = (streak >= 7) ? 150 : streak * 20;
+  addCoins(reward);
+  localStorage.setItem('mech_last_claim_' + playerName, today);
+  localStorage.setItem('mech_streak_' + playerName, streak);
+  alert('🎉 Ежедневная награда: ' + reward + ' 🔩 (Стрик: ' + streak + ')');
+  loadDailyStatus();
+}
+
+// ==================== ЗАДАНИЯ ====================
+function loadTasks() {
+  const today = getTodayStr();
+  let tasks = JSON.parse(localStorage.getItem('mech_tasks_' + playerName) || 'null');
+  
+  if (!tasks || tasks.date !== today) {
+    tasks = {
+      date: today,
+      t1: { name: "Пройти 1 тест", target: 1, current: 0, done: false },
+      t2: { name: "10 правильных ответов", target: 10, current: 0, done: false },
+      t3: { name: "Пройти тест без ошибок", target: 1, current: 0, done: false }
+    };
+    localStorage.setItem('mech_tasks_' + playerName, JSON.stringify(tasks));
   }
   
-  nameEl.textContent = '👨‍🔧 ' + playerName;
-  const total = parseInt(localStorage.getItem('mech_total_' + playerName) || 0);
-  rankEl.textContent = getRank(total) + ' (' + total + ' отв.)';
-  
-  // Бейджи
-  const userBadges = JSON.parse(localStorage.getItem('mech_badges_' + playerName) || '[]');
-  badgesBox.innerHTML = '';
-  Object.keys(badgesDB).forEach(key => {
-    const b = badgesDB[key];
-    const el = document.createElement('div');
-    el.className = 'badge-icon' + (userBadges.includes(key) ? ' earned' : '');
-    el.innerHTML = b.icon;
-    el.title = b.name + ': ' + b.desc;
-    if (!userBadges.includes(key)) el.style.opacity = '0.3';
-    badgesBox.appendChild(el);
+  const list = document.getElementById('tasksList');
+  list.innerHTML = '';
+  ['t1','t2','t3'].forEach(k => {
+    const t = tasks[k];
+    const div = document.createElement('div'); div.className = 'task-item';
+    div.innerHTML = `<span>${t.name} (${t.current}/${t.target})</span> <span class="${t.done ? 'task-done' : ''}">${t.done ? '✅' : '⏳'}</span>`;
+    list.appendChild(div);
   });
 }
 
-function getRank(totalCorrect) {
-  if (totalCorrect >= 150) return '🏅 Гуру автосервиса';
-  if (totalCorrect >= 90) return '⭐ Мастер';
-  if (totalCorrect >= 45) return '🔧 Опытный механик';
-  if (totalCorrect >= 15) return '🛠️ Начинающий механик';
-  return '🔰 Стажёр';
+function updateTasksProgress(type, val) {
+  const today = getTodayStr();
+  let tasks = JSON.parse(localStorage.getItem('mech_tasks_' + playerName) || 'null');
+  if (!tasks || tasks.date !== today) return;
+  
+  if (type === 'test') tasks.t1.current++;
+  if (type === 'correct') tasks.t2.current += val;
+  if (type === 'perfect') tasks.t3.current++;
+  
+  ['t1','t2','t3'].forEach(k => { if (tasks[k].current >= tasks[k].target) tasks[k].done = true; });
+  localStorage.setItem('mech_tasks_' + playerName, JSON.stringify(tasks));
+  loadTasks();
 }
 
-function awardBadge(badgeKey) {
-  if (!playerName) return;
-  let userBadges = JSON.parse(localStorage.getItem('mech_badges_' + playerName) || '[]');
-  if (!userBadges.includes(badgeKey)) {
-    userBadges.push(badgeKey);
-    localStorage.setItem('mech_badges_' + playerName, JSON.stringify(userBadges));
-    
-    const badge = badgesDB[badgeKey];
-    document.getElementById('newBadgeBox').classList.remove('hidden');
-    document.getElementById('newBadgeName').innerHTML = badge.icon + ' ' + badge.name;
+// ==================== КАРТОЧКИ ====================
+function showCards() {
+  document.getElementById('menu').classList.add('hidden');
+  document.getElementById('cardsScreen').classList.remove('hidden');
+  const userCards = JSON.parse(localStorage.getItem('mech_cards_' + playerName) || '[]');
+  document.getElementById('cardsCount').textContent = userCards.length + '/' + Object.keys(cardsDB).length;
+  
+  const grid = document.getElementById('cardsGrid'); grid.innerHTML = '';
+  for (let key in cardsDB) {
+    const c = cardsDB[key];
+    const isOwned = userCards.includes(key);
+    const div = document.createElement('div');
+    div.className = 'card-item' + (isOwned ? '' : ' empty');
+    div.innerHTML = `<div class="card-icon">${c.icon}</div><div class="card-name">${key}</div>`;
+    if (isOwned) div.title = c.desc;
+    grid.appendChild(div);
   }
+}
+
+// ==================== МАГАЗИН ====================
+function loadJokers() { jokers = JSON.parse(localStorage.getItem('mech_jokers_' + playerName) || '{"5050":0,"time":0}'); }
+function buyJoker(type, price) {
+  if (getCoins() < price) { alert("Недостаточно гаек!"); return; }
+  addCoins(-price); jokers[type]++;
+  localStorage.setItem('mech_jokers_' + playerName, JSON.stringify(jokers));
+  loadJokers(); updateShopUI(); alert('✅ Куплено!');
+}
+function updateShopUI() {
+  document.getElementById('shopCoins').textContent = getCoins();
+  document.getElementById('buy5050').disabled = getCoins() < 30;
+  document.getElementById('buyTime').disabled = getCoins() < 20;
+}
+function showShop() {
+  document.getElementById('menu').classList.add('hidden');
+  document.getElementById('shopScreen').classList.remove('hidden');
+  updateShopUI();
+}
+
+function useJoker(type) {
+  if (jokers[type] <= 0) return;
+  if (answered) return;
+  
+  if (type === '5050') {
+    jokers['5050']--;
+    const q = levelQuestions[currentQuestionIndex];
+    const opts = document.querySelectorAll('.option');
+    let rem = 0;
+    opts.forEach((btn, idx) => { if (idx !== q.correct && rem < 2) { btn.classList.add('hidden-by-joker'); rem++; } });
+    document.getElementById('joker5050').disabled = true;
+  } else {
+    jokers['time']--; timeLeft += 15;
+    document.getElementById('timer').textContent = '⏱️ ' + timeLeft;
+    document.getElementById('jokerTime').disabled = true;
+  }
+  localStorage.setItem('mech_jokers_' + playerName, JSON.stringify(jokers));
+  document.getElementById('cnt5050').textContent = jokers['5050'];
+  document.getElementById('cntTime').textContent = jokers['time'];
+}
+
+// ==================== ВОПРОС ДНЯ ====================
+function startDailyQuestion() {
+  const last = localStorage.getItem('mech_daily_q_' + playerName);
+  if (last === getTodayStr()) { alert("Вопрос дня уже пройден!"); return; }
+  
+  const all = [...questionsDB[3], ...questionsDB[4]];
+  const q = all[Math.floor(Math.random() * all.length)];
+  
+  currentGameType = 'daily';
+  currentLevel = 7; currentQuestionIndex = 0; score = 0; answered = false; mistakes = []; coinsEarnedInGame = 0; xpEarnedInGame = 0;
+  totalQ = 1; timeLeft = 30;
+  levelQuestions = [q];
+  initGameScreen(7);
+}
+
+// ==================== ТЕОРИЯ ====================
+function showTheory() {
+  document.getElementById('menu').classList.add('hidden');
+  document.getElementById('theoryScreen').classList.remove('hidden');
+  renderTheory();
+}
+function renderTheory() {
+  const rank = getRank();
+  const list = document.getElementById('theoryList'); list.innerHTML = '';
+  
+  const sections = [
+    { title: "Топливная смесь и коррекции", minRank: "Новичок", content: "<p>Стехиометрия 14.7:1 (λ=1). STFT/LTFT коррекции. +25% LTFT = сильная бедность.</p>" },
+    { title: "Датчики (ДМРВ, ДПКВ)", minRank: "Механик", content: "<p>ДМРВ — массовый расход воздуха. ДПКВ — коленвал, сопротивление 0.5–1.5 кОм.</p>" },
+    { title: "Коды ошибок OBD-II", minRank: "Диагност", content: "<p>P0171 — бедная. P0300 — множественные пропуски. P0420 — катализатор. P0016 — цепь.</p>" },
+    { title: "Симптомы (Дым, стуки)", minRank: "Мастер", content: "<p>Белый дым — антифриз. Сизый — масло. Черный — переобогащение. Троение — отказ цилиндра.</p>" },
+    { title: "Инструментарий и кейсы", minRank: "Гуру", content: "<p>Дымогенератор — подсос. Leak-down — утечки. Осциллограф — форма сигнала. Компрессометр — ЦПГ.</p>" }
+  ];
+
+  sections.forEach(s => {
+    const isLocked = ranks.findIndex(r => r.name === rank) < ranks.findIndex(r => r.name === s.minRank);
+    const div = document.createElement('div'); div.className = 'theory-card' + (isLocked ? ' locked' : '');
+    div.innerHTML = `
+      <div class="theory-header" onclick="${isLocked ? 'alert(\\'Нужно звание ' + s.minRank + '\\')' : 'this.nextElementSibling.classList.toggle(\\'active\\')'}">
+        <span>${isLocked ? '🔒 ' : ''}${s.title}</span><span class="arrow">▼</span>
+      </div>
+      <div class="theory-content">${s.content}</div>
+    `;
+    list.appendChild(div);
+  });
 }
 
 // ==================== РЕКОРДЫ ====================
@@ -630,102 +679,28 @@ function loadBestScores() {
   const best = JSON.parse(localStorage.getItem('mech_best_' + playerName) || '{}');
   for (let lvl = 1; lvl <= 6; lvl++) {
     const el = document.getElementById('best' + lvl);
-    if (best[lvl]) el.textContent = '🏆 ' + best[lvl] + '/' + levelQCount[lvl];
-    else el.textContent = '';
+    if (el) el.textContent = best[lvl] ? '🏆 ' + best[lvl] + '/' + levelQCount[lvl] : '';
   }
 }
-
-function saveBestScore(lvl, scoreVal) {
-  if (!playerName) return;
+function saveBestScore(lvl, val) {
   const best = JSON.parse(localStorage.getItem('mech_best_' + playerName) || '{}');
-  if (!best[lvl] || scoreVal > best[lvl]) {
-    best[lvl] = scoreVal;
-    localStorage.setItem('mech_best_' + playerName, JSON.stringify(best));
-  }
+  if (!best[lvl] || val > best[lvl]) { best[lvl] = val; localStorage.setItem('mech_best_' + playerName, JSON.stringify(best)); }
 }
-
 function showBestTable() {
-  if (!playerName) { alert("Сначала войдите в профиль!"); return; }
   document.getElementById('menu').classList.add('hidden');
   document.getElementById('bestScreen').classList.remove('hidden');
-  
   const best = JSON.parse(localStorage.getItem('mech_best_' + playerName) || '{}');
-  let html = '<table class="best-table"><tr><th>Уровень</th><th>Рекорд</th></tr>';
-  for (let lvl = 1; lvl <= 6; lvl++) {
-    const b = best[lvl];
-    html += `<tr><td>${levelNames[lvl]}</td><td>${b ? b + '/' + levelQCount[lvl] : '—'}</td></tr>`;
-  }
+  let html = '<table class="data-table"><tr><th>Уровень</th><th>Рекорд</th></tr>';
+  for (let lvl = 1; lvl <= 6; lvl++) html += `<tr><td>${levelNames[lvl]}</td><td>${best[lvl] ? best[lvl] + '/' + levelQCount[lvl] : '—'}</td></tr>`;
   html += '</table>';
-  
-  const total = parseInt(localStorage.getItem('mech_total_' + playerName) || 0);
-  html += `<div class="section-title" style="margin-top:20px;">Профиль: ${playerName}</div>`;
-  html += `<div class="center" style="color:#ccc;">Всего правильных: <b style="color:#e74c3c;">${total}</b><br>Звание: <b style="color:#e74c3c;">${getRank(total)}</b></div>`;
-  
-  // Статистика по темам
-  const topicStats = JSON.parse(localStorage.getItem('mech_topics_' + playerName) || '{}');
-  if (Object.keys(topicStats).length > 0) {
-    html += `<div class="section-title" style="margin-top:20px;">📊 Статистика по темам</div>`;
-    html += `<table class="best-table"><tr><th>Тема</th><th>Правильно</th><th>Всего</th></tr>`;
-    for (let t in topicStats) {
-      const s = topicStats[t];
-      const name = topicNames[t] || t;
-      html += `<tr><td>${name}</td><td style="color:#27ae60;">${s.correct}</td><td>${s.total}</td></tr>`;
-    }
-    html += `</table>`;
-  }
-  
   document.getElementById('bestTableBox').innerHTML = html;
-}
-
-function resetProgress() {
-  if (!playerName) { alert("Нет активного профиля."); return; }
-  if (confirm('⚠️ Удалить ВСЕ рекорды, статистику и бейджи профиля "' + playerName + '"?')) {
-    localStorage.removeItem('mech_total_' + playerName);
-    localStorage.removeItem('mech_best_' + playerName);
-    localStorage.removeItem('mech_badges_' + playerName);
-    localStorage.removeItem('mech_topics_' + playerName);
-    
-    updateProfileUI();
-    loadBestScores();
-    alert('✅ Прогресс профиля сброшен!');
-    backToMenu();
-  }
-}
-
-function resetAllProfiles() {
-  if (confirm('💥 ВНИМАНИЕ! Это удалит ВСЕХ профилей и ВСЮ их статистику. Продолжить?')) {
-    localStorage.clear();
-    location.reload(); // Перезагружаем страницу, чтобы всё сбросилось
-  }
-}
-
-// ==================== ТЕОРИЯ ====================
-function showTheory() {
-  document.getElementById('menu').classList.add('hidden');
-  document.getElementById('theoryScreen').classList.remove('hidden');
-}
-function toggleTheory(header) {
-  const content = header.nextElementSibling;
-  const isActive = header.classList.contains('active');
-  document.querySelectorAll('.theory-header').forEach(h => h.classList.remove('active'));
-  document.querySelectorAll('.theory-content').forEach(c => c.classList.remove('active'));
-  if (!isActive) {
-    header.classList.add('active');
-    content.classList.add('active');
-  }
 }
 
 // ==================== ИГРА ====================
 function startLevel(level) {
-  isExamMode = false;
-  currentLevel = level;
-  currentQuestionIndex = 0;
-  score = 0;
-  answered = false;
-  mistakes = [];
-  currentTopicStats = {};
-  totalQ = levelQCount[level];
-  timeLeft = levelTime[level];
+  currentGameType = 'normal';
+  currentLevel = level; currentQuestionIndex = 0; score = 0; answered = false; mistakes = []; coinsEarnedInGame = 0; xpEarnedInGame = 0;
+  totalQ = levelQCount[level]; timeLeft = levelTime[level];
   
   if (level === 5) levelQuestions = [...questionsDB[1], ...questionsDB[2], ...questionsDB[3], ...questionsDB[4]].sort(() => Math.random() - 0.5).slice(0, totalQ);
   else if (level === 6) levelQuestions = [...questionsDB[3], ...questionsDB[4]].sort(() => Math.random() - 0.5).slice(0, totalQ);
@@ -735,33 +710,33 @@ function startLevel(level) {
 }
 
 function startExam() {
-  isExamMode = true;
-  currentLevel = 7;
-  currentQuestionIndex = 0;
-  score = 0;
-  answered = false;
-  mistakes = [];
-  currentTopicStats = {};
-  totalQ = levelQCount[7];
-  timeLeft = levelTime[7];
-  
-  // Берем все вопросы из всех уровней
+  currentGameType = 'exam';
+  currentLevel = 7; currentQuestionIndex = 0; score = 0; answered = false; mistakes = []; coinsEarnedInGame = 0; xpEarnedInGame = 0;
+  totalQ = levelQCount[7]; timeLeft = levelTime[7];
   levelQuestions = [...questionsDB[1], ...questionsDB[2], ...questionsDB[3], ...questionsDB[4]].sort(() => Math.random() - 0.5).slice(0, totalQ);
-  
   initGameScreen(7);
 }
 
-function initGameScreen(level) {
-  document.getElementById('menu').classList.add('hidden');
-  document.getElementById('theoryScreen').classList.add('hidden');
-  document.getElementById('result').classList.add('hidden');
-  document.getElementById('bestScreen').classList.add('hidden');
-  document.getElementById('game').classList.remove('hidden');
-  document.getElementById('newBadgeBox').classList.add('hidden');
+function startErrorWork() {
+  const errs = JSON.parse(localStorage.getItem('mech_errors_' + playerName) || '[]');
+  if (errs.length === 0) return;
   
-  const badge = document.getElementById('levelBadge');
-  badge.textContent = levelNames[level];
-  badge.className = 'level-badge level-' + (level <= 6 ? level : 7);
+  currentGameType = 'errors';
+  currentLevel = 2; currentQuestionIndex = 0; score = 0; answered = false; mistakes = []; coinsEarnedInGame = 0; xpEarnedInGame = 0;
+  totalQ = errs.length; timeLeft = 40;
+  levelQuestions = errs.map(q => ({ q: q.q, options: q.options, correct: q.correct, topic: q.topic || 'engine', exp: q.exp }));
+  initGameScreen(2);
+}
+
+function initGameScreen(level) {
+  ['menu','shopScreen','theoryScreen','bestScreen','result','cardsScreen'].forEach(id => document.getElementById(id).classList.add('hidden'));
+  document.getElementById('game').classList.remove('hidden');
+  document.getElementById('helpButtons').classList.toggle('hidden', currentGameType === 'exam' || currentGameType === 'daily');
+  
+  document.getElementById('joker5050').disabled = false;
+  document.getElementById('jokerTime').disabled = false;
+  document.getElementById('cnt5050').textContent = jokers['5050'];
+  document.getElementById('cntTime').textContent = jokers['time'];
   
   loadQuestion();
 }
@@ -769,13 +744,12 @@ function initGameScreen(level) {
 function loadQuestion() {
   answered = false;
   clearInterval(timerInterval);
-  
   const originalQ = levelQuestions[currentQuestionIndex];
   const q = shuffleOptions(originalQ);
   levelQuestions[currentQuestionIndex] = q;
   
   document.getElementById('questionText').textContent = q.q;
-  document.getElementById('progressText').textContent = `Вопрос ${currentQuestionIndex + 1}/${totalQ}`;
+  document.getElementById('progressText').textContent = currentGameType === 'daily' ? 'Вопрос дня' : (currentGameType === 'errors' ? 'Ошибки' : `Вопрос ${currentQuestionIndex + 1}/${totalQ}`);
   document.getElementById('scoreText').textContent = `Счёт: ${score}`;
   document.getElementById('progressFill').style.width = ((currentQuestionIndex) / totalQ * 100) + '%';
   
@@ -785,18 +759,12 @@ function loadQuestion() {
   
   const optionsBox = document.getElementById('optionsBox');
   optionsBox.innerHTML = '';
-  
   q.options.forEach((opt, idx) => {
     const btn = document.createElement('button');
-    btn.className = 'option';
-    btn.textContent = opt;
+    btn.className = 'option'; btn.textContent = opt;
     btn.onclick = () => selectAnswer(idx, btn);
     optionsBox.appendChild(btn);
   });
-  
-  // Статистика темы (инициализация)
-  if (!currentTopicStats[q.topic]) currentTopicStats[q.topic] = { total: 0, correct: 0 };
-  currentTopicStats[q.topic].total++;
   
   timeLeft = levelTime[currentLevel];
   const timerEl = document.getElementById('timer');
@@ -807,59 +775,46 @@ function loadQuestion() {
     timeLeft--;
     timerEl.textContent = '⏱️ ' + timeLeft;
     if (timeLeft <= 5) timerEl.className = 'timer danger';
-    else if (timeLeft <= 10) timerEl.className = 'timer warning';
-    else timerEl.className = 'timer';
     if (timeLeft <= 0) { clearInterval(timerInterval); if (!answered) timeOut(); }
   }, 1000);
 }
 
 function timeOut() {
-  answered = true;
-  playSound('timeout');
+  answered = true; playSound('wrong');
   const q = levelQuestions[currentQuestionIndex];
   const allOptions = document.querySelectorAll('.option');
   allOptions.forEach(o => o.classList.add('disabled'));
   allOptions[q.correct].classList.add('correct');
+  mistakes.push({ q: q.q, correct: q.options[q.correct], chosen: '(время)', exp: q.exp });
   
-  mistakes.push({ q: q.q, correct: q.options[q.correct], chosen: '(время вышло)', exp: q.exp });
-  
-  if (!isExamMode) {
+  if (currentGameType === 'normal') {
     const expBox = document.getElementById('explanation');
-    expBox.textContent = '⏰ Время вышло! 💡 ' + q.exp;
-    expBox.style.display = 'block';
+    expBox.textContent = '⏰ Время вышло! 💡 ' + q.exp; expBox.style.display = 'block';
   }
-  
   document.getElementById('nextBtn').classList.remove('hidden');
 }
 
 function selectAnswer(idx, btn) {
   if (answered) return;
-  answered = true;
-  clearInterval(timerInterval);
-  
+  answered = true; clearInterval(timerInterval);
   const q = levelQuestions[currentQuestionIndex];
   const allOptions = document.querySelectorAll('.option');
   allOptions.forEach(o => o.classList.add('disabled'));
   
   if (idx === q.correct) {
-    btn.classList.add('correct'); 
-    score++; 
-    playSound('correct');
-    currentTopicStats[q.topic].correct++;
+    btn.classList.add('correct'); score++; playSound('correct');
+    if (currentGameType === 'normal' || currentGameType === 'errors') { coinsEarnedInGame += 2; xpEarnedInGame += 10; }
+    if (currentGameType === 'daily') { coinsEarnedInGame += 50; xpEarnedInGame += 50; }
     document.getElementById('scoreText').textContent = `Счёт: ${score}`;
   } else {
-    btn.classList.add('wrong'); 
-    allOptions[q.correct].classList.add('correct');
-    playSound('wrong');
+    btn.classList.add('wrong'); allOptions[q.correct].classList.add('correct'); playSound('wrong');
     mistakes.push({ q: q.q, correct: q.options[q.correct], chosen: q.options[idx], exp: q.exp });
   }
   
-  if (!isExamMode) {
+  if (currentGameType === 'normal') {
     const expBox = document.getElementById('explanation');
-    expBox.textContent = '💡 ' + q.exp;
-    expBox.style.display = 'block';
+    expBox.textContent = '💡 ' + q.exp; expBox.style.display = 'block';
   }
-  
   document.getElementById('nextBtn').classList.remove('hidden');
 }
 
@@ -873,104 +828,102 @@ function showResult() {
   clearInterval(timerInterval);
   document.getElementById('game').classList.add('hidden');
   document.getElementById('result').classList.remove('hidden');
+  document.getElementById('cardDropBox').classList.add('hidden');
   
   const percent = Math.round(score / totalQ * 100);
   
-  if (!isExamMode) {
-    saveBestScore(currentLevel, score);
+  // Начисления
+  addCoins(coinsEarnedInGame);
+  addXP(xpEarnedInGame);
+  document.getElementById('resultCoins').textContent = coinsEarnedInGame;
+  document.getElementById('resultXP').textContent = xpEarnedInGame;
+  
+  // Прогресс заданий
+  if (currentGameType === 'normal' || currentGameType === 'exam') updateTasksProgress('test');
+  if (currentGameType === 'normal' || currentGameType === 'exam') updateTasksProgress('correct', score);
+  if (percent === 100) updateTasksProgress('perfect');
+  
+  // Ошибки
+  let errs = JSON.parse(localStorage.getItem('mech_errors_' + playerName) || '[]');
+  if (currentGameType === 'normal' || currentGameType === 'exam') {
+    mistakes.forEach(m => { if (!errs.find(e => e.q === m.q)) errs.push(m); });
+    localStorage.setItem('mech_errors_' + playerName, JSON.stringify(errs));
+  } else if (currentGameType === 'errors') {
+    if (mistakes.length === 0) { errs = []; }
+    else { errs = mistakes; }
+    localStorage.setItem('mech_errors_' + playerName, JSON.stringify(errs));
+  } else if (currentGameType === 'daily') {
+    localStorage.setItem('mech_daily_q_' + playerName, getTodayStr());
   }
   
-  const oldTotal = parseInt(localStorage.getItem('mech_total_' + playerName) || 0);
-  localStorage.setItem('mech_total_' + playerName, oldTotal + score);
-  
-  const globalTopicStats = JSON.parse(localStorage.getItem('mech_topics_' + playerName) || '{}');
-  for (let t in currentTopicStats) {
-    if (!globalTopicStats[t]) globalTopicStats[t] = { total: 0, correct: 0 };
-    globalTopicStats[t].total += currentTopicStats[t].total;
-    globalTopicStats[t].correct += currentTopicStats[t].correct;
+  // Карточка
+  if (currentGameType !== 'daily' && Math.random() < 0.3) {
+    const owned = JSON.parse(localStorage.getItem('mech_cards_' + playerName) || '[]');
+    const unowned = Object.keys(cardsDB).filter(k => !owned.includes(k));
+    if (unowned.length > 0) {
+      const newCard = unowned[Math.floor(Math.random() * unowned.length)];
+      owned.push(newCard);
+      localStorage.setItem('mech_cards_' + playerName, JSON.stringify(owned));
+      document.getElementById('cardDropBox').classList.remove('hidden');
+      document.getElementById('cardDropBox').innerHTML = `🃏 Выпала карточка: <b>${newCard}</b>! Загляни в коллекцию.`;
+    }
   }
-  localStorage.setItem('mech_topics_' + playerName, JSON.stringify(globalTopicStats));
-  
-  let emoji, title, text;
-  if (percent === 100) { emoji = "🏆"; title = "Идеально!"; text = "Ты настоящий мастер своего дела! 👨‍🔧"; }
-  else if (percent >= 80) { emoji = "🌟"; title = "Отличный результат!"; text = "Высокий уровень знаний. Продолжай в том же духе!"; }
-  else if (percent >= 60) { emoji = "👍"; title = "Хороший результат!"; text = "Есть небольшие пробелы, но база крепкая."; }
-  else if (percent >= 40) { emoji = "🔧"; title = "Неплохо, но..."; text = "Стоит повторить теорию и попробовать снова."; }
-  else { emoji = "📚"; title = "Нужно учиться!"; text = "Не расстраивайся — повтори материалы и возвращайся!"; }
+
+  let emoji = "📚", title = "Нужно учиться!";
+  if (percent === 100) { emoji = "🏆"; title = "Идеально!"; }
+  else if (percent >= 80) { emoji = "🌟"; title = "Отлично!"; }
+  else if (percent >= 60) { emoji = "👍"; title = "Хорошо!"; }
   
   document.getElementById('resultEmoji').textContent = emoji;
-  document.getElementById('resultTitle').textContent = title;
-  document.getElementById('resultScore').textContent = `${score} / ${totalQ} (${percent}%)`;
-  document.getElementById('resultText').textContent = text;
+  document.getElementById('resultTitle').textContent = currentGameType === 'daily' ? "Вопрос дня" : title;
+  document.getElementById('resultScore').textContent = currentGameType === 'daily' ? (score === 1 ? "✅ Верно" : "❌ Ошибка") : `${score} / ${totalQ} (${percent}%)`;
   
-  awardBadge('first_test');
-  if (percent === 100) awardBadge('perfect');
-  if (currentLevel === 6 && percent >= 80) awardBadge('expert');
-  if (currentLevel === 5) awardBadge('marathon');
-  if (isExamMode && percent >= 80) awardBadge('exam_pass');
-  if (oldTotal + score >= 100) awardBadge('rich');
-  
-  const topicStatsBox = document.getElementById('topicStatsBox');
-  const topicStatsContent = document.getElementById('topicStatsContent');
-  if (Object.keys(currentTopicStats).length > 0) {
-    topicStatsBox.classList.remove('hidden');
-    let statsHtml = '';
-    for (let t in currentTopicStats) {
-      const s = currentTopicStats[t];
-      const p = Math.round(s.correct / s.total * 100);
-      const color = p >= 70 ? '#27ae60' : (p >= 40 ? '#f39c12' : '#e74c3c');
-      statsHtml += `<div style="margin-bottom: 8px;">
-        <div style="display:flex; justify-content:space-between; font-size:0.9em; margin-bottom:4px;">
-          <span>${topicNames[t] || t}</span>
-          <span style="color:${color}; font-weight:bold;">${s.correct}/${s.total} (${p}%)</span>
-        </div>
-        <div style="background:rgba(255,255,255,0.1); height:6px; border-radius:3px;">
-          <div style="width:${p}%; background:${color}; height:100%; border-radius:3px;"></div>
-        </div>
-      </div>`;
-    }
-    topicStatsContent.innerHTML = statsHtml;
-  } else {
-    topicStatsBox.classList.add('hidden');
+  if (currentGameType !== 'daily') {
+    awardBadge('first_test');
+    if (percent === 100) awardBadge('perfect');
+    if (getXP() >= 100) awardBadge('rich');
   }
   
-  const reviewSection = document.getElementById('reviewSection');
-  const reviewBox = document.getElementById('reviewBox');
+  const revSect = document.getElementById('reviewSection');
+  const revBox = document.getElementById('reviewBox');
   if (mistakes.length > 0) {
-    reviewSection.classList.remove('hidden');
-    reviewBox.innerHTML = mistakes.map(m => `
-      <div class="review-item">
-        <div class="rq">❌ ${m.q}</div>
-        <div class="ra">✅ Правильно: ${m.correct}</div>
-        <div class="ry">❌ Ты выбрал: ${m.chosen}</div>
-        <div class="re">💡 ${m.exp}</div>
-      </div>
-    `).join('');
-  } else {
-    reviewSection.classList.add('hidden');
-  }
+    revSect.classList.remove('hidden');
+    revBox.innerHTML = mistakes.map(m => `<div class="review-item"><div style="font-weight:bold">❌ ${m.q}</div><div style="color:#8fe">✅ ${m.correct}</div><div style="color:#faa">❌ Ты: ${m.chosen}</div><div style="color:#aac; margin-top:5px; font-style:italic">💡 ${m.exp}</div></div>`).join('');
+  } else { revSect.classList.add('hidden'); }
   
-  updateProfileUI();
-  loadBestScores();
+  updateUI(); loadBestScores(); loadTasks();
 }
 
 function restartLevel() { 
-  if (isExamMode) startExam();
+  if (currentGameType === 'exam') startExam();
+  else if (currentGameType === 'daily') backToMenu();
+  else if (currentGameType === 'errors') backToMenu();
   else startLevel(currentLevel); 
 }
 
 function backToMenu() {
   clearInterval(timerInterval);
-  document.getElementById('result').classList.add('hidden');
-  document.getElementById('game').classList.add('hidden');
-  document.getElementById('bestScreen').classList.add('hidden');
-  document.getElementById('theoryScreen').classList.add('hidden');
+  ['result','game','bestScreen','theoryScreen','shopScreen','cardsScreen'].forEach(id => document.getElementById(id).classList.add('hidden'));
   document.getElementById('menu').classList.remove('hidden');
-  loadBestScores();
+  updateUI(); loadBestScores(); loadDailyStatus(); loadTasks();
 }
 
+// Перемешивание
+function shuffleOptions(q) {
+  const indices = q.options.map((_, i) => i);
+  for (let i = indices.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [indices[i], indices[j]] = [indices[j], indices[i]];
+  }
+  return { q: q.q, options: indices.map(i => q.options[i]), correct: indices.indexOf(q.correct), exp: q.exp, topic: q.topic || 'engine' };
+}
+
+// Запуск
 loadProfiles();
 loadBestScores();
+loadDailyStatus();
+loadJokers();
+loadTasks();
 </script>
 </body>
 </html>

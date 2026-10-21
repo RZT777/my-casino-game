@@ -2,619 +2,521 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Симулятор Механика: Путь Мастера</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🔧 Тест Автомеханика</title>
 <style>
-  :root { --bg-main: #f4f7fb; --bg-panel: #ffffff; --text-main: #1a1a1a; --text-muted: #6b7280; --accent: #2196f3; --danger: #ef4444; --success: #22c55e; --border: #e5e7eb; }
-  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; user-select: none; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
-  body { background: #e0e7ff; color: var(--text-main); display: flex; justify-content: center; height: 100vh; overflow: hidden; }
-  .phone { width: 100%; max-width: 480px; height: 100vh; background: var(--bg-main); position: relative; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 0 50px rgba(0,0,0,0.1); }
-  .status-bar { display: flex; justify-content: space-between; padding: 12px 20px; font-size: 14px; font-weight: bold; color: var(--text-main); z-index: 100; background: #fff; }
-  .screen-area { flex: 1; position: relative; overflow: hidden; display: flex; flex-direction: column; }
-  .home-screen { flex: 1; padding: 20px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; align-content: start; overflow-y: auto; justify-items: center; }
-  .app-icon { display: flex; flex-direction: column; align-items: center; gap: 8px; cursor: pointer; transition: transform 0.1s; position: relative; width: 100%; max-width: 70px;}
-  .app-icon:active { transform: scale(0.9); }
-  .icon-box { width: 60px; height: 60px; border-radius: 16px; background: #fff; display: flex; align-items: center; justify-content: center; font-size: 30px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); border: 1px solid var(--border); position: relative; color: var(--text-main);}
-  .app-icon span { font-size: 12px; text-align: center; color: var(--text-main); font-weight: 500; line-height: 1.2;}
-  .badge { position: absolute; top: -5px; right: -5px; background: var(--danger); color: white; font-size: 12px; font-weight: bold; width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 2px solid #fff; display: none; }
+  * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Arial, sans-serif; }
   
-  .icon-messages { background: #e0f2fe; color: #0284c7; }
-  .icon-mechanic { background: #fef08a; color: #854d0e; }
-  .icon-casino { background: #fee2e2; color: #b91c1c; }
-  .icon-bank { background: #dcfce7; color: #15803d; }
-  .icon-darknet { background: #f3e8ff; color: #6b21a8; }
-  .icon-sleep { background: #e0e7ff; color: #4338ca; }
-  .icon-shop { background: #ffedd5; color: #c2410c; }
-  .icon-cars { background: #dbeafe; color: #1d4ed8; }
-  .icon-garage { background: #f3f4f6; color: #374151; }
-  .icon-realestate { background: #ccfbf1; color: #0f766e; }
-  .icon-calendar { background: #ffe4e6; color: #be123c; }
-  .icon-calc { background: #f3f4f6; color: #000; }
-  .icon-numbers { background: #dbeafe; color: #1d4ed8; }
-  .icon-clock { background: #fff; border: 2px solid #ff9800; color: #ff9800; }
-  .icon-exchange { background: #fffbeb; color: #b45309; }
-  .icon-settings { background: #f3f4f6; color: #4b5563; }
-
-  .app-screen { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: var(--bg-main); z-index: 50; display: flex; flex-direction: column; transform: translateX(100%); transition: transform 0.3s cubic-bezier(0.1, 0.8, 0.2, 1); }
-  .app-screen.active { transform: translateX(0); }
-  .app-header { display: flex; align-items: center; padding: 12px 16px; background: #fff; border-bottom: 1px solid var(--border); flex-shrink: 0; }
-  .back-btn { background: transparent; border: none; color: var(--accent); font-size: 16px; font-weight: bold; cursor: pointer; }
-  .app-title { flex: 1; text-align: center; font-weight: bold; font-size: 18px; color: var(--text-main); padding-right: 50px; }
-  .balance-bar { padding: 10px 16px; background: #fff; display: flex; justify-content: space-between; font-size: 15px; font-weight: bold; color: var(--accent); border-bottom: 1px solid var(--border); flex-shrink: 0; }
-  .app-content { flex: 1; padding: 16px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; }
-  .btn { background: var(--accent); color: #fff; border: none; padding: 14px 20px; border-radius: 12px; font-weight: bold; cursor: pointer; width: 100%; margin-bottom: 10px; font-size: 16px;}
-  .btn-secondary { background: #e5e7eb; color: #374151; }
+  body {
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    color: #fff;
+  }
   
-  .modal { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); display: none; align-items: center; justify-content: center; z-index: 1000; padding: 20px; }
-  .modal.show { display: flex; }
-  .modal-content { background: #fff; border: 1px solid var(--border); padding: 24px; border-radius: 16px; width: 100%; max-width: 340px; text-align: center; }
-  .modal-title { font-size: 20px; margin-bottom: 12px; font-weight: bold; color: var(--text-main);}
-  .modal-text { font-size: 15px; color: var(--text-muted); margin-bottom: 24px; line-height: 1.4;}
+  .container {
+    background: rgba(255,255,255,0.05);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 20px;
+    padding: 40px;
+    max-width: 750px;
+    width: 100%;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+  }
   
-  .shop-item { display: flex; justify-content: space-between; align-items: center; background: #fff; padding: 15px; border-radius: 12px; margin-bottom: 10px; border: 1px solid var(--border); flex-wrap: wrap; gap: 10px;}
-  .shop-item-info { text-align: left; flex: 1; }
-  .shop-item-title { font-weight: bold; font-size: 14px; color: var(--text-main); margin-bottom: 4px;}
-  .shop-item-desc { font-size: 12px; color: var(--text-muted); margin-bottom: 5px;}
-  .shop-item-price { font-weight: bold; color: var(--accent); font-size: 14px;}
-  .buy-btn { background: var(--accent); color: #fff; border: none; padding: 8px 12px; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 12px; margin-left: 10px;}
+  h1 { text-align: center; font-size: 2em; margin-bottom: 10px; 
+       background: linear-gradient(90deg, #f39c12, #e74c3c);
+       -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+  
+  .subtitle { text-align: center; color: #aaa; margin-bottom: 30px; }
+  
+  .level-badge {
+    display: inline-block;
+    padding: 6px 18px;
+    border-radius: 20px;
+    font-weight: bold;
+    font-size: 0.9em;
+    margin-bottom: 20px;
+  }
+  
+  .level-1 { background: #27ae60; }
+  .level-2 { background: #f39c12; }
+  .level-3 { background: #e74c3c; }
+  .level-4 { background: #8e44ad; }
+  
+  .question {
+    font-size: 1.3em;
+    margin-bottom: 25px;
+    line-height: 1.5;
+    min-height: 60px;
+  }
+  
+  .options { display: flex; flex-direction: column; gap: 12px; }
+  
+  .option {
+    background: rgba(255,255,255,0.08);
+    border: 2px solid rgba(255,255,255,0.15);
+    border-radius: 12px;
+    padding: 16px 20px;
+    cursor: pointer;
+    transition: all 0.25s;
+    font-size: 1.05em;
+    text-align: left;
+    color: #fff;
+  }
+  
+  .option:hover:not(.disabled) {
+    background: rgba(243,156,18,0.2);
+    border-color: #f39c12;
+    transform: translateX(5px);
+  }
+  
+  .option.correct { background: rgba(39,174,96,0.4); border-color: #27ae60; }
+  .option.wrong { background: rgba(231,76,60,0.4); border-color: #e74c3c; }
+  .option.disabled { cursor: default; }
+  
+  .progress-bar {
+    height: 8px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 4px;
+    margin-bottom: 25px;
+    overflow: hidden;
+  }
+  
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #f39c12, #e74c3c);
+    border-radius: 4px;
+    transition: width 0.4s;
+  }
+  
+  .stats {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 15px;
+    font-size: 0.95em;
+    color: #ccc;
+  }
+  
+  .btn {
+    display: block;
+    width: 100%;
+    padding: 16px;
+    margin-top: 25px;
+    border: none;
+    border-radius: 12px;
+    font-size: 1.1em;
+    font-weight: bold;
+    cursor: pointer;
+    background: linear-gradient(90deg, #f39c12, #e74c3c);
+    color: #fff;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  
+  .btn:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(243,156,18,0.4); }
+  
+  .center { text-align: center; }
+  
+  .result-emoji { font-size: 5em; margin: 20px 0; }
+  .result-title { font-size: 1.8em; margin-bottom: 10px; }
+  .result-score { font-size: 2.5em; font-weight: bold; color: #f39c12; margin: 15px 0; }
+  .result-text { color: #bbb; margin-bottom: 10px; }
+  
+  .level-select {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 15px;
+    margin-top: 20px;
+  }
+  
+  .level-card {
+    padding: 25px 15px;
+    border-radius: 15px;
+    text-align: center;
+    cursor: pointer;
+    border: 2px solid rgba(255,255,255,0.15);
+    transition: all 0.25s;
+    background: rgba(255,255,255,0.05);
+  }
+  
+  .level-card:hover { transform: translateY(-5px); border-color: #f39c12; }
+  .level-card .icon { font-size: 2.5em; margin-bottom: 10px; }
+  .level-card .name { font-weight: bold; margin-bottom: 5px; }
+  .level-card .desc { font-size: 0.85em; color: #aaa; }
+  
+  .hidden { display: none; }
+  
+  .explanation {
+    margin-top: 15px;
+    padding: 12px;
+    background: rgba(52,152,219,0.15);
+    border-left: 4px solid #3498db;
+    border-radius: 6px;
+    font-size: 0.95em;
+    color: #cde;
+    display: none;
+  }
 </style>
 </head>
 <body>
-  <div class="modal show" id="startupModal" style="background: var(--bg-main);">
-  <div class="modal-content" style="max-width: 400px; text-align: left; padding: 30px;">
-    <div style="font-size: 24px; font-weight: bold; margin-bottom: 5px; color: var(--text-main);">Автомеханик: Путь Мастера</div>
-    <div style="font-size: 14px; color: var(--text-muted); margin-bottom: 25px;">Представьтесь и выберите город.</div>
-    <div style="display: flex; align-items: center; background: #f3f4f6; padding: 12px; border-radius: 12px; margin-bottom: 15px;"><span style="font-size: 20px; margin-right: 10px;">👤</span><input type="text" id="playerNameInput" placeholder="Ваше имя" style="border: none; background: transparent; outline: none; font-size: 16px; width: 100%; color: var(--text-main);"></div>
-    <div style="display: flex; align-items: center; background: #f3f4f6; padding: 12px; border-radius: 12px; margin-bottom: 20px;"><span style="font-size: 20px; margin-right: 10px;">🏙️</span>
-      <select id="playerCityInput" style="border: none; background: transparent; outline: none; font-size: 16px; width: 100%; color: var(--text-main);">
-        <option value="Москва">Москва — Высокие цены, много работы.</option>
-        <option value="Тюмень">Тюмень — Родной город, дешевая жизнь.</option>
-        <option value="Омск">Омск — Запчасти дорогие, зимы лютые.</option>
-        <option value="Екатеринбург">Екатеринбург — Развитая инфраструктура.</option>
-        <option value="Киров">Киров — Дешёвые запчасти, мало клиентов.</option>
-        <option value="Иркутск">Иркутск — Морозы и удалённость.</option>
-        <option value="Владивосток">Владивосток — Много японцев с пробегом.</option>
-        <option value="Сочи">Сочи — Тепло, но влажно.</option>
-        <option value="Новосибирск">Новосибирск — Баланс климата и цен.</option>
-      </select>
+<div class="container">
+
+  <!-- ГЛАВНОЕ МЕНЮ -->
+  <div id="menu">
+    <h1>🔧 Тест Автомеханика</h1>
+    <p class="subtitle">Выбери уровень сложности и проверь свои знания!</p>
+    <div class="level-select">
+      <div class="level-card" onclick="startLevel(1)">
+        <div class="icon">🟢</div>
+        <div class="name">Новичок</div>
+        <div class="desc">Базовые знания</div>
+      </div>
+      <div class="level-card" onclick="startLevel(2)">
+        <div class="icon">🟡</div>
+        <div class="name">Любитель</div>
+        <div class="desc">Средний уровень</div>
+      </div>
+      <div class="level-card" onclick="startLevel(3)">
+        <div class="icon">🔴</div>
+        <div class="name">Профи</div>
+        <div class="desc">Сложные вопросы</div>
+      </div>
+      <div class="level-card" onclick="startLevel(4)">
+        <div class="icon">🟣</div>
+        <div class="name">Эксперт</div>
+        <div class="desc">Только для мастеров</div>
+      </div>
     </div>
-    <button class="btn" onclick="startGame()">Начать игру</button>
   </div>
+
+  <!-- ИГРА -->
+  <div id="game" class="hidden">
+    <div class="stats">
+      <span id="progressText">Вопрос 1/10</span>
+      <span id="scoreText">Счёт: 0</span>
+    </div>
+    <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+    <div id="levelBadge" class="level-badge level-1">Уровень 1</div>
+    <div class="question" id="questionText"></div>
+    <div class="options" id="optionsBox"></div>
+    <div class="explanation" id="explanation"></div>
+    <button class="btn hidden" id="nextBtn" onclick="nextQuestion()">Далее →</button>
+  </div>
+
+  <!-- РЕЗУЛЬТАТ -->
+  <div id="result" class="hidden center">
+    <div class="result-emoji" id="resultEmoji">🏆</div>
+    <div class="result-title" id="resultTitle"></div>
+    <div class="result-score" id="resultScore"></div>
+    <div class="result-text" id="resultText"></div>
+    <button class="btn" onclick="backToMenu()">🏠 В главное меню</button>
+  </div>
+
 </div>
 
-<div class="phone" id="phoneBody">
-  <div class="status-bar"><span id="clockDisplay">День 1 | 19 Окт | 08:00</span><span>📶 🔋 100%</span></div>
-  <div class="screen-area">
-    <div class="home-screen">
-      <div class="app-icon" onclick="openApp('messages')"><div class="icon-box icon-messages">💬</div><span>Сообщения</span><div class="badge" id="msgBadge">1</div></div>
-      <div class="app-icon" onclick="openApp('mechanic')"><div class="icon-box icon-mechanic">🔧</div><span>СТО</span></div>
-      <div class="app-icon" onclick="openApp('casino')"><div class="icon-box icon-casino">🎰</div><span>Казино</span></div>
-      <div class="app-icon" onclick="openApp('bank')"><div class="icon-box icon-bank">🏦</div><span>Банк</span></div>
-      <div class="app-icon" onclick="openApp('darknet')"><div class="icon-box icon-darknet">🕶️</div><span>Даркнет</span></div>
-      <div class="app-icon" onclick="openApp('exchange')"><div class="icon-box icon-exchange">💱</div><span>Обменник</span></div>
-      <div class="app-icon" onclick="openApp('sleep')"><div class="icon-box icon-sleep">🛌</div><span>Спать</span></div>
-      <div class="app-icon" onclick="openApp('shop')"><div class="icon-box icon-shop">🛒</div><span>Магазин</span></div>
-      <div class="app-icon" onclick="openApp('cars')"><div class="icon-box icon-cars">🚗</div><span>Автосалон</span></div>
-      <div class="app-icon" onclick="openApp('garage')"><div class="icon-box icon-garage">🛠️</div><span>Гараж</span></div>
-      <div class="app-icon" onclick="openApp('realestate')"><div class="icon-box icon-realestate">🏠</div><span>Недвижимость</span></div>
-      <div class="app-icon" onclick="openApp('calendar')"><div class="icon-box icon-calendar">📅</div><span>Календарь</span></div>
-      <div class="app-icon" onclick="openApp('calc')"><div class="icon-box icon-calc">🧮</div><span>Калькулятор</span></div>
-      <div class="app-icon" onclick="openApp('numbers')"><div class="icon-box icon-numbers">🔢</div><span>Номера</span></div>
-      <div class="app-icon" onclick="openApp('settings')"><div class="icon-box icon-settings">⚙️</div><span>Настройки</span></div>
-    </div>
-
-    <div class="app-screen" id="app-messages"><div class="app-header"><button class="back-btn" onclick="closeApp('messages')">‹ Назад</button><div class="app-title">Сообщения</div></div><div class="balance-bar">Баланс: <span class="balance-val">0</span> ₽</div><div class="app-content" id="messagesList"></div></div>
-    <div class="app-screen" id="app-garage"><div class="app-header"><button class="back-btn" onclick="closeApp('garage')">‹ Назад</button><div class="app-title">Гараж</div></div><div class="balance-bar">Баланс: <span class="balance-val">0</span> ₽</div><div class="app-content" id="garageContent"></div></div>
-    <div class="app-screen" id="app-mechanic"><div class="app-header"><button class="back-btn" onclick="closeApp('mechanic')">‹ Назад</button><div class="app-title">СТО</div></div><div class="balance-bar"><span>Еда: <span id="foodVal">100</span>%</span></div><div class="app-content" id="mechanicContent"><button class="btn" onclick="startDay()">Встать и пойти на работу</button></div></div>
-    
-    <div class="app-screen" id="app-casino">
-      <div class="app-header"><button class="back-btn" onclick="closeApp('casino')">‹ Назад</button><div class="app-title">Казино</div></div>
-      <div class="balance-bar">Баланс: <span class="balance-val">0</span> ₽ | Фишек: <span id="exChips">0</span></div>
-      <div class="app-content" style="background: #111;">
-        
-        <!-- ВКЛАДКИ КАЗИНО -->
-        <div style="display: flex; gap: 5px; margin-bottom: 15px; background: #111; padding: 10px; border-radius: 10px;">
-          <div class="casino-tab active" style="flex: 1; text-align: center; padding: 10px; border-radius: 8px; font-weight: bold; cursor: pointer; background: #ffc107; color: #000;" onclick="switchCasinoTab('roulette', this)">Рулетка</div>
-          <div class="casino-tab" style="flex: 1; text-align: center; padding: 10px; border-radius: 8px; font-weight: bold; cursor: pointer; background: #333; color: #fff;" onclick="switchCasinoTab('mines', this)">Мины</div>
-        </div>
-
-        <!-- РУЛЕТКА (КАЗИНО) -->
-        <div id="casino-panel-roulette" class="casino-panel">
-          <div style="background: #1b5e20; border: 4px solid #5d4037; border-radius: 16px; padding: 15px; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.5);">
-            <h3 style="color: #fff; margin-bottom: 15px; text-shadow: 0 0 10px #ffc107;">Рулетка</h3>
-            
-            <!-- Блок с фишками -->
-            <div style="background: rgba(0,0,0,0.4); padding: 10px; border-radius: 10px; margin-bottom: 15px; border: 1px solid #b8860b;">
-              <div style="color: #ffc107; font-weight: bold; margin-bottom: 10px;">У тебя фишек: <span id="rouletteChipsDisplay">0</span></div>
-              <div style="display: flex; gap: 5px; justify-content: center; margin-bottom: 10px;">
-                <button class="btn" style="background: #e74c3c; padding: 8px; font-size: 12px; border: 1px solid #fff;" onclick="buyChips(1)">Купить 1К</button>
-                <button class="btn" style="background: #8e44ad; padding: 8px; font-size: 12px; border: 1px solid #fff;" onclick="buyChips(5)">Купить 5К</button>
-                <button class="btn" style="background: #2980b9; padding: 8px; font-size: 12px; border: 1px solid #fff;" onclick="buyChips(10)">Купить 10К</button>
-              </div>
-              <button class="btn" style="background: #4a148c; padding: 8px; font-size: 12px; border: 1px solid #b8860b;" onclick="sellChips()">Продать все фишки</button>
-            </div>
-
-            <!-- Колесо рулетки -->
-            <div style="position: relative; width: 200px; height: 200px; margin: 0 auto 20px auto;">
-              <div style="width: 100%; height: 100%; border-radius: 50%; border: 8px solid #b8860b; background: #000; box-shadow: 0 0 20px rgba(0,0,0,0.8), inset 0 0 20px #000; position: relative; display: flex; align-items: center; justify-content: center; overflow: hidden;">
-                <div style="width: 100%; height: 100%; position: absolute; background: conic-gradient(#c0392b 0deg 9.7deg, #1a1a1a 9.7deg 19.4deg, #c0392b 19.4deg 29.1deg, #1a1a1a 29.1deg 38.8deg, #c0392b 38.8deg 48.5deg, #1a1a1a 48.5deg 58.2deg, #c0392b 58.2deg 67.9deg, #1a1a1a 67.9deg 77.6deg, #c0392b 77.6deg 87.3deg, #1a1a1a 87.3deg 97deg, #c0392b 97deg 106.7deg, #1a1a1a 106.7deg 116.4deg, #c0392b 116.4deg 126.1deg, #1a1a1a 126.1deg 135.8deg, #c0392b 135.8deg 145.5deg, #1a1a1a 145.5deg 155.2deg, #c0392b 155.2deg 164.9deg, #1a1a1a 164.9deg 174.6deg, #c0392b 174.6deg 184.3deg, #1a1a1a 184.3deg 194deg, #c0392b 194deg 203.7deg, #1a1a1a 203.7deg 213.4deg, #c0392b 213.4deg 223.1deg, #1a1a1a 223.1deg 232.8deg, #c0392b 232.8deg 242.5deg, #1a1a1a 242.5deg 252.2deg, #c0392b 252.2deg 261.9deg, #1a1a1a 261.9deg 271.6deg, #c0392b 271.6deg 281.3deg, #1a1a1a 281.3deg 291deg, #c0392b 291deg 300.7deg, #1a1a1a 300.7deg 310.4deg, #c0392b 310.4deg 320.1deg, #1a1a1a 320.1deg 329.8deg, #c0392b 329.8deg 339.5deg, #1a1a1a 339.5deg 349.2deg, #c0392b 349.2deg 358.9deg, #1a1a1a 358.9deg 360deg);"></div>
-                <div style="width: 40px; height: 40px; background: #b8860b; border-radius: 50%; z-index: 10; border: 2px solid #fff; display: flex; align-items: center; justify-content: center; font-weight: bold; color: #fff; text-shadow: 0 0 5px #000;">?</div>
-              </div>
-              <div style="position: absolute; top: -15px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 10px solid transparent; border-right: 10px solid transparent; border-top: 25px solid #ffc107; z-index: 20; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.8));"></div>
-            </div>
-
-            <!-- Сетка ставок -->
-            <div style="display: grid; grid-template-columns: 25px repeat(12, 1fr) 30px; gap: 1px; font-size: 10px; background: #1b5e20; padding: 2px; border-radius: 4px; width: 100%; margin-bottom: 15px; border: 1px solid #b8860b;">
-              <div style="grid-row: span 3; background: #27ae60; color: #fff; display: flex; align-items: center; justify-content: center; cursor: pointer; font-weight: bold;" onclick="addChipToCell(this, '0')">0</div>
-              <div style="grid-row: span 3; background: #27ae60; color: #fff; display: flex; align-items: center; justify-content: center; cursor: pointer; font-weight: bold;" onclick="addChipToCell(this, '00')">00</div>
-              <div style="background: #c0392b; color: #fff; padding: 5px; cursor: pointer; font-weight: bold;" onclick="addChipToCell(this, '1')">1</div>
-              <div style="background: #1a1a1a; color: #fff; padding: 5px; cursor: pointer; font-weight: bold;" onclick="addChipToCell(this, '2')">2</div>
-              <div style="background: #c0392b; color: #fff; padding: 5px; cursor: pointer; font-weight: bold;" onclick="addChipToCell(this, '3')">3</div>
-              <div style="background: #1a1a1a; color: #fff; padding: 5px; cursor: pointer; font-weight: bold;" onclick="addChipToCell(this, '4')">4</div>
-              <div style="background: #c0392b; color: #fff; padding: 5px; cursor: pointer; font-weight: bold;" onclick="addChipToCell(this, '5')">5</div>
-              <div style="background: #1a1a1a; color: #fff; padding: 5px; cursor: pointer; font-weight: bold;" onclick="addChipToCell(this, '6')">6</div>
-              <div style="background: #c0392b; color: #fff; padding: 5px; cursor: pointer; font-weight: bold;" onclick="addChipToCell(this, '7')">7</div>
-              <div style="background: #1a1a1a; color: #fff; padding: 5px; cursor: pointer; font-weight: bold;" onclick="addChipToCell(this, '8')">8</div>
-              <div style="background: #c0392b; color: #fff; padding: 5px; cursor: pointer; font-weight: bold;" onclick="addChipToCell(this, '9')">9</div>
-              <div style="background: #1a1a1a; color: #fff; padding: 5px; cursor: pointer; font-weight: bold;" onclick="addChipToCell(this, '10')">10</div>
-              <div style="background: #c0392b; color: #fff; padding: 5px; cursor: pointer; font-weight: bold;" onclick="addChipToCell(this, '11')">11</div>
-              <div style="background: #1a1a1a; color: #fff; padding: 5px; cursor: pointer; font-weight: bold;" onclick="addChipToCell(this, '12')">12</div>
-              <div style="grid-row: span 3; background: #1b5e20; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 8px; cursor: pointer;" onclick="addChipToCell(this, '2to1')">2:1</div>
-              <div style="background: #1a1a1a; color: #fff; padding: 5px; cursor: pointer; font-weight: bold;" onclick="addChipToCell(this, '13')">13</div>
-              <div style="background: #c0392b; color: #fff; padding: 5px; cursor: pointer; font-weight: bold;" onclick="addChipToCell(this, '14')">14</div>
-              <div style="background: #1a1a1a; color: #fff; padding: 5px; cursor: pointer; font-weight: bold;" onclick="addChipToCell(this, '15')">15</div>
-              <div style="background: #c0392b; color: #fff; padding: 5px; cursor: pointer; font-weight: bold;" onclick="addChipToCell(this, '16')">16</div>
-              <div style="background: #1a1a1a; color: #fff; padding: 5px; cursor: pointer; font-weight: bold;" onclick="addChipToCell(this, '17')">17</div>
-              <div style="background: #c0392b; color: #fff; padding: 5px; cursor: pointer; font-weight: bold;" onclick="addChipToCell(this, '18')">18</div>
-              <div style="background: #1a1a1a; color: #fff; padding: 5px; cursor: pointer; font-weight: bold;" onclick="addChipToCell(this, '19')">19</div>
-              <div style="background: #c0392b; color: #fff; padding: 5px; cursor: pointer; font-weight: bold;" onclick="addChipToCell(this, '20')">20</div>
-              <div style="background: #1a1a1a; color: #fff; padding: 5px; cursor: pointer; font-weight: bold;" onclick="addChipToCell(this, '21')">21</div>
-              <div style="background: #c0392b; color: #fff; padding: 5px; cursor: pointer; font-weight: bold;" onclick="addChipToCell(this, '22')">22</div>
-              <div style="background: #1a1a1a; color: #fff; padding: 5px; cursor: pointer; font-weight: bold;" onclick="addChipToCell(this, '23')">23</div>
-              <div style="background: #c0392b; color: #fff; padding: 5px; cursor: pointer; font-weight: bold;" onclick="addChipToCell(this, '24')">24</div>
-              <div style="background: #c0392b; color: #fff; padding: 5px; cursor: pointer; font-weight: bold;" onclick="addChipToCell(this, '25')">25</div>
-              <div style="background: #1a1a1a; color: #fff; padding: 5px; cursor: pointer; font-weight: bold;" onclick="addChipToCell(this, '26')">26</div>
-              <div style="background: #c0392b; color: #fff; padding: 5px; cursor: pointer; font-weight: bold;" onclick="addChipToCell(this, '27')">27</div>
-              <div style="background: #1a1a1a; color: #fff; padding: 5px; cursor: pointer; font-weight: bold;" onclick="addChipToCell(this, '28')">28</div>
-              <div style="background: #c0392b; color: #fff; padding: 5px; cursor: pointer; font-weight: bold;" onclick="addChipToCell(this, '29')">29</div>
-              <div style="background: #1a1a1a; color: #fff; padding: 5px; cursor: pointer; font-weight: bold;" onclick="addChipToCell(this, '30')">30</div>
-              <div style="background: #c0392b; color: #fff; padding: 5px; cursor: pointer; font-weight: bold;" onclick="addChipToCell(this, '31')">31</div>
-              <div style="background: #1a1a1a; color: #fff; padding: 5px; cursor: pointer; font-weight: bold;" onclick="addChipToCell(this, '32')">32</div>
-              <div style="background: #c0392b; color: #fff; padding: 5px; cursor: pointer; font-weight: bold;" onclick="addChipToCell(this, '33')">33</div>
-              <div style="background: #1a1a1a; color: #fff; padding: 5px; cursor: pointer; font-weight: bold;" onclick="addChipToCell(this, '34')">34</div>
-              <div style="background: #c0392b; color: #fff; padding: 5px; cursor: pointer; font-weight: bold;" onclick="addChipToCell(this, '35')">35</div>
-              <div style="background: #1a1a1a; color: #fff; padding: 5px; cursor: pointer; font-weight: bold;" onclick="addChipToCell(this, '36')">36</div>
-              <div style="grid-column: span 4; background: #2c3e50; color: #fff; padding: 5px; cursor: pointer; font-weight: bold;" onclick="addChipToCell(this, '1st12')">1st 12</div>
-              <div style="grid-column: span 4; background: #2c3e50; color: #fff; padding: 5px; cursor: pointer; font-weight: bold;" onclick="addChipToCell(this, '2nd12')">2nd 12</div>
-              <div style="grid-column: span 4; background: #2c3e50; color: #fff; padding: 5px; cursor: pointer; font-weight: bold;" onclick="addChipToCell(this, '3rd12')">3rd 12</div>
-              <div style="grid-column: span 2; background: #2c3e50; color: #fff; padding: 5px; cursor: pointer; font-weight: bold;" onclick="addChipToCell(this, '1-18')">1-18</div>
-              <div style="grid-column: span 2; background: #c0392b; color: #fff; padding: 5px; cursor: pointer; font-weight: bold;" onclick="addChipToCell(this, 'EVEN')">EVEN</div>
-              <div style="grid-column: span 2; background: #c0392b; color: #fff; padding: 5px; cursor: pointer; font-weight: bold;" onclick="addChipToCell(this, 'RED')">RED</div>
-              <div style="grid-column: span 2; background: #1a1a1a; color: #fff; padding: 5px; cursor: pointer; font-weight: bold;" onclick="addChipToCell(this, 'BLACK')">BLACK</div>
-              <div style="grid-column: span 2; background: #2c3e50; color: #fff; padding: 5px; cursor: pointer; font-weight: bold;" onclick="addChipToCell(this, 'ODD')">ODD</div>
-              <div style="grid-column: span 2; background: #2c3e50; color: #fff; padding: 5px; cursor: pointer; font-weight: bold;" onclick="addChipToCell(this, '19-36')">19-36</div>
-            </div>
-
-            <!-- Выбор фишек -->
-            <div style="display: flex; justify-content: center; gap: 10px; margin-bottom: 15px;">
-              <button class="chip-btn" style="background: #e74c3c; width: 40px; height: 40px; border-radius: 50%; border: 2px solid #fff; color: #fff; font-weight: bold; box-shadow: 0 0 10px #e74c3c;" onclick="setCurrentChip(1)">1</button>
-              <button class="chip-btn" style="background: #8e44ad; width: 40px; height: 40px; border-radius: 50%; border: 2px solid #fff; color: #fff; font-weight: bold; box-shadow: 0 0 10px #8e44ad;" onclick="setCurrentChip(5)">5</button>
-              <button class="chip-btn" style="background: #2980b9; width: 40px; height: 40px; border-radius: 50%; border: 2px solid #fff; color: #fff; font-weight: bold; box-shadow: 0 0 10px #2980b9;" onclick="setCurrentChip(10)">10</button>
-            </div>
-
-            <!-- Кнопки управления -->
-            <div style="display: flex; gap: 10px;">
-              <button class="btn" style="background: #ef4444; flex: 1; border: 2px solid #fff;" onclick="clearBets()">Очистить</button>
-              <button class="btn" style="background: #ffc107; color: #000; flex: 2; border: 2px solid #fff; font-size: 18px;" onclick="spinRoulette()">Крутить!</button>
-            </div>
-            <div id="rouletteResult" style="text-align:center; font-weight:bold; margin-top:15px; color: #fff; text-shadow: 0 0 5px #000;"></div>
-          </div>
-        </div>
-
-        <!-- МИНЫ (КРАСИВЫЕ) -->
-        <div id="casino-panel-mines" class="casino-panel" style="display: none;">
-          <div style="background: #1a1e29; border-radius: 16px; padding: 15px; border: 1px solid #2a2e39;">
-            <div style="display: flex; justify-content: space-between; margin-bottom: 15px;">
-              <div style="background: #222736; padding: 10px; border-radius: 10px; text-align: center; flex: 1; margin-right: 5px;">
-                <div style="color: #888; font-size: 12px;">Сейчас</div>
-                <div style="color: #fff; font-weight: bold;" id="minesCurrentMult">—</div>
-              </div>
-              <div style="background: #222736; padding: 10px; border-radius: 10px; text-align: center; flex: 1; margin-right: 5px;">
-                <div style="color: #888; font-size: 12px;">Следующая</div>
-                <div style="color: #ffc107; font-weight: bold;" id="minesNextMult">×1,02</div>
-              </div>
-              <div style="background: #222736; padding: 10px; border-radius: 10px; text-align: center; flex: 1;">
-                <div style="color: #888; font-size: 12px;">Шанс</div>
-                <div style="color: #fff; font-weight: bold;" id="minesChance">88 %</div>
-              </div>
-            </div>
-
-            <div id="minesGrid" style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin-bottom: 15px;"></div>
-
-            <div style="background: #222736; border-radius: 16px; padding: 15px;">
-              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-                <button class="bet-minus-plus" style="background: transparent; border: 2px solid #ffc107; color: #ffc107; width: 40px; height: 40px; border-radius: 50%; font-size: 20px; cursor: pointer;" onclick="changeMinesBet(-1000)">−</button>
-                <div style="color: #fff; font-size: 24px; font-weight: bold;" id="minesBetDisplay">1 000 ₽</div>
-                <button class="bet-minus-plus" style="background: transparent; border: 2px solid #ffc107; color: #ffc107; width: 40px; height: 40px; border-radius: 50%; font-size: 20px; cursor: pointer;" onclick="changeMinesBet(1000)">+</button>
-              </div>
-              <div style="display: flex; gap: 5px; margin-bottom: 15px;">
-                <button class="btn" style="background: #222736; color: #888; flex: 1; padding: 10px; font-size: 12px;" onclick="setMinesBet(100)">100</button>
-                <button class="btn" style="background: #ffc107; color: #000; flex: 1; padding: 10px; font-size: 12px;" onclick="setMinesBet(1000)">1 000</button>
-                <button class="btn" style="background: #222736; color: #888; flex: 1; padding: 10px; font-size: 12px;" onclick="setMinesBet(10000)">10 000</button>
-                <button class="btn" style="background: #222736; color: #888; flex: 1; padding: 10px; font-size: 12px;" onclick="setMinesBet('max')">МАКС</button>
-              </div>
-              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-                <span style="color: #888;">Мин на поле</span>
-                <div style="display: flex; align-items: center; gap: 10px;">
-                  <button class="bet-minus-plus" style="background: #222736; border: none; color: #fff; width: 30px; height: 30px; border-radius: 50%; cursor: pointer;" onclick="changeMinesCount(-1)">−</button>
-                  <span id="minesCountDisplay" style="color: #fff; font-weight: bold;">3</span>
-                  <button class="bet-minus-plus" style="background: #222736; border: none; color: #fff; width: 30px; height: 30px; border-radius: 50%; cursor: pointer;" onclick="changeMinesCount(1)">+</button>
-                </div>
-              </div>
-              <div style="display: flex; gap: 5px; margin-bottom: 15px;">
-                <button class="btn" style="background: #222736; color: #888; flex: 1; padding: 8px; font-size: 12px;" onclick="setMinesCount(1)">1</button>
-                <button class="btn" style="background: #ffc107; color: #000; flex: 1; padding: 8px; font-size: 12px;" onclick="setMinesCount(3)">3</button>
-                <button class="btn" style="background: #222736; color: #888; flex: 1; padding: 8px; font-size: 12px;" onclick="setMinesCount(5)">5</button>
-                <button class="btn" style="background: #222736; color: #888; flex: 1; padding: 8px; font-size: 12px;" onclick="setMinesCount(10)">10</button>
-                <button class="btn" style="background: #222736; color: #888; flex: 1; padding: 8px; font-size: 12px;" onclick="setMinesCount(24)">24</button>
-              </div>
-              <button class="btn" id="minesStartBtn" style="background: #ffc107; color: #000; font-size: 18px; padding: 15px; width: 100%;" onclick="startMines()">Играть за 1 000 ₽</button>
-              <button class="btn" id="minesCashoutBtn" style="background: #22c55e; color: #fff; font-size: 18px; padding: 15px; width: 100%; display: none;" onclick="cashoutMines()">Забрать выигрыш</button>
-            </div>
-            <div style="color: #888; font-size: 12px; margin-top: 15px; text-align: left;">
-              Под клетками прячутся мины. Каждая открытая пустая клетка поднимает множитель — забрать выигрыш можно в любой момент. Мина — ставка сгорела. Чем больше мин, тем быстрее растёт множитель.
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-        <div class="app-screen" id="app-bank">
-      <div class="app-header" style="background:#f6d365; border:none; padding: 15px 16px;">
-        <button class="back-btn" onclick="closeApp('bank')" style="color:#000;">‹ Назад</button>
-        <div class="app-title" style="color:#000; padding-right:0; text-align:left; display:flex; align-items:center; gap:10px;">
-           <div style="background:#000; color:#f6d365; width:40px; height:40px; border-radius:10px; display:flex; align-items:center; justify-content:center; font-weight:bold; font-size:16px;">PF</div>
-           <div><div style="font-size:16px; font-weight:bold;">PlameFinance</div><div style="font-size:12px; color:#555; font-weight:normal;">Кредиты, займы и субсидии</div></div>
-        </div>
-      </div>
-      <div class="app-content" style="background:#fff; padding: 0;">
-        <div style="display:flex; background:#f9f9f9; border-bottom:1px solid #eee;">
-          <div style="flex:1; text-align:center; padding:15px 0; font-weight:bold; font-size:14px; color:var(--accent); border-bottom:3px solid var(--accent); cursor:pointer;" onclick="switchBankTab('credit')">Кредиты</div>
-          <div style="flex:1; text-align:center; padding:15px 0; font-weight:bold; font-size:14px; color:#888; cursor:pointer;" onclick="switchBankTab('micro')">Микрозаймы</div>
-          <div style="flex:1; text-align:center; padding:15px 0; font-weight:bold; font-size:14px; color:#888; cursor:pointer;">Субсидии</div>
-        </div>
-        <div style="padding: 15px;">
-          <div id="creditBlock">
-            <div class="credit-debt-box"><div style="font-size:13px; color:#aaa; margin-bottom:5px;">Долг по кредитам</div><div class="credit-amount" id="creditDebtDisplay">0 ₽</div><div style="display:flex; justify-content:space-between; align-items:center; margin-top:15px; font-size:12px;"><div id="creditStatusText" style="color:#fff;">У вас нет активных кредитов.</div><div id="creditMonthsDisplay" style="background:rgba(255,255,255,0.2); padding:4px 8px; border-radius:5px;">Уровень 0</div></div><div style="width:100%; height:4px; background:rgba(255,255,255,0.1); border-radius:2px; margin-top:10px; overflow:hidden;"><div id="creditProgressBar" style="height:100%; background:#f6d365; width:0%; transition:0.3s;"></div></div></div>
-            <div style="font-size:16px; font-weight:bold; margin: 20px 0 10px 0;">Тарифы</div>
-            <div id="creditLevelsGrid" style="display:grid; grid-template-columns:1fr 1fr; gap:10px;"></div>
-            <div id="creditActions" style="margin-top:20px; display:none;"><button class="btn" onclick="payCredit()" style="background:#f6d365; color:#000; font-size:16px; padding:15px;">Погасить весь долг</button></div>
-          </div>
-          
-          <div id="microBlock" style="display:none;">
-            <div style="font-weight:bold; font-size:16px; margin-bottom:5px;">Деньги за 5 минут</div>
-            <div style="font-size:12px; color:#888; margin-bottom:15px;">Без проверки кредитной истории. 1% в день.</div>
-            <div style="background:#fff; border:1px solid #eee; border-radius:16px; padding:20px; text-align:center; box-shadow:0 4px 15px rgba(0,0,0,0.05);">
-               <div style="font-size:28px; font-weight:bold; margin-bottom:15px;" id="microAmountDisplay">10 000 ₽</div>
-               <input type="range" min="1000" max="50000" step="1000" value="10000" id="microSlider" style="width:100%; accent-color:#ffc107; margin-bottom:15px;" oninput="updateMicroLoan()">
-               <div style="display:flex; gap:5px; margin-bottom:15px;">
-                 <button class="btn" style="background:#fff; border:1px solid #eee; color:#000; flex:1; font-size:12px; padding:10px;" onclick="setMicroTerm(3, this)">3 дня</button>
-                 <button class="btn" style="background:#ffc107; border:1px solid #ffc107; color:#000; flex:1; font-size:12px; padding:10px;" onclick="setMicroTerm(7, this)">✓ 7 дней</button>
-                 <button class="btn" style="background:#fff; border:1px solid #eee; color:#000; flex:1; font-size:12px; padding:10px;" onclick="setMicroTerm(14, this)">14 дней</button>
-               </div>
-               <div style="display:flex; justify-content:space-between; font-size:14px; margin-bottom:10px; border-top:1px solid #eee; padding-top:10px;"><span style="color:#888;">Вернуть до:</span><span style="font-weight:bold;" id="microReturnDate">04.03.2024</span></div>
-               <div style="display:flex; justify-content:space-between; font-size:14px; margin-bottom:15px;"><span style="color:#888;">К возврату:</span><span style="font-weight:bold;" id="microReturnAmount">10 700 ₽</span></div>
-               <div style="font-size:11px; color:#f44336; margin-bottom:15px; text-align:left;">Просрочка: пени 2% в день.</div>
-               <button class="btn" style="background:#ffc107; color:#000; font-size:16px; padding:12px;" onclick="takeMicroLoan()">Получить <span id="microBtnAmount">10 000</span> ₽</button>
-            </div>
-          </div>
-          <div style="font-size:16px; font-weight:bold; margin: 30px 0 10px 0;">Вклады</div>
-          <div class="shop-item"><div class="shop-item-info"><div class="shop-item-title">Вклад под 10%</div><div class="shop-item-desc">Прибыль начисляется каждый день.</div></div><div style="text-align:right;"><div class="shop-item-price">От 1 000 ₽</div><button class="buy-btn" onclick="openDeposit()">Открыть</button></div></div>
-        </div>
-      </div>
-    </div>
-
-    <div class="app-screen" id="app-darknet"><div class="app-header"><button class="back-btn" onclick="closeApp('darknet')">‹ Назад</button><div class="app-title">Даркнет</div></div><div class="balance-bar">Баланс: <span class="balance-val">0</span> ₽ | Наличка: <span id="dirtyCash">0</span> ₽</div><div class="app-content"><div class="shop-item" style="display:block;"><div class="shop-item-title">Пакет «Весёлый»</div><div class="shop-item-desc">Продать в розницу (доход x3).</div><div class="shop-item-price">50 000 ₽</div><button class="btn" onclick="buyDrugs(50000)">Купить</button></div></div></div>
-    
-    <div class="app-screen" id="app-exchange">
-      <div class="app-header"><button class="back-btn" onclick="closeApp('exchange')">‹ Назад</button><div class="app-title">Обменник</div></div>
-      <div class="balance-bar">Баланс: <span class="balance-val">0</span> ₽ | Наличка: <span id="exchangeDirty">0</span> ₽</div>
-      <div class="app-content">
-        <div class="shop-item" style="display:block;">
-          <div class="shop-item-title">Перевести наличку на карту</div>
-          <div class="shop-item-desc">Комиссия 10%. Отмывание грязных денег.</div>
-          <input type="number" id="exchangeAmount" placeholder="Сумма" style="width:100%; padding:12px; margin:10px 0; background:#f3f4f6; border:1px solid #ddd; border-radius:8px;">
-          <button class="btn" onclick="exchangeMoney()">Обменять</button>
-        </div>
-      </div>
-    </div>
-
-    <div class="app-screen" id="app-sleep"><div class="app-header"><button class="back-btn" onclick="closeApp('sleep')">‹ Назад</button><div class="app-title">Сон</div></div><div class="app-content" style="justify-content: center; align-items: center;"><button class="btn" onclick="goToSleep()">Лечь спать</button></div></div>
-    <div class="app-screen" id="app-shop"><div class="app-header"><button class="back-btn" onclick="closeApp('shop')">‹ Назад</button><div class="app-title">Магазин</div></div><div class="app-content"><div class="shop-item"><div class="shop-item-info"><div class="shop-item-title">Шаурма</div><div class="shop-item-desc">Восстанавливает 30% еды.</div></div><div style="text-align:right;"><div class="shop-item-price">300 ₽</div><button class="buy-btn" onclick="buyFood(300, 30)">Купить</button></div></div><div class="shop-item"><div class="shop-item-info"><div class="shop-item-title">Пельмени</div><div class="shop-item-desc">Восстанавливает 50% еды.</div></div><div style="text-align:right;"><div class="shop-item-price">500 ₽</div><button class="buy-btn" onclick="buyFood(500, 50)">Купить</button></div></div><div class="shop-item"><div class="shop-item-info"><div class="shop-item-title">Борщ</div><div class="shop-item-desc">Восстанавливает 100% еды.</div></div><div style="text-align:right;"><div class="shop-item-price">1000 ₽</div><button class="buy-btn" onclick="buyFood(1000, 100)">Купить</button></div></div></div></div>
-    
-    <div class="app-screen" id="app-cars">
-      <div class="app-header" style="background: #2196f3; border: none; padding: 15px 16px;">
-        <button class="back-btn" onclick="closeApp('cars')" style="color: #fff;">← Назад</button>
-        <div class="app-title" style="color: #fff; padding-right: 0; text-align: center;">Автосалон</div>
-        <button class="back-btn" style="color: #fff;" onclick="showModal('Сортировка', 'Сначала дешевые / Сначала дорогие')">🔀</button>
-      </div>
-      <div class="balance-bar" style="background: #fff; color: #2196f3; font-weight: bold;">Баланс: <span class="balance-val">0</span> ₽</div>
-      <div class="app-content" style="padding: 15px; background: #f4f7fb;">
-        <div style="background: #fff; border-radius: 16px; overflow: hidden; margin-bottom: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.05);">
-          <div style="height: 150px; background: linear-gradient(135deg, #1e3a8a, #3b82f6); display: flex; align-items: center; justify-content: center; font-size: 60px; position: relative;">🏎️<div style="position: absolute; top: 10px; right: 10px; background: rgba(255,255,255,0.8); border-radius: 50%; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center;">🔖</div></div>
-          <div style="padding: 15px;"><div style="font-size: 22px; font-weight: bold; color: #1a1a1a;">855 000 000 ₽</div><div style="font-size: 16px; font-weight: bold; color: #333; margin-bottom: 10px;">KOENIGSEGG ONE:1</div><div style="display: flex; gap: 15px; font-size: 12px; color: #6b7280; margin-bottom: 10px;"><span>2014 г.</span><span>0 км</span><span>📍 Североморск</span></div><div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #eee; padding-top: 10px;"><div style="font-size: 14px; font-weight: bold;">Евгений</div><div style="font-size: 11px; color: #888;">1 неделю назад</div></div></div>
-        </div>
-        <div style="background: #fff; border-radius: 16px; overflow: hidden; margin-bottom: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.05);">
-          <div style="height: 150px; background: linear-gradient(135deg, #7f1d1d, #ef4444); display: flex; align-items: center; justify-content: center; font-size: 60px; position: relative;">🚗<div style="position: absolute; top: 10px; right: 10px; background: rgba(255,255,255,0.8); border-radius: 50%; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center;">🔖</div></div>
-          <div style="padding: 15px;"><div style="font-size: 22px; font-weight: bold; color: #1a1a1a;">200 000 000 ₽</div><div style="font-size: 16px; font-weight: bold; color: #333; margin-bottom: 10px;">BUGATTI VEYRON</div><div style="display: flex; gap: 15px; font-size: 12px; color: #6b7280; margin-bottom: 10px;"><span>2012 г.</span><span>5 000 км</span><span>📍 Москва</span></div><div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #eee; padding-top: 10px;"><div style="font-size: 14px; font-weight: bold;">Александр</div><div style="font-size: 11px; color: #888;">2 дня назад</div></div></div>
-        </div>
-        <div style="background: #fff; border-radius: 16px; overflow: hidden; margin-bottom: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.05);">
-          <div style="height: 150px; background: linear-gradient(135deg, #4c1d95, #8b5cf6); display: flex; align-items: center; justify-content: center; font-size: 60px; position: relative;">🚙<div style="position: absolute; top: 10px; right: 10px; background: rgba(255,255,255,0.8); border-radius: 50%; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center;">🔖</div></div>
-          <div style="padding: 15px;"><div style="font-size: 22px; font-weight: bold; color: #1a1a1a;">30 000 ₽</div><div style="font-size: 16px; font-weight: bold; color: #333; margin-bottom: 10px;">ЛЕАД ОКА</div><div style="display: flex; gap: 15px; font-size: 12px; color: #6b7280; margin-bottom: 10px;"><span>2005 г.</span><span>20 000 км</span><span>📍 Смоленск</span></div><div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #eee; padding-top: 10px;"><div style="font-size: 14px; font-weight: bold;">Ярослав</div><div style="font-size: 11px; color: #888;">6 дней назад</div></div><button class="btn" style="background: #2196f3; color: #fff; margin-top: 10px; padding: 10px; font-size: 14px;" onclick="buyCar('ЛЕАД ОКА', 30000)">Купить</button></div>
-        </div>
-      </div>
-    </div>
-    
-    <div class="app-screen" id="app-realestate">
-      <div class="app-header" style="background: #2196f3; border: none; padding: 20px 16px;">
-        <button class="back-btn" onclick="closeApp('realestate')" style="color: #fff;">← Назад</button>
-        <div class="app-title" style="color: #fff; padding-right: 0; text-align: left; padding-left: 10px;">MestoBuy</div>
-      </div>
-      <div style="background: #2196f3; padding: 0 16px 20px 16px; color: #fff;">
-        <div style="display: flex; justify-content: space-between; margin-bottom: 10px;"><span style="opacity: 0.8;">Ваш счет:</span><span style="font-weight: bold; font-size: 18px;"><span class="balance-val">0</span> ₽</span></div>
-        <div style="display: flex; justify-content: space-between; margin-bottom: 10px;"><span style="opacity: 0.8;">Парковки:</span><span style="font-weight: bold;">0 из 5</span></div>
-        <div style="display: flex; justify-content: space-between;"><span style="opacity: 0.8;">Жильё:</span><span style="font-weight: bold;">0 из 1</span></div>
-      </div>
-      <div class="app-content" style="padding: 0; background: #f4f7fb;">
-        <div style="display: flex; background: #fff; border-bottom: 1px solid #eee;"><div style="flex: 1; text-align: center; padding: 15px 0; font-weight: bold; color: #2196f3; border-bottom: 3px solid #2196f3;">🏢 Жильё</div><div style="flex: 1; text-align: center; padding: 15px 0; font-weight: bold; color: #888;">🏠 Гаражи</div></div>
-        <div style="padding: 15px;">
-          <div style="display: flex; gap: 10px; margin-bottom: 20px;"><button class="btn" style="flex: 1; background: #2196f3; color: #fff; border-radius: 20px; padding: 10px; font-size: 14px;">🛒 Купить</button><button class="btn btn-secondary" style="flex: 1; background: #e5e7eb; color: #333; border-radius: 20px; padding: 10px; font-size: 14px;">🔑 Аренда</button></div>
-          <h3 style="margin-bottom: 15px; font-size: 16px;">Жильё в городе Тюмень</h3>
-          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-            <div style="background: #fff; border-radius: 12px; padding: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); border: 1px solid #eee;"><div style="font-size: 12px; color: #888; margin-bottom: 5px;">🏢 Квартира</div><div style="font-size: 18px; font-weight: bold; color: #22c55e; margin-bottom: 10px;">3 950 000 ₽</div><div style="font-size: 11px; color: #6b7280; margin-bottom: 5px;">Парковка: +1 место</div><div style="font-size: 11px; color: #6b7280; margin-bottom: 5px;">Сдача: 79 000 ₽ в месяц</div><div style="font-size: 10px; color: #9ca3af; margin-bottom: 15px;">Чем дешевле — тем хуже шумоизоляция и опаснее двор</div><button class="btn" style="background: #22c55e; color: #fff; padding: 10px; font-size: 12px; margin: 0;" onclick="buyProperty('Квартира', 3950000, 79000)">Купить</button></div>
-            <div style="background: #fff; border-radius: 12px; padding: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); border: 1px solid #eee;"><div style="font-size: 12px; color: #888; margin-bottom: 5px;">🏢 Квартира</div><div style="font-size: 18px; font-weight: bold; color: #22c55e; margin-bottom: 10px;">3 550 000 ₽</div><div style="font-size: 11px; color: #6b7280; margin-bottom: 5px;">Парковка: +1 место</div><div style="font-size: 11px; color: #6b7280; margin-bottom: 5px;">Сдача: 71 000 ₽ в месяц</div><div style="font-size: 10px; color: #9ca3af; margin-bottom: 15px;">Чем дешевле — тем хуже шумоизоляция и опаснее двор</div><button class="btn" style="background: #22c55e; color: #fff; padding: 10px; font-size: 12px; margin: 0;" onclick="buyProperty('Квартира', 3550000, 71000)">Купить</button></div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="app-screen" id="app-calendar"><div class="app-header"><button class="back-btn" onclick="closeApp('calendar')">‹ Назад</button><div class="app-title">Календарь</div></div><div class="app-content"><div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;"><button class="btn" style="width:auto; padding:10px 20px;" onclick="changeMonth(-1)">‹</button><div id="calendarTitle" style="font-size:20px; font-weight:bold;">Октябрь 2026</div><button class="btn" style="width:auto; padding:10px 20px;" onclick="changeMonth(1)">›</button></div><div id="calendarGrid" style="display:grid; grid-template-columns:repeat(7,1fr); gap:5px; text-align:center;"></div></div></div>
-
-    <div class="app-screen" id="app-calc"><div class="app-header"><button class="back-btn" onclick="closeApp('calc')">‹ Назад</button><div class="app-title">Калькулятор</div></div><div class="app-content" style="padding:20px; background:#f9f9f9;"><div id="calcDisplay" style="background:#fff; padding:20px; text-align:right; font-size:40px; border-radius:10px; margin-bottom:20px; border:1px solid #eee;">0</div><div style="display:grid; grid-template-columns:repeat(4,1fr); gap:10px;"><button class="btn" style="background:#e5e7eb; color:#000;" onclick="calcInput('C')">C</button><button class="btn" style="background:#e5e7eb; color:#000;" onclick="calcInput('+/-')">±</button><button class="btn" style="background:#e5e7eb; color:#000;" onclick="calcInput('%')">%</button><button class="btn" style="background:var(--accent); color:#fff;" onclick="calcInput('/')">÷</button><button class="btn" style="background:#fff; color:#000; border:1px solid #eee;" onclick="calcInput('7')">7</button><button class="btn" style="background:#fff; color:#000; border:1px solid #eee;" onclick="calcInput('8')">8</button><button class="btn" style="background:#fff; color:#000; border:1px solid #eee;" onclick="calcInput('9')">9</button><button class="btn" style="background:var(--accent); color:#fff;" onclick="calcInput('*')">×</button><button class="btn" style="background:#fff; color:#000; border:1px solid #eee;" onclick="calcInput('4')">4</button><button class="btn" style="background:#fff; color:#000; border:1px solid #eee;" onclick="calcInput('5')">5</button><button class="btn" style="background:#fff; color:#000; border:1px solid #eee;" onclick="calcInput('6')">6</button><button class="btn" style="background:var(--accent); color:#fff;" onclick="calcInput('-')">−</button><button class="btn" style="background:#fff; color:#000; border:1px solid #eee;" onclick="calcInput('1')">1</button><button class="btn" style="background:#fff; color:#000; border:1px solid #eee;" onclick="calcInput('2')">2</button><button class="btn" style="background:#fff; color:#000; border:1px solid #eee;" onclick="calcInput('3')">3</button><button class="btn" style="background:var(--accent); color:#fff;" onclick="calcInput('+')">+</button><button class="btn" style="background:#fff; color:#000; border:1px solid #eee; grid-column:span 2;" onclick="calcInput('0')">0</button><button class="btn" style="background:#fff; color:#000; border:1px solid #eee;" onclick="calcInput(',')">,</button><button class="btn" style="background:var(--accent); color:#fff;" onclick="calcInput('=')">=</button></div></div></div>
-
-    <div class="app-screen" id="app-numbers"><div class="app-header"><button class="back-btn" onclick="closeApp('numbers')">‹ Назад</button><div class="app-title">Рынок номеров</div></div><div class="app-content"><div style="text-align:center; margin-bottom:20px;"><p style="color:#888; font-size:14px;">Крутите рулетку, чтобы выбить красивый номер!</p></div><div style="background:#fff; border:2px solid var(--border); border-radius:16px; padding:20px; text-align:center; box-shadow:0 4px 15px rgba(0,0,0,0.05);"><div id="numberDisplay" style="font-size:36px; font-weight:bold; margin-bottom:20px; letter-spacing:2px; color:var(--accent);">А000АА</div><button class="btn" onclick="spinNumbers()" id="spinNumberBtn" style="font-size:18px; padding:15px;">Крутить (1 000 ₽)</button><div id="numberResult" style="margin-top:15px; font-weight:bold; font-size:16px;"></div></div></div></div>
-
-    <div class="app-screen" id="app-settings">
-      <div class="app-header"><button class="back-btn" onclick="closeApp('settings')">‹ Назад</button><div class="app-title">Настройки</div></div>
-      <div class="app-content">
-        <div class="settings-item"><div class="settings-title">Звуковые эффекты</div><label class="switch"><input type="checkbox" checked><span class="slider"></span></label></div>
-        <div class="settings-item"><div class="settings-title">Музыка</div><label class="switch"><input type="checkbox"><span class="slider"></span></label></div>
-        <div class="settings-item"><div class="settings-title">Тёмная тема</div><label class="switch"><input type="checkbox" onchange="document.body.style.background = this.checked ? '#111' : '#e0e7ff'"><span class="slider"></span></label></div>
-        <div class="settings-item"><div class="settings-title">Сброс прогресса</div><button class="btn" style="background:#ef4444; width:auto; margin:0; padding:8px 12px; font-size:12px;" onclick="localStorage.clear(); location.reload();">Сбросить</button></div>
-      </div>
-    </div>
-
-    <div class="app-screen" id="app-jail"><div class="app-header"><div class="app-title">СИЗО</div></div><div class="app-content" style="justify-content:center; align-items:center; text-align:center;"><h2>⛓️ Вы в СИЗО</h2><p id="jailTimeDisplay" style="margin:20px 0;"></p><button class="btn" onclick="bribeJail()">Откупиться (50 000 ₽)</button></div></div>
-  </div>
-</div>
-<div class="modal" id="modal"><div class="modal-content"><div class="modal-title" id="modalTitle">Уведомление</div><div class="modal-text" id="modalText">Текст</div><button class="btn" onclick="closeModal()">ОК</button></div></div>
 <script>
-  // ==== ДАННЫЕ ИГРЫ ====
-  const CITIES = {
-    "Москва": { "price_coef": 1.20, "cold": false, "desc": "Много клиентов, дорогая жизнь." },
-    "Тюмень": { "price_coef": 1.00, "cold": true, "desc": "Суровые зимы до -35." },
-    "Омск": { "price_coef": 1.35, "cold": true, "desc": "Запчасти дорогие, зимы лютые." },
-    "Екатеринбург": { "price_coef": 1.10, "cold": true, "desc": "Развитая инфраструктура." },
-    "Киров": { "price_coef": 0.90, "cold": true, "desc": "Дешёвые запчасти, мало клиентов." },
-    "Иркутск": { "price_coef": 1.25, "cold": true, "desc": "Морозы и удалённость." },
-    "Владивосток": { "price_coef": 1.00, "cold": false, "desc": "Много японцев с пробегом." },
-    "Сочи": { "price_coef": 1.00, "cold": false, "desc": "Тепло, но влажно — коррозия." },
-    "Новосибирск": { "price_coef": 1.00, "cold": true, "desc": "Баланс климата и цен." }
-  };
+// ==================== БАЗА ВОПРОСОВ ====================
+const questionsDB = {
+  1: [ // Новичок
+    { q: "Что означает аббревиатура ДВС?", 
+      options: ["Двигатель внутреннего сгорания", "Датчик воздушной смеси", "Диск воздушного сцепления", "Дизельный впускной системы"], 
+      correct: 0, 
+      exp: "ДВС — двигатель внутреннего сгорания, основной тип двигателя автомобиля." },
+    { q: "Для чего нужен радиатор в автомобиле?", 
+      options: ["Для охлаждения двигателя", "Для подогрева салона", "Для очистки топлива", "Для усиления мощности"], 
+      correct: 0, 
+      exp: "Радиатор отводит тепло от охлаждающей жидкости, предотвращая перегрев двигателя." },
+    { q: "Какая жидкость заливается в систему охлаждения?", 
+      options: ["Моторное масло", "Антифриз", "Тормозная жидкость", "Бензин"], 
+      correct: 1, 
+      exp: "Антифриз (тосол) — специальная охлаждающая жидкость с низкой температурой замерзания." },
+    { q: "Что измеряет спидометр?", 
+      options: ["Обороты двигателя", "Скорость движения", "Уровень топлива", "Температуру"], 
+      correct: 1, 
+      exp: "Спидометр показывает текущую скорость автомобиля." },
+    { q: "Где находится аккумуляторная батарея обычно?", 
+      options: ["В багажнике", "Под капотом", "В салоне под сиденьем", "Всё равно"], 
+      correct: 1, 
+      exp: "Чаще всего АКБ расположена в подкапотном пространстве." },
+    { q: "Что такое шины?", 
+      options: ["Деталь двигателя", "Резиновая часть колеса", "Тормозная колодка", "Элемент подвески"], 
+      correct: 1, 
+      exp: "Шины — резиновая оболочка колеса, обеспечивающая сцепление с дорогой." },
+    { q: "Для чего нужен глушитель?", 
+      options: ["Для увеличения мощности", "Для снижения шума выхлопа", "Для очистки воздуха", "Для экономии топлива"], 
+      correct: 1, 
+      exp: "Глушитель снижает уровень шума выхлопных газов." },
+    { q: "Что означает значок 'P' на АКПП?", 
+      options: ["Парковка", "Поворот", "Пробуксовка", "Передний ход"], 
+      correct: 0, 
+      exp: "P (Park) — режим парковки, блокирует трансмиссию." },
+    { q: "Что нужно проверить перед выездом?", 
+      options: ["Только бензин", "Уровень масла и давление в шинах", "Только фары", "Ничего"], 
+      correct: 1, 
+      exp: "Перед поездкой проверяют масло, давление в шинах, тормоза и свет." },
+    { q: "Какой инструмент нужен для замены колеса?", 
+      options: ["Баллонный ключ и домкрат", "Только молоток", "Отвёртка", "Плоскогубцы"], 
+      correct: 0, 
+      exp: "Для замены колеса нужны баллонный ключ и домкрат." }
+  ],
+  2: [ // Любитель
+    { q: "Какой такт идёт после 'впуск' в 4-тактном двигателе?", 
+      options: ["Сжатие", "Рабочий ход", "Выпуск", "Впрыск"], 
+      correct: 0, 
+      exp: "Порядок: впуск → сжатие → рабочий ход → выпуск." },
+    { q: "Что такое гидроусилитель руля?", 
+      options: ["Система облегчения поворота руля", "Насос для топлива", "Тип коробки передач", "Элемент тормозов"], 
+      correct: 0, 
+      exp: "Гидроусилитель использует гидравлику для снижения усилия на руле." },
+    { q: "Признак износа тормозных колодок?", 
+      options: ["Скрип при торможении", "Увеличение расхода топлива", "Стук в двигателе", "Белый дым"], 
+      correct: 0, 
+      exp: "Скрип/визг при торможении — типичный признак износа колодок." },
+    { q: "Что означает 'Check Engine'?", 
+      options: ["Проверьте двигатель — ошибка в системе", "Проверьте шины", "Долейте масло", "Включите фары"], 
+      correct: 0, 
+      exp: "Лампа Check Engine сигнализирует о неисправности в системе управления двигателем." },
+    { q: "Для чего нужен катализатор?", 
+      options: ["Для снижения токсичности выхлопа", "Для увеличения мощности", "Для охлаждения", "Для смазки"], 
+      correct: 0, 
+      exp: "Катализатор нейтрализует вредные вещества в выхлопных газах." },
+    { q: "Какой привод у переднеприводного автомобиля?", 
+      options: ["Передние колёса тянут", "Задние колёса толкают", "Все четыре колеса", "Только одно колесо"], 
+      correct: 0, 
+      exp: "В переднеприводном авто крутящий момент передаётся на передние колёса." },
+    { q: "Что такое развал-схождение?", 
+      options: ["Регулировка углов установки колёс", "Замена масла", "Проверка тормозов", "Настройка фар"], 
+      correct: 0, 
+      exp: "Развал-схождение — регулировка углов наклона и поворота колёс для правильного контакта с дорогой." },
+    { q: "Для чего нужен термостат?", 
+      options: ["Регулирует поток охлаждающей жидкости", "Нагревает салон", "Фильтрует масло", "Измеряет температуру"], 
+      correct: 0, 
+      exp: "Термостат открывается при нагреве, пуская антифриз через радиатор." },
+    { q: "Что означает маркировка масла 5W-40?", 
+      options: ["Вязкость масла", "Объём двигателя", "Тип топлива", "Мощность"], 
+      correct: 0, 
+      exp: "5W-40 — показатель вязкости: 5W — зимой, 40 — при рабочей температуре." },
+    { q: "Зачем нужен воздушный фильтр?", 
+      options: ["Очищает воздух, поступающий в двигатель", "Фильтрует масло", "Охлаждает двигатель", "Глушит шум"], 
+      correct: 0, 
+      exp: "Воздушный фильтр задерживает пыль и грязь, защищая двигатель." }
+  ],
+  3: [ // Профи
+    { q: "Что такое угол опережения зажигания?", 
+      options: ["Угол между ВМТ и моментом искры", "Угол поворота колёс", "Угол наклона двигателя", "Угол кузова"], 
+      correct: 0, 
+      exp: "Угол опережения зажигания — угол поворота коленвала от момента подачи искры до ВМТ." },
+    { q: "Какой датчик измеряет количество воздуха?", 
+      options: ["ДМРВ (MAF)", "ДПКВ", "ДПДЗ", "Лямбда-зонд"], 
+      correct: 0, 
+      exp: "ДМРВ — датчик массового расхода воздуха." },
+    { q: "Что такое детонация?", 
+      options: ["Взрывное сгорание топлива", "Проворот коленвала", "Отказ стартера", "Утечка масла"], 
+      correct: 0, 
+      exp: "Детонация — преждевременное взрывное воспламенение смеси, вредное для двигателя." },
+    { q: "Для чего нужен лямбда-зонд?", 
+      options: ["Измеряет содержание кислорода в выхлопе", "Измеряет температуру масла", "Регулирует зажигание", "Контролирует давление"], 
+      correct: 0, 
+      exp: "Лямбда-зонд обеспечивает обратную связь для корректировки топливной смеси." },
+    { q: "Что означает неисправность P0300?", 
+      options: ["Случайные пропуски зажигания", "Неисправность АКПП", "Ошибка ABS", "Низкий заряд АКБ"], 
+      correct: 0, 
+      exp: "P0300 — Random/Multiple Cylinder Misfire Detected (случайные пропуски зажигания)." },
+    { q: "Какая степень сжатия типична для дизеля?", 
+      options: ["8–10:1", "16–22:1", "4–6:1", "30–40:1"], 
+      correct: 1, 
+      exp: "Дизельные двигатели имеют высокую степень сжатия (обычно 16–22:1) для самовоспламенения." },
+    { q: "Что такое турболаг (турбояма)?", 
+      options: ["Задержка раскрутки турбины", "Перегрев турбины", "Утечка масла", "Поломка интеркулера"], 
+      correct: 0, 
+      exp: "Турбояма — задержка отклика турбины до выхода на рабочее давление наддува." },
+    { q: "Зачем нужен интеркулер?", 
+      options: ["Охлаждает сжатый воздух после турбины", "Охлаждает масло", "Охлаждает антифриз", "Глушит впуск"], 
+      correct: 0, 
+      exp: "Интеркулер охлаждает наддувочный воздух, повышая его плотность и мощность." },
+    { q: "Что означает 'задир' в цилиндре?", 
+      options: ["Повреждение зеркала цилиндра", "Износ поршневых колец", "Трещина ГБЦ", "Засорение форсунки"], 
+      correct: 0, 
+      exp: "Задир — глубокие царапины на зеркале цилиндра, требующие расточки или гильзовки." },
+    { q: "Что регулирует клапан EGR?", 
+      options: ["Рециркуляцию выхлопных газов", "Давление топлива", "Угол зажигания", "Подачу масла"], 
+      correct: 0, 
+      exp: "EGR (Exhaust Gas Recirculation) направляет часть выхлопа обратно во впуск для снижения NOx." }
+  ],
+  4: [ // Эксперт
+    { q: "Что такое 'калильное зажигание'?", 
+      options: ["Воспламенение от раскалённых частиц", "Искра от свечи", "Впрыск при холодном пуске", "Раннее зажигание"], 
+      correct: 0, 
+      exp: "Калильное зажигание — воспламенение смеси от раскалённых деталей (нагара, электродов) без искры." },
+    { q: "Какая формула расчёта мощности двигателя?", 
+      options: ["P = M × ω", "P = F × S", "P = U × I", "P = m × g"], 
+      correct: 0, 
+      exp: "Мощность = крутящий момент × угловая скорость (P = M × ω)." },
+    { q: "Что такое 'перекрытие клапанов'?", 
+      options: ["Одновременное открытие впускного и выпускного", "Зазор в приводе ГРМ", "Сдвиг фаз ГРМ", "Износ кулачка"], 
+      correct: 0, 
+      exp: "Перекрытие — период, когда оба клапана приоткрыты в конце выпуска и начале впуска." },
+    { q: "Что означает ошибка P0171?", 
+      options: ["Бедная топливная смесь (банк 1)", "Богатая смесь", "Пропуски зажигания", "Отказ ДПКВ"], 
+      correct: 0, 
+      exp: "P0171 — System Too Lean (Bank 1), т.е. слишком бедная смесь." },
+    { q: "Для чего нужен датчик детонации?", 
+      options: ["Фиксирует вибрации блока и корректирует УОЗ", "Измеряет давление масла", "Контролирует температуру", "Регулирует наддув"], 
+      correct: 0, 
+      exp: "Датчик детонации улавливает характерные вибрации и позволяет ЭБУ снизить угол опережения зажигания." },
+    { q: "Что такое 'гидрокомпенсатор'?", 
+      options: ["Элемент автоматической регулировки зазора клапанов", "Насос ГУР", "Демпфер коленвала", "Элемент АКПП"], 
+      correct: 0, 
+      exp: "Гидрокомпенсатор автоматически поддерживает нулевой зазор в приводе клапанов за счёт масла." },
+    { q: "Какая неисправность вызывает 'белый дым' из выхлопа?", 
+      options: ["Попадание антифриза в цилиндры", "Богатая смесь", "Износ колец", "Забитый катализатор"], 
+      correct: 0, 
+      exp: "Белый густой дым — признак попадания охлаждающей жидкости в камеру сгорания (пробита прокладка ГБЦ)." },
+    { q: "Что такое 'байпас' в турбосистеме?", 
+      options: ["Клапан сброса давления наддува", "Обводной канал радиатора", "Резервный насос", "Обводка фильтра"], 
+      correct: 0, 
+      exp: "Байпас (blow-off) сбрасывает избыточное давление при закрытии дросселя, защищая турбину." },
+    { q: "Что регулирует 'лямбда-коррекция'?", 
+      options: ["Состав топливно-воздушной смеси", "Угол зажигания", "Давление наддува", "Фазы ГРМ"], 
+      correct: 0, 
+      exp: "По сигналу лямбда-зонда ЭБУ корректирует длительность впрыска для поддержания стехиометрии." },
+    { q: "Что такое 'стехиометрическое соотношение' для бензина?", 
+      options: ["14.7:1 (воздух:топливо)", "10:1", "20:1", "1:1"], 
+      correct: 0, 
+      exp: "Стехиометрия для бензина — 14.7 кг воздуха на 1 кг топлива (λ=1)." }
+  ]
+};
 
-  // 68 ЗАДАНИЙ (СЛОЖНЫЕ, БЕЗ ЯВНЫХ ПОДСКАЗОК)
-  const TASKS = [
-    { id: "A1", q: "Металлический стук при пуске, пропадает после прогрева, масло в норме. Что проверить?", opts: ["Гидрокомпенсаторы/закоксовка", "Износ колец", "Детонация"], ans: 0 },
-    { id: "A2", q: "Троит 2–3 мин после запуска, ошибок нет. С чего начать диагностику?", opts: ["Свечи и провода", "Сразу разбирать двигатель", "Менять ЭБУ"], ans: 0 },
-    { id: "A3", q: "Густой белый дым, антифриз падает, эмульсия на щупе. Ваш диагноз?", opts: ["Пробита прокладка ГБЦ", "Маслосъёмные колпачки", "Богатая смесь"], ans: 0 },
-    { id: "A4", q: "Синий дым при перегазовке, расход масла 1 л/1000 км. Что искать?", opts: ["Колпачки, кольца, вентиляцию картера", "Термостат и помпу", "Свечи и катушку"], ans: 0 },
-    { id: "A5", q: "Черный дым. Чем опасна езда с такой неисправностью?", opts: ["Риск перегрева катализатора", "Ничем не опасна", "Только повышенный расход"], ans: 0 },
-    { id: "A6", q: "Холостой ход «гуляет» 600–1100. Что проверить в первую очередь?", opts: ["Подсос воздуха", "Сразу менять ЭБУ", "Разбирать двигатель"], ans: 0 },
-    { id: "A7", q: "Двигатель глохнет на горячую. Что проверить?", opts: ["ДПКВ и бензонасос", "Только свечи", "Только фильтр"], ans: 0 },
-    { id: "A8", q: "Расход топлива вырос на 30%, динамика в норме. Где искать?", opts: ["Шины, тормоза, ДМРВ", "Только катализатор", "Только форсунки"], ans: 0 },
-    { id: "A9", q: "Стук «пальцы» под нагрузкой на 92-м бензине. Что проверить?", opts: ["УОЗ и датчик детонации", "Заменить катализатор", "Промыть форсунки"], ans: 0 },
-    { id: "A10", q: "Не заводится после заправки. С чего начать?", opts: ["Топливо и фильтр", "Сразу менять насос", "Сразу менять свечи"], ans: 0 },
-    { id: "A11", q: "Вибрация на холостых. Как отличить двигатель от кузова?", opts: ["Проверить подушки двигателя", "Только замена свечей", "Только балансировка"], ans: 0 },
-    { id: "A12", q: "Запах бензина в салоне. Что нельзя делать?", opts: ["Запускать двигатель при течи", "Открывать окна", "Искать течь"], ans: 0 },
-    { id: "B1", q: "Передачи включаются с хрустом, педаль в пол. Что это?", opts: ["Сцепление «ведёт»", "Сцепление «буксует»", "Износ КПП"], ans: 0 },
-    { id: "B2", q: "Обороты растут, скорость нет. Что это?", opts: ["Сцепление «буксует»", "Сцепление «ведёт»", "Неисправен дифференциал"], ans: 0 },
-    { id: "B3", q: "Хруст при включении 2-й. Как проверить сцепление?", opts: ["Выжать сцепление и включить передачу", "Сразу менять КПП", "Сразу менять сцепление"], ans: 0 },
-    { id: "B4", q: "Вибрация при трогании. Что проверить?", opts: ["Диск сцепления и маховик", "Тормоза и шины", "Двигатель и выхлоп"], ans: 0 },
-    { id: "B5", q: "Течь сальника КПП. Что проверить попутно?", opts: ["Сапун и люфт вала", "Только заменить сальник", "Только долить масло"], ans: 0 },
-    { id: "B6", q: "АКПП рывки при переключении. Что нельзя делать?", opts: ["Агрессивно ездить", "Доливать масло", "Менять фильтр"], ans: 0 },
-    { id: "B7", q: "Вариатор пробуксовка. Что проверить перед ремонтом?", opts: ["Уровень жидкости и охлаждение", "Сразу менять вариатор", "Только долить жидкость"], ans: 0 },
-    { id: "B8", q: "Шум в КПП на нейтрали. Как локализовать?", opts: ["Выжать сцепление", "Сразу менять КПП", "Только долить масло"], ans: 0 },
-    { id: "B9", q: "Вибрация кардана на скорости. Что проверить?", opts: ["Крестовины и подвесной", "Только балансировку", "Только крестовины"], ans: 0 },
-    { id: "B10", q: "Гул дифференциала на поворотах. Диагноз?", opts: ["Износ сателлитов/подшипников", "Только замена масла", "Только шины"], ans: 0 },
-    { id: "C1", q: "Мягкая педаль после замены колодок. Что проверить до прокачки?", opts: ["Течь и уровень жидкости", "Сразу менять ГТЦ", "Сразу менять ABS"], ans: 0 },
-    { id: "C2", q: "Вибрация при торможении. Что проверить?", opts: ["Биение диска и направляющие", "Только колодки", "Только шины"], ans: 0 },
-    { id: "C3", q: "Скрип тормозов. Когда это норма?", opts: ["Материал колодок", "Всегда норма", "Всегда менять суппорт"], ans: 0 },
-    { id: "C4", q: "Уводит в сторону при торможении. Что проверить?", opts: ["Закисший суппорт и шланг", "Только геометрию", "Только колодки"], ans: 0 },
-    { id: "C5", q: "Педаль провалилась. Ваши действия?", opts: ["Остановка и вызов эвакуатора", "Доехать до дома", "Прокачать на месте"], ans: 0 },
-    { id: "C6", q: "Стук в подвеске на неровностях. С чего начать?", opts: ["Стойки и шаровые", "Сразу менять всё", "Только стойки"], ans: 0 },
-    { id: "C7", q: "Люфт шаровой опоры. Почему это критично?", opts: ["Риск отрыва колеса", "Не критично", "Только на слух"], ans: 0 },
-    { id: "C8", q: "Износ шин «пятнами». Что проверить?", opts: ["Дисбаланс и амортизаторы", "Только давление", "Только геометрию"], ans: 0 },
-    { id: "C9", q: "Гул ступицы. Как отличить от гула шин?", opts: ["Изменение на поворотах", "Только на слух", "Только балансировка"], ans: 0 },
-    { id: "C10", q: "ABS горит постоянно. Что проверить первым?", opts: ["Датчик колеса и грязь", "Сразу менять блок ABS", "Сразу менять все датчики"], ans: 0 },
-    { id: "C11", q: "Стук в рулевом управлении. Что проверить?", opts: ["Рейка и наконечники", "Только рейку", "Только наконечники"], ans: 0 },
-    { id: "C12", q: "Стук после замены амортизаторов. Ошибка сборки?", opts: ["Затяжка под нагрузкой", "Только опора", "Только пыльник"], ans: 0 },
-    { id: "D1", q: "Пропуск в 3 цилиндре только под нагрузкой. Что проверить?", opts: ["Катушку и форсунку", "Только свечу", "Только ЭБУ"], ans: 0 },
-    { id: "D2", q: "АКБ разряжается за 2 дня. Что проверить?", opts: ["Ток утечки", "Сразу менять АКБ", "Сразу менять генератор"], ans: 0 },
-    { id: "D3", q: "Генератор не заряжает. Что проверить?", opts: ["Ремень и диодный мост", "Сразу менять генератор", "Только ремень"], ans: 0 },
-    { id: "D4", q: "Стартер щёлкает, но не крутит. Что проверить?", opts: ["АКБ и втягивающее", "Только стартер", "Только АКБ"], ans: 0 },
-    { id: "D5", q: "Нет искры. С чего начать?", opts: ["Свеча и катушка", "Сразу ЭБУ", "Сразу катушка"], ans: 0 },
-    { id: "D6", q: "Дворники работают только на максимальной скорости. Причина?", opts: ["Резистор/реле скоростей", "Моторчик дворников", "Предохранитель"], ans: 0 },
-    { id: "D7", q: "Бензонасос не работает. Как проверить без замены?", opts: ["Реле и предохранитель", "Сразу менять насос", "Только предохранитель"], ans: 0 },
-    { id: "D8", q: "Ошибка лямбда-зонда. Когда менять?", opts: ["Когда причина не в подсосе", "Всегда менять датчик", "Всегда искать подсос"], ans: 0 },
-    { id: "D9", q: "ДХО не включаются. Что проверить?", opts: ["Предохранитель и реле", "Только лампы", "Только реле"], ans: 0 },
-    { id: "D10", q: "Разряд АКБ из-за «умной» зарядки. Что проверить?", opts: ["Ток утечки и генератор", "Только АКБ", "Только генератор"], ans: 0 },
-    { id: "D11", q: "Дым из-под панели. Ваши действия?", opts: ["Снять клемму", "Залить водой", "Продолжить движение"], ans: 0 },
-    { id: "D12", q: "CAN-шина: нет связи с блоком. Что проверить?", opts: ["Питание и сопротивление 60 Ом", "Сразу менять блок", "Сразу менять проводку"], ans: 0 },
-    { id: "D13", q: "ДПКВ «плавающая» ошибка. Почему на горячую?", opts: ["Температурная деформация", "Всегда ДПКВ неисправен", "Всегда ЭБУ"], ans: 0 },
-    { id: "D14", q: "Подсветка салона не гаснет. Что проверить?", opts: ["Концевик и реле", "Только лампы", "Только предохранитель"], ans: 0 },
-    { id: "E1", q: "Перегрев в пробке. Что проверить?", opts: ["Вентилятор и термостат", "Только термостат", "Только вентилятор"], ans: 0 },
-    { id: "E2", q: "Печка не греет. Что проверить?", opts: ["Воздух в системе и заслонку", "Только термостат", "Только радиатор"], ans: 0 },
-    { id: "E3", q: "Течь антифриза. Где искать?", opts: ["Патрубки и помпа", "Только радиатор", "Только патрубки"], ans: 0 },
-    { id: "E4", q: "Масло уходит, следов нет. Что проверить?", opts: ["Сальники и вентиляцию картера", "Только кольца", "Только сальники"], ans: 0 },
-    { id: "E5", q: "Низкое давление масла на горячую. Что проверить до разборки?", opts: ["Датчик и фильтр", "Сразу капиталить", "Только датчик"], ans: 0 },
-    { id: "E6", q: "Пузыри в расширительном бачке. Диагноз?", opts: ["Прорыв газов", "Воздушная пробка", "Норма"], ans: 0 },
-    { id: "E7", q: "Вентилятор не включается. Что проверить?", opts: ["Датчик и реле", "Только мотор", "Только реле"], ans: 0 },
-    { id: "E8", q: "Перегрев после замены антифриза. Типичная ошибка?", opts: ["Воздушная пробка", "Не тот антифриз", "Не тот термостат"], ans: 0 },
-    { id: "F1", q: "Машина дёргается в дождь. Что проверить?", opts: ["ВВ-часть и разъёмы", "Только свечи", "Только ЭБУ"], ans: 0 },
-    { id: "F2", q: "Бюджет 1 ремонт. Что делать в первую очередь?", opts: ["Шаровую (риск отрыва)", "Сальник", "Колодки"], ans: 0 },
-    { id: "F3", q: "«Всё работает, но не едет». Что проверить?", opts: ["Сцепление и тормоза", "Только сцепление", "Только АКПП"], ans: 0 },
-    { id: "F4", q: "После ДТП не заводится. Что проверить?", opts: ["Датчик удара и массу", "Сразу менять ЭБУ", "Сразу менять АКБ"], ans: 0 },
-    { id: "F5", q: "Троит после мойки двигателя. Почему?", opts: ["Вода в разъёмах", "Сразу менять свечи", "Сразу менять ЭБУ"], ans: 0 },
-    { id: "F6", q: "Клиент требует «сбросить ошибку». Почему нельзя?", opts: ["Без ремонта ошибка вернётся", "Сбросить и отпустить", "Отказать без объяснений"], ans: 0 },
-    { id: "G1", q: "«Чёрная свеча = богатая смесь». Что не так?", opts: ["Нагар — следствие, причин много", "Всё верно", "Нужно менять только свечи"], ans: 0 },
-    { id: "G2", q: "«Компрессия в норме — двигатель здоров». Почему не так?", opts: ["Колпачки и клапаны могут быть неисправны", "Компрессия всё решает", "Нужно только померить ещё раз"], ans: 0 },
-    { id: "G3", q: "«Прокачал тормоза — всё ок». Что ещё проверить?", opts: ["Течь и ABS", "Ничего", "Только уровень"], ans: 0 },
-    { id: "G4", q: "«Ошибка лямбды — сразу менять». Почему это ошибка?", opts: ["Причина может быть в подсосе", "Датчик всегда виноват", "Нужно менять оба датчика"], ans: 0 },
-    { id: "G5", q: "«Стук — значит подвеска». Что ещё может стучать?", opts: ["Двигатель и выхлоп", "Только подвеска", "Только тормоза"], ans: 0 },
-    { id: "G6", q: "«АКБ новый — проблема не в нём». Что проверить?", opts: ["Клеммы и утечку тока", "Только АКБ", "Только генератор"], ans: 0 }
-  ];
+// ==================== ЛОГИКА ИГРЫ ====================
+let currentLevel = 1;
+let currentQuestionIndex = 0;
+let score = 0;
+let answered = false;
+let levelQuestions = [];
 
-  // ==== СОСТОЯНИЕ ИГРЫ ====
-  let state = {
-    name: "", city: "", money: 5000, rep: 0, day: 1, hour: 6, energy: 100,
-    car: null, upgrades: [], batteryAge: 999, serviceAge: 999, completedTasks: []
-  };
-  let currentTask = null;
+const levelNames = {1: "Новичок 🟢", 2: "Любитель 🟡", 3: "Профи 🔴", 4: "Эксперт 🟣"};
+const totalQuestions = 10;
 
-  // ==== УТИЛИТЫ ====
-  function cityCoef() { return CITIES[state.city].price_coef; }
-  function levelOf(rep) { if (rep >= 350) return "Гуру"; if (rep >= 150) return "Мастер"; if (rep >= 50) return "Механик"; return "Ученик"; }
-  function tempPenalty(t) { if (t >= -15) return 0; if (t >= -20) return 10; if (t >= -25) return 20; if (t >= -30) return 32; if (t >= -35) return 45; return 60; }
-  function upgradeBonus() { let b = 0; if (state.upgrades.includes("blanket_hood")) b += 10; if (state.upgrades.includes("blanket_full")) b += 25; if (state.upgrades.includes("garage_warm")) b += 65; else if (state.upgrades.includes("garage")) b += 40; if (state.batteryAge < 30) b += 10; else if (state.batteryAge < 730) b += 5; else b -= 10; if (state.serviceAge < 15) b += 8; else if (state.serviceAge > 60) b -= 12; return b; }
-  function winterStartChance(t) { if (state.upgrades.includes("garage_warm")) return Math.min(99, 100 - tempPenalty(-5) + upgradeBonus()); return Math.max(5, Math.min(99, 100 - tempPenalty(t) + upgradeBonus())); }
+function startLevel(level) {
+  currentLevel = level;
+  currentQuestionIndex = 0;
+  score = 0;
+  answered = false;
+  
+  // Перемешиваем вопросы
+  levelQuestions = [...questionsDB[level]].sort(() => Math.random() - 0.5);
+  
+  document.getElementById('menu').classList.add('hidden');
+  document.getElementById('result').classList.add('hidden');
+  document.getElementById('game').classList.remove('hidden');
+  
+  const badge = document.getElementById('levelBadge');
+  badge.textContent = levelNames[level];
+  badge.className = 'level-badge level-' + level;
+  
+  loadQuestion();
+}
 
-  // ==== ИНТЕРФЕЙС ====
-  function updateUI() {
-    document.querySelectorAll('.balance-val').forEach(el => el.textContent = state.money.toLocaleString('ru-RU'));
-    if (document.getElementById('dirtyCash')) document.getElementById('dirtyCash').textContent = (state.dirtyCash || 0).toLocaleString('ru-RU');
-    if (document.getElementById('foodVal')) document.getElementById('foodVal').textContent = state.energy;
-  }
-
-  function updateClock() {
-    const dayStr = `День ${state.day} | 19 Окт | ${state.hour.toString().padStart(2,'0')}:00`;
-    document.getElementById('clockDisplay').textContent = dayStr;
-  }
-
-  function showModal(title, text) { document.getElementById('modalTitle').textContent = title; document.getElementById('modalText').textContent = text; document.getElementById('modal').classList.add('show'); }
-  function closeModal() { document.getElementById('modal').classList.remove('show'); }
-
-  function startGame() {
-    state.name = document.getElementById('playerNameInput').value.trim() || "Иван";
-    state.city = document.getElementById('playerCityInput').value;
-    document.getElementById('startupModal').classList.remove('show');
-    addMessage("Палыч", "Здарова, новенький. Ты че, опять проспал? Я тебе говорил в 8 утра быть как штык! Опоздаешь еще раз — вычту из зарплаты. И да, машины у тебя нет, так что топай пешком.");
-    setTimeout(() => { showModal('Начало игры', `Вы только что отучились на механика в ${state.city} и вернулись в родной поселок. У вас есть только этот старый дом, разбитое СТО и строгий начальник Палыч. Ходите вы пешком, поэтому просыпать нельзя. В любой день может прийти повестка.`); }, 1000);
-    updateUI(); updateClock(); renderCalendar();
-  }
-
-  // ==== СТО (ЗАДАНИЯ) ====
-  function startDay() {
-    if (state.energy < 10) return showModal('Усталость', 'Вы слишком устали, идите спать.');
-    state.energy -= 10; updateUI();
-    const available = TASKS.filter(t => !state.completedTasks.includes(t.id));
-    if (available.length === 0) return showModal('Всё сделано', 'Вы выполнили все задания!');
-    currentTask = available[Math.floor(Math.random() * available.length)];
-    
-    let html = `<div class="shop-item" style="display:block; text-align:left;"><div style="color:#2196f3; font-weight:bold;">Задание ${currentTask.id}</div><div style="color:#000; font-weight:bold; margin-top:5px;">${currentTask.q}</div></div><div style="display:flex; flex-direction:column; gap:10px; margin:15px 0;">`;
-    currentTask.opts.forEach((opt, i) => {
-      html += `<button class="btn btn-secondary" style="text-align:left; padding:15px;" onclick="answerTask(${i})">${opt}</button>`;
-    });
-    html += `</div>`;
-    document.getElementById('mechanicContent').innerHTML = html;
-  }
-
-  function answerTask(idx) {
-    if (idx === currentTask.ans) {
-      const coef = cityCoef(); const reward = Math.floor(1500 * coef);
-      state.money += reward; state.rep += 8;
-      showModal('Верно!', `+${reward} ₽, +8 репутации.`);
-    } else {
-      const coef = cityCoef(); const reward = Math.floor(500 * coef);
-      state.money += reward; state.rep = Math.max(0, state.rep - 3);
-      showModal('Ошибка', `+${reward} ₽ (осмотр), -3 репутации.`);
-    }
-    state.completedTasks.push(currentTask.id);
-    updateUI();
-    document.getElementById('mechanicContent').innerHTML = `<button class="btn" onclick="startDay()">Следующий клиент</button>`;
-  }
-
-  // ==== КАЗИНО ====
-  let chips = 0, minesBet = 1000, minesCount = 3, isPlayingMines = false, currentGems = 0, currentMult = 1.0, mineGridArray = [], isSpinning = false;
-  function buyChips(amount) { const cost = amount * 1000; if (state.money < cost) return showModal('Ошибка', 'Мало денег'); state.money -= cost; chips += amount; updateUI(); }
-  function sellChips() { if (chips < 1) return; state.money += chips * 1000; chips = 0; updateUI(); }
-  function setCurrentChip(v) { currentChip = v; }
-  function addChipToCell(cell, id) { /* Упрощено */ showModal('Ставка', `Вы поставили на ${id}`); }
-  function clearBets() { /* Упрощено */ }
-  function spinRoulette() { if (isSpinning) return; isSpinning = true; setTimeout(() => { isSpinning = false; showModal('Рулетка', 'Колесо крутилось!'); }, 2000); }
-  function changeMinesBet(a) { if (minesBet + a >= 100) { minesBet += a; updateMinesUI(); } }
-  function setMinesBet(v) { minesBet = (v === 'max') ? state.money : v; updateMinesUI(); }
-  function changeMinesCount(a) { minesCount += a; if (minesCount < 1) minesCount = 1; if (minesCount > 24) minesCount = 24; updateMinesUI(); }
-  function setMinesCount(v) { minesCount = v; updateMinesUI(); }
-  function updateMinesUI() { if(document.getElementById('minesBetDisplay')) document.getElementById('minesBetDisplay').textContent = minesBet.toLocaleString('ru-RU') + ' ₽'; if(document.getElementById('minesCountDisplay')) document.getElementById('minesCountDisplay').textContent = minesCount; }
-  function startMines() { if (state.money < minesBet) return showModal('Ошибка', 'Мало денег'); state.money -= minesBet; isPlayingMines = true; currentGems = 0; currentMult = 1.0; mineGridArray = new Array(25).fill(false); let placed = 0; while (placed < minesCount) { let idx = Math.floor(Math.random() * 25); if (!mineGridArray[idx]) { mineGridArray[idx] = true; placed++; } } document.getElementById('minesStartBtn').style.display = 'none'; document.getElementById('minesCashoutBtn').style.display = 'block'; const g = document.getElementById('minesGrid'); g.innerHTML = ''; for (let i = 0; i < 25; i++) { const c = document.createElement('div'); c.style.cssText = 'aspect-ratio: 1; background: #222736; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 24px; cursor: pointer;'; c.onclick = () => { if (!isPlayingMines) return; c.style.background = '#111'; if (mineGridArray[i]) { c.textContent = '💥'; isPlayingMines = false; showModal('БУМ', 'Вы проиграли'); document.getElementById('minesCashoutBtn').style.display = 'none'; document.getElementById('minesStartBtn').style.display = 'block'; } else { c.textContent = '💎'; currentGems++; currentMult = currentMult * (25 - currentGems) / (25 - minesCount); document.getElementById('minesCurrentMult').textContent = '×' + currentMult.toFixed(2); } }; g.appendChild(c); } updateUI(); }
-  function cashoutMines() { if (!isPlayingMines) return; const win = Math.floor(minesBet * currentMult); state.money += win; isPlayingMines = false; showModal('Выигрыш', `Забрано ${win.toLocaleString('ru-RU')} ₽`); document.getElementById('minesCashoutBtn').style.display = 'none'; document.getElementById('minesStartBtn').style.display = 'block'; document.getElementById('minesGrid').innerHTML = ''; updateUI(); }
-
-  // ==== СОН ====
-  function goToSleep() {
-    if (state.car && CITIES[state.city].cold) {
-      const t = Math.floor(Math.random() * 20) - 35;
-      const p = winterStartChance(t);
-      if (Math.random() * 100 > p) {
-        showModal('Зимний запуск', `Температура ${t}°C. Шанс запуска ${p}%. Двигатель не завелся. День пропущен.`);
-        state.day++; state.energy = 100; updateUI(); updateClock(); closeApp('sleep'); return;
-      }
-    }
-    state.day++; state.energy = 100; state.batteryAge++; state.serviceAge++;
-    updateUI(); updateClock(); closeApp('sleep'); showModal('Утро', `День ${state.day}. Вы проснулись!`);
-  }
-
-  // ==== ОСТАЛЬНОЕ ====
-  function openApp(id) { const a = document.getElementById(`app-${id}`); if(a) a.classList.add('active'); if(id==='messages'){ renderMessages(); const b=document.getElementById('msgBadge'); if(b) b.style.display='none'; } if(id==='casino') { /* init */ } if(id==='calendar') renderCalendar(); if(id==='clock') updateBigClock(); updateUI(); }
-  function closeApp(id) { const a = document.getElementById(`app-${id}`); if(a) a.classList.remove('active'); }
-  function closeAllApps() { document.querySelectorAll('.app-screen').forEach(el => el.classList.remove('active')); }
-  function goBack() { const active = document.querySelector('.app-screen.active'); if (active) active.classList.remove('active'); }
-  function addMessage(s, t) { /* Упрощено */ const b = document.getElementById('msgBadge'); if(b){ b.style.display='flex'; b.textContent = '1'; } }
-  function renderMessages() { /* Упрощено */ const c = document.getElementById('messagesList'); if(c) c.innerHTML = `<div class="shop-item"><div class="shop-item-title">Палыч</div><div class="shop-item-desc">Здарова, новенький. Ты че, опять проспал? Топай пешком!</div></div>`; }
-  function updateBigClock() { const elTime = document.getElementById('clockBigTime'); const elDate = document.getElementById('clockBigDate'); if(!elTime) return; elTime.textContent = `${state.hour.toString().padStart(2, '0')}:00`; elDate.textContent = `${state.day} Октября`; }
-  function renderCalendar() { /* Упрощено */ }
-  function changeMonth() { /* Упрощено */ }
-  function calcInput(v) { /* Упрощено */ }
-  function buyFood(p, a) { if (state.money >= p) { state.money -= p; state.energy += a; if (state.energy > 100) state.energy = 100; updateUI(); showModal('Успех', `Сытость: ${state.energy}%`); } else { showModal('Ошибка', 'Мало денег!'); } }
-  function buyCar(n, p) { if (state.money >= p) { state.money -= p; state.car = n; updateUI(); showModal('Покупка', `Вы купили ${n}!`); } else { showModal('Ошибка', 'Мало денег!'); } }
-  function buyProperty() { /* Упрощено */ }
-  function buyDrugs() { /* Упрощено */ }
-  function extortProperty() { /* Упрощено */ }
-  function exchangeMoney() { /* Упрощено */ }
-  function bribeJail() { /* Упрощено */ }
-  function spinNumbers() { /* Упрощено */ }
-
-  // ==== НАВИГАЦИЯ ====
-  document.addEventListener('DOMContentLoaded', () => {
-    const nav = document.createElement('div');
-    nav.className = 'android-nav';
-    nav.innerHTML = `
-      <div class="nav-btn-android" onclick="closeAllApps()"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2"/></svg></div>
-      <div class="nav-btn-android" onclick="closeAllApps()"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="7"/></svg></div>
-      <div class="nav-btn-android" onclick="goBack()"><svg viewBox="0 0 24 24"><path d="M15 5 L7 12 L15 19 Z"/></svg></div>
-    `;
-    document.body.appendChild(nav);
+function loadQuestion() {
+  answered = false;
+  const q = levelQuestions[currentQuestionIndex];
+  
+  document.getElementById('questionText').textContent = q.q;
+  document.getElementById('progressText').textContent = `Вопрос ${currentQuestionIndex + 1}/${totalQuestions}`;
+  document.getElementById('scoreText').textContent = `Счёт: ${score}`;
+  document.getElementById('progressFill').style.width = ((currentQuestionIndex) / totalQuestions * 100) + '%';
+  
+  const expBox = document.getElementById('explanation');
+  expBox.style.display = 'none';
+  expBox.textContent = '';
+  
+  const nextBtn = document.getElementById('nextBtn');
+  nextBtn.classList.add('hidden');
+  
+  const optionsBox = document.getElementById('optionsBox');
+  optionsBox.innerHTML = '';
+  
+  q.options.forEach((opt, idx) => {
+    const btn = document.createElement('button');
+    btn.className = 'option';
+    btn.textContent = opt;
+    btn.onclick = () => selectAnswer(idx, btn);
+    optionsBox.appendChild(btn);
   });
+}
 
-  updateUI(); updateClock();
+function selectAnswer(idx, btn) {
+  if (answered) return;
+  answered = true;
+  
+  const q = levelQuestions[currentQuestionIndex];
+  const allOptions = document.querySelectorAll('.option');
+  allOptions.forEach(o => o.classList.add('disabled'));
+  
+  if (idx === q.correct) {
+    btn.classList.add('correct');
+    score++;
+    document.getElementById('scoreText').textContent = `Счёт: ${score}`;
+  } else {
+    btn.classList.add('wrong');
+    allOptions[q.correct].classList.add('correct');
+  }
+  
+  const expBox = document.getElementById('explanation');
+  expBox.textContent = '💡 ' + q.exp;
+  expBox.style.display = 'block';
+  
+  document.getElementById('nextBtn').classList.remove('hidden');
+}
+
+function nextQuestion() {
+  currentQuestionIndex++;
+  if (currentQuestionIndex < totalQuestions) {
+    loadQuestion();
+  } else {
+    showResult();
+  }
+}
+
+function showResult() {
+  document.getElementById('game').classList.add('hidden');
+  document.getElementById('result').classList.remove('hidden');
+  
+  const percent = Math.round(score / totalQuestions * 100);
+  
+  let emoji, title, text;
+  if (percent === 100) {
+    emoji = "🏆"; title = "Идеально!"; 
+    text = "Ты настоящий мастер своего дела! 👨‍🔧";
+  } else if (percent >= 80) {
+    emoji = "🌟"; title = "Отличный результат!"; 
+    text = "Высокий уровень знаний. Продолжай в том же духе!";
+  } else if (percent >= 60) {
+    emoji = "👍"; title = "Хороший результат!"; 
+    text = "Есть небольшие пробелы, но база крепкая.";
+  } else if (percent >= 40) {
+    emoji = "🔧"; title = "Неплохо, но..."; 
+    text = "Стоит повторить теорию и попробовать снова.";
+  } else {
+    emoji = "📚"; title = "Нужно учиться!"; 
+    text = "Не расстраивайся — повтори материалы и возвращайся!";
+  }
+  
+  document.getElementById('resultEmoji').textContent = emoji;
+  document.getElementById('resultTitle').textContent = title;
+  document.getElementById('resultScore').textContent = `${score} / ${totalQuestions} (${percent}%)`;
+  document.getElementById('resultText').textContent = text;
+}
+
+function backToMenu() {
+  document.getElementById('result').classList.add('hidden');
+  document.getElementById('game').classList.add('hidden');
+  document.getElementById('menu').classList.remove('hidden');
+}
 </script>
 </body>
 </html>

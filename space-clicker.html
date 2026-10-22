@@ -2,99 +2,401 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
-<title>Космический Кликер</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>🚀 Космический Кликер ULTIMATE</title>
 <style>
-  body { font-family: Arial, sans-serif; background: #090a0f; color: white; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; overflow: hidden; }
-  .game { display: flex; gap: 30px; }
-  .planet { width: 200px; height: 200px; border-radius: 50%; background: radial-gradient(circle at 30% 30%, #ff6b6b, #862e2e); cursor: pointer; box-shadow: 0 0 50px rgba(255,107,107,0.5); transition: transform 0.1s; }
-  .planet:active { transform: scale(0.9); }
-  .panel { background: rgba(255,255,255,0.1); padding: 20px; border-radius: 15px; width: 300px; }
-  .score { font-size: 40px; color: #00d2ff; font-weight: bold; text-align: center; }
-  .item { background: rgba(0,0,0,0.5); padding: 10px; margin-bottom: 10px; border-radius: 8px; cursor: pointer; border: 1px solid #333; }
-  .item:hover { border-color: #00d2ff; }
-  #error { position: fixed; top: 10px; left: 10px; color: red; background: black; padding: 10px; display: none; font-weight: bold; }
+  * { margin:0; padding:0; box-sizing:border-box; user-select:none; -webkit-tap-highlight-color:transparent; }
+  body { font-family:'Segoe UI',Arial,sans-serif; background:radial-gradient(ellipse at bottom,#1b2735 0%,#090a0f 100%); color:#fff; min-height:100vh; display:flex; justify-content:center; align-items:center; overflow:hidden; }
+  
+  /* Фон */
+  .stars { position:fixed; inset:0; pointer-events:none; z-index:0; }
+  .star { position:absolute; background:#fff; border-radius:50%; animation:twinkle 3s infinite; }
+  @keyframes twinkle { 0%,100%{opacity:.2} 50%{opacity:1} }
+  
+  /* Лэйаут */
+  .game { position:relative; z-index:1; display:flex; gap:20px; padding:15px; max-width:1100px; width:100%; align-items:flex-start; }
+  .left { flex:1; display:flex; flex-direction:column; align-items:center; gap:15px; }
+  .right { width:380px; display:flex; flex-direction:column; gap:10px; max-height:95vh; }
+  
+  /* Счёт */
+  .stats { text-align:center; }
+  .score { font-size:46px; font-weight:800; background:linear-gradient(90deg,#00d2ff,#7b2ff7); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; filter:drop-shadow(0 0 15px rgba(0,210,255,.5)); }
+  .label { font-size:11px; color:#8899aa; letter-spacing:3px; text-transform:uppercase; }
+  .per-sec { font-size:16px; color:#00d2ff; font-weight:bold; margin-top:5px; }
+  .dm-info { font-size:14px; color:#c77dff; margin-top:5px; font-weight:bold; }
+  
+  /* Планета */
+  .planet-wrap { position:relative; width:260px; height:260px; display:flex; align-items:center; justify-content:center; }
+  .planet { width:200px; height:200px; border-radius:50%; cursor:pointer; position:relative;
+    background:radial-gradient(circle at 30% 30%,#ff6b6b,#c92a2a 40%,#862e2e 70%,#4a1818);
+    box-shadow:0 0 60px rgba(255,107,107,.5),inset -20px -20px 60px rgba(0,0,0,.6),inset 15px 15px 40px rgba(255,255,255,.15);
+    transition:transform .08s; z-index:2; }
+  .planet:active { transform:scale(.94); }
+  .planet::before { content:''; position:absolute; width:150%; height:26px; top:50%; left:-25%; transform:translateY(-50%) rotate(-20deg); border-radius:50%; background:linear-gradient(90deg,transparent,rgba(200,180,140,.8),transparent); box-shadow:0 0 20px rgba(200,180,140,.5); z-index:-1; }
+  .planet::after { content:''; position:absolute; inset:0; border-radius:50%; background:radial-gradient(circle at 35% 35%,transparent 40%,rgba(0,0,0,.5) 85%); }
+  
+  /* Эффекты */
+  .particle { position:fixed; pointer-events:none; border-radius:50%; z-index:99; }
+  .float-text { position:fixed; pointer-events:none; font-weight:bold; font-size:20px; color:#ffd700; text-shadow:0 0 10px rgba(255,215,0,.9); animation:floatUp .9s ease-out forwards; z-index:100; }
+  .crit { color:#ff3b3b; font-size:28px; text-shadow:0 0 15px rgba(255,60,60,1); }
+  @keyframes floatUp { 0%{opacity:1;transform:translateY(0) scale(1)} 100%{opacity:0;transform:translateY(-90px) scale(1.5)} }
+  
+  .combo { font-size:24px; font-weight:800; color:#ff8c00; text-shadow:0 0 15px rgba(255,140,0,.8); opacity:0; transition:opacity .2s; height:30px; }
+  .combo.active { opacity:1; }
+  .golden { position:absolute; width:70px; height:70px; border-radius:50%; background:radial-gradient(circle,#fff700,#ff8c00); box-shadow:0 0 40px #ffd700,0 0 80px #ff8c00; cursor:pointer; z-index:5; animation:pulse .5s infinite alternate; }
+  .comet { position:absolute; width:60px; height:60px; border-radius:50%; background:radial-gradient(circle,#66ffff,#0088ff); box-shadow:0 0 40px #00d2ff; cursor:pointer; z-index:5; animation:pulse .4s infinite alternate; }
+  @keyframes pulse { from{transform:scale(1)} to{transform:scale(1.15)} }
+  
+  /* Вкладки и Магазин */
+  .tabs { display:flex; gap:4px; background:rgba(20,30,50,.7); padding:5px; border-radius:12px; border:1px solid rgba(0,210,255,.2); }
+  .tab { flex:1; padding:10px 4px; background:transparent; border:none; color:#8899aa; font-size:12px; font-weight:600; cursor:pointer; border-radius:8px; transition:all .2s; }
+  .tab.active { background:linear-gradient(135deg,#00d2ff,#7b2ff7); color:#fff; }
+  .panel { background:rgba(20,30,50,.75); border:1px solid rgba(0,210,255,.2); border-radius:16px; padding:15px; overflow-y:auto; max-height:calc(95vh - 70px); }
+  .panel::-webkit-scrollbar { width:6px; }
+  .panel::-webkit-scrollbar-thumb { background:rgba(0,210,255,.3); border-radius:3px; }
+  
+  .item { background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.1); border-radius:12px; padding:10px; margin-bottom:8px; display:flex; align-items:center; gap:10px; cursor:pointer; transition:all .2s; }
+  .item:hover { background:rgba(0,210,255,.15); border-color:rgba(0,210,255,.5); transform:translateX(-3px); }
+  .item.locked { opacity:.4; cursor:not-allowed; }
+  .item-icon { font-size:28px; width:45px; height:45px; display:flex; align-items:center; justify-content:center; background:rgba(0,0,0,.3); border-radius:10px; }
+  .item-info { flex:1; }
+  .item-name { font-weight:bold; font-size:14px; }
+  .item-cost { font-size:12px; color:#ffd700; margin-top:2px; }
+  .item-count { font-size:16px; font-weight:bold; color:#c77dff; background:rgba(199,125,255,.15); padding:3px 8px; border-radius:8px; }
+  
+  .ach { display:flex; align-items:center; gap:10px; padding:8px; border-radius:10px; margin-bottom:6px; background:rgba(255,255,255,.05); border:1px solid transparent; opacity:.4; }
+  .ach.unlocked { opacity:1; border-color:rgba(255,215,0,.5); background:rgba(255,215,0,.1); }
+  .ach-icon { font-size:22px; }
+  .ach-name { font-size:13px; font-weight:bold; }
+  .ach-desc { font-size:11px; color:#8899aa; }
+  
+  .btn { width:100%; padding:12px; border-radius:10px; cursor:pointer; font-size:14px; font-weight:bold; border:none; background:linear-gradient(135deg,#7b2ff7,#c77dff); color:#fff; margin-top:10px; transition:all .2s; }
+  .btn:hover { filter:brightness(1.2); box-shadow:0 0 20px rgba(199,125,255,.5); }
+  .btn:disabled { opacity:.4; cursor:not-allowed; filter:none; box-shadow:none; }
+  
+  @media(max-width:850px) { body{overflow:auto;} .game{flex-direction:column; align-items:center; padding:10px;} .right{width:100%; max-width:450px;} .panel{max-height:50vh;} .planet{width:150px; height:150px;} .score{font-size:36px;} }
 </style>
 </head>
 <body>
 
-<div id="error"></div>
-
+<div class="stars" id="stars"></div>
 <div class="game">
-  <div style="display:flex; flex-direction:column; align-items:center; gap:20px;">
-    <div class="score" id="score">0</div>
-    <div style="color:#8899aa" id="perSec">0 / сек</div>
-    <div class="planet" id="planet"></div>
+  <div class="left">
+    <div class="stats">
+      <div class="label">Космическая энергия</div>
+      <div class="score" id="score">0</div>
+      <div class="per-sec" id="perSec">0 / сек</div>
+      <div class="dm-info" id="dmInfo" style="display:none;">🌌 Тёмная материя: 0</div>
+    </div>
+    <div class="planet-wrap" id="planetWrap">
+      <div class="planet" id="planet"></div>
+    </div>
+    <div class="combo" id="combo">🔥 Комбо x0</div>
   </div>
-  <div class="panel">
-    <h3 style="text-align:center; margin-top:0;">Магазин</h3>
-    <div id="shop"></div>
+  
+  <div class="right">
+    <div class="tabs">
+      <button class="tab active" onclick="switchTab('shop')">🛸 Магазин</button>
+      <button class="tab" onclick="switchTab('ach')">🏆 Ачивки</button>
+      <button class="tab" onclick="switchTab('prestige')">🌌 Престиж</button>
+    </div>
+    <div class="panel" id="panel"></div>
   </div>
 </div>
 
 <script>
-// Защита от ошибок
-window.onerror = function(msg) {
-  document.getElementById('error').style.display = 'block';
-  document.getElementById('error').innerText = 'ОШИБКА: ' + msg;
+// ===== СОСТОЯНИЕ =====
+let state = {
+  score: 0, totalEarned: 0, totalClicks: 0, darkMatter: 0, prestigeCount: 0,
+  combo: 0, lastClick: 0, critHits: 0, cometsCaught: 0, buffX7: 0, saveTime: Date.now(), soundOn: true
 };
-
-let score = 0;
-const upgrades = [
-  { id: 'click', name: 'Усилитель клика', desc: '+1 за клик', base: 15, mult: 1.5, eff: 1, cnt: 0, type: 'click' },
-  { id: 'drone', name: 'Дрон', desc: '+1 в сек', base: 25, mult: 1.15, eff: 1, cnt: 0, type: 'auto' }
+let upgrades = [
+  { id:'click', icon:'👆', name:'Усилитель клика', desc:'+1 за клик', base:15, mult:1.5, eff:1, cnt:0, type:'click' },
+  { id:'drone', icon:'🤖', name:'Дрон', desc:'+1 в сек', base:25, mult:1.15, eff:1, cnt:0, type:'auto' },
+  { id:'sat', icon:'🛰️', name:'Спутник', desc:'+5 в сек', base:150, mult:1.15, eff:5, cnt:0, type:'auto' },
+  { id:'station', icon:'🏭', name:'Станция', desc:'+25 в сек', base:1000, mult:1.15, eff:25, cnt:0, type:'auto' },
+  { id:'reactor', icon:'⚛️', name:'Реактор', desc:'+150 в сек', base:8000, mult:1.15, eff:150, cnt:0, type:'auto' },
+  { id:'bh', icon:'🌌', name:'Чёрная дыра', desc:'+1000 в сек', base:50000, mult:1.15, eff:1000, cnt:0, type:'auto' },
 ];
+let achievements = [
+  { id:'c1', icon:'🎯', name:'Первый шаг', desc:'1 клик', check:()=>state.totalClicks>=1, dmg:1 },
+  { id:'c100', icon:'💪', name:'Сотня', desc:'100 кликов', check:()=>state.totalClicks>=100, dmg:2 },
+  { id:'c1k', icon:'👊', name:'Тысячник', desc:'1000 кликов', check:()=>state.totalClicks>=1000, dmg:5 },
+  { id:'e1m', icon:'💰', name:'Миллионер', desc:'Заработай 1M', check:()=>state.totalEarned>=1e6, dmg:5 },
+  { id:'e1b', icon:'💎', name:'Миллиардер', desc:'Заработай 1B', check:()=>state.totalEarned>=1e9, dmg:15 },
+  { id:'crit', icon:'⚡', name:'Критический удар', desc:'Попади критом', check:()=>state.critHits>=1, dmg:2 },
+  { id:'comet', icon:'☄️', name:'Ловец комет', desc:'Поймай комету', check:()=>state.cometsCaught>=1, dmg:5 },
+  { id:'prest', icon:'🌌', name:'Новая жизнь', desc:'Соверши престиж', check:()=>state.prestigeCount>=1, dmg:20 },
+];
+let buffs = []; // Активные баффы
+let currentTab = 'shop';
+let achBonus = 0;
 
-function getClickPower() {
-  return 1 + upgrades[0].cnt * upgrades[0].eff;
+// ===== ЗВУК =====
+let audioCtx = null;
+function playSound(freq, dur, type='sine', vol=0.05) {
+  if (!state.soundOn) return;
+  try {
+    if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    if (audioCtx.state === 'suspended') audioCtx.resume();
+    const osc = audioCtx.createOscillator(); const gain = audioCtx.createGain();
+    osc.type = type; osc.frequency.value = freq;
+    gain.gain.setValueAtTime(vol, audioCtx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + dur);
+    osc.connect(gain); gain.connect(audioCtx.destination);
+    osc.start(); osc.stop(audioCtx.currentTime + dur);
+  } catch(e) {}
 }
 
-function getPerSec() {
-  return upgrades[1].cnt * upgrades[1].eff;
-}
-
-function getCost(u) {
-  return Math.floor(u.base * Math.pow(u.mult, u.cnt));
-}
-
-function formatNum(n) {
+// ===== УТИЛИТЫ =====
+function fmt(n) {
+  if (n >= 1e15) return (n/1e15).toFixed(2)+'Qa';
+  if (n >= 1e12) return (n/1e12).toFixed(2)+'T';
+  if (n >= 1e9) return (n/1e9).toFixed(2)+'B';
+  if (n >= 1e6) return (n/1e6).toFixed(2)+'M';
+  if (n >= 1e3) return (n/1e3).toFixed(2)+'K';
   return Math.floor(n).toString();
 }
+function getCost(u) { return Math.floor(u.base * Math.pow(u.mult, u.cnt)); }
+function getClickPower() {
+  let base = 1 + upgrades[0].cnt * upgrades[0].eff;
+  let mult = (1 + achBonus * 0.01) * (1 + state.darkMatter * 0.1);
+  return base * mult;
+}
+function getPerSec() {
+  let base = upgrades.filter(u=>u.type==='auto').reduce((s,u)=>s+u.cnt*u.eff, 0);
+  let mult = (1 + achBonus * 0.01) * (1 + state.darkMatter * 0.1);
+  return base * mult;
+}
+function getTotalMult() { return state.buffX7 > 0 ? 7 : 1; }
 
-function updateUI() {
-  document.getElementById('score').innerText = formatNum(score);
-  document.getElementById('perSec').innerText = formatNum(getPerSec()) + ' / сек';
+function addScore(amt) { state.score += amt; state.totalEarned += amt; }
+
+// ===== ЧАСТИЦЫ =====
+function spawnParticles(x, y, color='#ffd700', count=8) {
+  for (let i=0; i<count; i++) {
+    const p = document.createElement('div'); p.className='particle';
+    const sz = Math.random()*6+3;
+    p.style.cssText = `width:${sz}px;height:${sz}px;background:${color};left:${x}px;top:${y}px;transition:transform 0.6s, opacity 0.6s`;
+    document.body.appendChild(p);
+    const ang = Math.random()*Math.PI*2; const dist = Math.random()*80+30;
+    requestAnimationFrame(()=>{ p.style.transform=`translate(${Math.cos(ang)*dist}px,${Math.sin(ang)*dist}px)`; p.style.opacity=0; });
+    setTimeout(()=>p.remove(), 650);
+  }
+}
+function floatText(x, y, text, isCrit=false) {
+  const f = document.createElement('div'); f.className='float-text'+(isCrit?' crit':'');
+  f.textContent=text; f.style.left=(x-20)+'px'; f.style.top=(y-30)+'px';
+  document.body.appendChild(f); setTimeout(()=>f.remove(), 900);
+}
+
+// ===== КЛИК =====
+document.getElementById('planet').addEventListener('click', (e) => {
+  const now = Date.now();
+  if (now - state.lastClick < 800) state.combo = Math.min(state.combo + 1, 50);
+  else state.combo = 1;
+  state.lastClick = now;
+
+  let power = getClickPower() * getTotalMult() * (1 + state.combo * 0.05);
+  const isCrit = Math.random() < 0.1;
+  if (isCrit) { power *= 10; state.critHits++; playSound(880, 0.15, 'square', 0.08); }
+  else playSound(440 + Math.random()*100, 0.05, 'sine', 0.03);
+
+  power = Math.floor(power);
+  addScore(power);
+  state.totalClicks++;
   
-  const shop = document.getElementById('shop');
-  shop.innerHTML = '';
+  floatText(e.clientX, e.clientY, (isCrit?'💥 ':'+')+fmt(power), isCrit);
+  spawnParticles(e.clientX, e.clientY, isCrit?'#ff3b3b':'#ffd700', isCrit?15:8);
   
-  upgrades.forEach(function(u) {
-    const cost = getCost(u);
-    const div = document.createElement('div');
-    div.className = 'item';
-    div.innerHTML = '<b>' + u.name + '</b><br><span style="font-size:12px;color:#aaa">' + u.desc + '</span><br><span style="color:gold">💰 ' + cost + '</span> (куплено: ' + u.cnt + ')';
-    
-    div.onclick = function() {
-      if (score >= cost) {
-        score -= cost;
-        u.cnt++;
-        updateUI();
-      }
+  checkAch(); updateUI();
+});
+
+// ===== ПОКУПКА =====
+function buy(u) {
+  const c = getCost(u);
+  if (state.score < c) return;
+  state.score -= c; u.cnt++;
+  playSound(600, 0.1, 'triangle', 0.05);
+  checkAch(); updateUI();
+}
+
+// ===== СПЕЦ. СОБЫТИЯ =====
+// Золотая планета
+setInterval(() => {
+  if (Math.random() < 0.3 && state.buffX7 <= 0) {
+    const wrap = document.getElementById('planetWrap');
+    const g = document.createElement('div'); g.className='golden';
+    g.style.left = Math.random()*60+10+'%'; g.style.top = Math.random()*60+10+'%';
+    g.onclick = (e) => {
+      g.remove(); state.buffX7 = 10;
+      floatText(e.clientX, e.clientY, '🌟 x7 ДОХОД!', true);
+      playSound(1500, 0.3, 'sine', 0.1); spawnParticles(e.clientX, e.clientY, '#fff700', 25);
+      updateUI();
     };
-    shop.appendChild(div);
+    wrap.appendChild(g); setTimeout(()=>{ if(g.parentNode) g.remove(); }, 6000);
+  }
+}, 20000);
+
+// Комета
+setInterval(() => {
+  if (Math.random() < 0.5) {
+    const wrap = document.getElementById('planetWrap');
+    const c = document.createElement('div'); c.className='comet';
+    c.style.left = Math.random()*70+'%'; c.style.top = Math.random()*70+'%';
+    c.onclick = (e) => {
+      c.remove(); state.cometsCaught++;
+      const bonus = Math.max(50, Math.floor(getPerSec()*15));
+      addScore(bonus); floatText(e.clientX, e.clientY, '☄️ +'+fmt(bonus), true);
+      playSound(1000, 0.25, 'sine', 0.1); spawnParticles(e.clientX, e.clientY, '#66ffff', 20);
+      checkAch(); updateUI();
+    };
+    wrap.appendChild(c); setTimeout(()=>{ if(c.parentNode) c.remove(); }, 5000);
+  }
+}, 15000);
+
+// ===== ДОСТИЖЕНИЯ =====
+function checkAch() {
+  achievements.forEach(a => {
+    if (!a.unlocked && a.check()) {
+      a.unlocked = true; achBonus += a.dmg;
+      playSound(1200, 0.2, 'sine', 0.08);
+      // Маленький тост (уведомление) в углу
+      const t = document.createElement('div');
+      t.style.cssText = 'position:fixed; top:20px; right:20px; background:rgba(255,215,0,0.9); color:#000; padding:10px 20px; border-radius:8px; font-weight:bold; z-index:999; animation:slideIn 0.3s;';
+      t.innerText = '🏆 ' + a.name; document.body.appendChild(t);
+      setTimeout(() => t.remove(), 3000);
+      updateUI();
+    }
   });
 }
 
-document.getElementById('planet').onclick = function() {
-  score += getClickPower();
-  updateUI();
-};
+// ===== ПРЕСТИЖ =====
+function getPrestigeGain() { return Math.floor(Math.sqrt(state.totalEarned / 1e6)); }
+function doPrestige() {
+  const gain = getPrestigeGain();
+  if (gain < 1) return;
+  if (confirm(`Сбросить прогресс и получить ${gain} Тёмной Материи?\n(Каждая единица даёт +10% ко всему доходу)`)) {
+    state.darkMatter += gain; state.prestigeCount++;
+    state.score = 0; state.totalEarned = 0; state.totalClicks = 0;
+    upgrades.forEach(u => u.cnt = 0);
+    playSound(1600, 0.4, 'sine', 0.1);
+    checkAch(); updateUI();
+  }
+}
 
-// Автодоход каждые 100 мс
-setInterval(function() {
-  score += getPerSec() / 10;
+// ===== UI =====
+function switchTab(tab) {
+  currentTab = tab;
+  document.querySelectorAll('.tab').forEach((t,i) => t.classList.toggle('active', ['shop','ach','prestige'][i]===tab));
+  updateUI();
+}
+
+function updateUI() {
+  document.getElementById('score').innerText = fmt(state.score);
+  document.getElementById('perSec').innerText = fmt(getPerSec()) + ' / сек';
+  
+  if (state.darkMatter > 0) {
+    const dm = document.getElementById('dmInfo'); dm.style.display='block';
+    dm.innerText = `🌌 Тёмная материя: ${state.darkMatter} (+${state.darkMatter*10}%)`;
+  }
+  
+  const comboEl = document.getElementById('combo');
+  if (state.combo > 1 && Date.now() - state.lastClick < 800) {
+    comboEl.innerText = `🔥 Комбо x${state.combo}`; comboEl.classList.add('active');
+  } else { comboEl.classList.remove('active'); }
+
+  const p = document.getElementById('panel');
+  let html = '';
+
+  if (currentTab === 'shop') {
+    html = '<h2 style="text-align:center;font-size:16px;margin-bottom:15px;color:#00d2ff">🛸 Улучшения</h2>';
+    upgrades.forEach(u => {
+      const c = getCost(u);
+      const dis = state.score < c ? 'locked' : '';
+      html += `<div class="item ${dis}" onclick="buy(upgrades.find(x=>x.id==='${u.id}'))">
+        <div class="item-icon">${u.icon}</div>
+        <div class="item-info"><div class="item-name">${u.name}</div><div class="item-cost">💰 ${fmt(c)}</div></div>
+        <div class="item-count">${u.cnt}</div>
+      </div>`;
+    });
+  } 
+  else if (currentTab === 'ach') {
+    html = '<h2 style="text-align:center;font-size:16px;margin-bottom:15px;color:#ffd700">🏆 Достижения</h2>';
+    achievements.forEach(a => {
+      html += `<div class="ach ${a.unlocked ? 'unlocked' : ''}">
+        <div class="ach-icon">${a.unlocked ? a.icon : '🔒'}</div>
+        <div class="item-info"><div class="ach-name">${a.name}</div><div class="ach-desc">${a.desc}</div></div>
+        <div style="color:#ffd700;font-size:12px;font-weight:bold">+${a.dmg}%</div>
+      </div>`;
+    });
+  }
+  else if (currentTab === 'prestige') {
+    const gain = getPrestigeGain();
+    html = `<h2 style="text-align:center;font-size:16px;margin-bottom:15px;color:#c77dff">🌌 Престиж</h2>
+      <p style="text-align:center;font-size:13px;color:#8899aa;margin-bottom:15px;">Сбросьте прогресс, чтобы навсегда увеличить доход!</p>
+      <div style="text-align:center;font-size:32px;color:#c77dff;font-weight:bold;margin:20px 0;">${gain} 🌌</div>
+      <button class="btn" onclick="doPrestige()" ${gain<1?'disabled':''}>Совершить престиж</button>
+      <div style="text-align:center;font-size:12px;color:#8899aa;margin-top:15px;">Всего престижей: ${state.prestigeCount}</div>
+    `;
+  }
+  p.innerHTML = html;
+}
+
+// ===== СОХРАНЕНИЕ И ОФФЛАЙН =====
+function save() {
+  state.saveTime = Date.now();
+  localStorage.setItem('spaceClickerUltimate', JSON.stringify({
+    s: state, c: upgrades.map(u=>u.cnt), a: achievements.map(a=>a.unlocked)
+  }));
+}
+setInterval(save, 5000);
+window.addEventListener('beforeunload', save);
+
+function load() {
+  const raw = localStorage.getItem('spaceClickerUltimate');
+  if (!raw) return;
+  try {
+    const d = JSON.parse(raw);
+    if (d.s) state = { ...state, ...d.s };
+    if (d.c) d.c.forEach((cnt, i) => { if(upgrades[i]) upgrades[i].cnt = cnt; });
+    if (d.a) d.a.forEach((unl, i) => { if(achievements[i]) { achievements[i].unlocked = unl; if(unl) achBonus += achievements[i].dmg; } });
+    
+    // Оффлайн доход (макс 8 часов)
+    const away = Math.min((Date.now() - (state.saveTime || Date.now()))/1000, 8*3600);
+    const offline = getPerSec() * away * 0.5;
+    if (offline > 10) {
+      addScore(offline);
+      setTimeout(()=>alert(`💤 Пока тебя не было, дроны добыли:\n+${fmt(offline)} энергии!`), 500);
+    }
+  } catch(e) { console.warn('Ошибка загрузки', e); }
+}
+
+// ===== ГЛАВНЫЙ ЦИКЛ =====
+setInterval(() => {
+  const gain = getPerSec() * 0.1;
+  addScore(gain * getTotalMult());
+  
+  if (state.buffX7 > 0) { state.buffX7 -= 0.1; if (state.buffX7 <= 0) state.buffX7 = 0; }
+  checkAch();
   updateUI();
 }, 100);
 
+// ===== СТАРТ =====
+// Генерация фона
+const starsEl = document.getElementById('stars');
+for(let i=0; i<150; i++) {
+  const s = document.createElement('div'); s.className='star';
+  const sz = Math.random()*2+0.5;
+  s.style.cssText = `width:${sz}px;height:${sz}px;left:${Math.random()*100}%;top:${Math.random()*100}%;animation-delay:${Math.random()*3}s`;
+  starsEl.appendChild(s);
+}
+// Анимация для тоста
+const style = document.createElement('style');
+style.innerHTML = `@keyframes slideIn { from{transform:translateX(120%);opacity:0} to{transform:translateX(0);opacity:1} }`;
+document.head.appendChild(style);
+
+load();
 updateUI();
 </script>
 </body>

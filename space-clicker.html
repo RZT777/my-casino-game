@@ -1,0 +1,851 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🚀 Космический Кликер v2.0</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; user-select:none; -webkit-tap-highlight-color:transparent; }
+  
+  body {
+    font-family:'Segoe UI',Arial,sans-serif;
+    background:radial-gradient(ellipse at bottom,#1b2735 0%,#090a0f 100%);
+    color:#fff; min-height:100vh; overflow:hidden;
+    display:flex; justify-content:center; align-items:center;
+  }
+  body.light { background:radial-gradient(ellipse at bottom,#4a7ba7 0%,#c9d6e3 100%); color:#111; }
+  
+  /* ===== ФОН ===== */
+  .stars{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
+  .star{position:absolute;background:#fff;border-radius:50%;animation:twinkle 3s infinite}
+  body.light .star{background:#335}
+  @keyframes twinkle{0%,100%{opacity:.2}50%{opacity:1}}
+  .nebula{position:fixed;border-radius:50%;filter:blur(60px);opacity:.25;pointer-events:none;z-index:0;animation:drift 30s infinite alternate}
+  @keyframes drift{from{transform:translate(0,0)}to{transform:translate(50px,-30px)}}
+  
+  /* ===== ЛЭЙАУТ ===== */
+  .game{position:relative;z-index:1;display:flex;gap:20px;padding:15px;max-width:1200px;width:100%;align-items:flex-start}
+  .left{flex:1;display:flex;flex-direction:column;align-items:center;gap:12px;min-width:0}
+  .right{width:420px;display:flex;flex-direction:column;gap:10px;max-height:95vh}
+  
+  /* ===== СЧЁТ ===== */
+  .stats{text-align:center;position:relative}
+  .score{font-size:44px;font-weight:800;background:linear-gradient(90deg,#00d2ff,#7b2ff7,#ff6b6b);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;filter:drop-shadow(0 0 15px rgba(0,210,255,.5))}
+  .score-label{font-size:11px;color:#8899aa;letter-spacing:3px;text-transform:uppercase;margin-bottom:2px}
+  .per-sec{font-size:15px;color:#00d2ff;margin-top:3px;font-weight:600}
+  .dm{font-size:13px;color:#c77dff;margin-top:4px}
+  .mult-info{font-size:12px;color:#ffd700;margin-top:2px}
+  
+  /* ===== ПЛАНЕТА ===== */
+  .planet-wrap{position:relative;width:260px;height:260px;display:flex;align-items:center;justify-content:center}
+  .planet{width:200px;height:200px;border-radius:50%;cursor:pointer;position:relative;
+    background:radial-gradient(circle at 30% 30%,#ff6b6b,#c92a2a 40%,#862e2e 70%,#4a1818);
+    box-shadow:0 0 60px rgba(255,107,107,.5),inset -20px -20px 60px rgba(0,0,0,.6),inset 15px 15px 40px rgba(255,255,255,.15);
+    transition:transform .08s;z-index:2}
+  .planet:active{transform:scale(.94)}
+  .planet::before{content:'';position:absolute;width:150%;height:26px;top:50%;left:-25%;transform:translateY(-50%) rotate(-20deg);border-radius:50%;
+    background:linear-gradient(90deg,transparent,rgba(200,180,140,.8),transparent);box-shadow:0 0 20px rgba(200,180,140,.5);z-index:-1}
+  .planet::after{content:'';position:absolute;inset:0;border-radius:50%;
+    background:radial-gradient(circle at 35% 35%,transparent 40%,rgba(0,0,0,.5) 85%)}
+  .comet{position:absolute;width:70px;height:70px;border-radius:50%;background:radial-gradient(circle,#ffe066,#ff8c00);
+    box-shadow:0 0 40px #ffd700,0 0 80px #ff8c00;cursor:pointer;z-index:5;
+    animation:pulse .6s infinite alternate}
+  @keyframes pulse{from{transform:scale(1)}to{transform:scale(1.15)}}
+  
+  /* ===== ЧАСТИЦЫ ===== */
+  .particle{position:fixed;pointer-events:none;border-radius:50%;z-index:99}
+  .float-text{position:fixed;pointer-events:none;font-weight:bold;font-size:20px;color:#ffd700;
+    text-shadow:0 0 10px rgba(255,215,0,.9);animation:floatUp .9s ease-out forwards;z-index:100}
+  .crit{color:#ff3b3b;font-size:26px;text-shadow:0 0 15px rgba(255,60,60,1)}
+  @keyframes floatUp{0%{opacity:1;transform:translateY(0) scale(1)}100%{opacity:0;transform:translateY(-90px) scale(1.5)}}
+  
+  /* ===== КОМБО ===== */
+  .combo{font-size:22px;font-weight:800;color:#ff8c00;text-shadow:0 0 15px rgba(255,140,0,.8);
+    opacity:0;transition:opacity .2s;height:26px}
+  .combo.active{opacity:1}
+  
+  /* ===== ПАНЕЛИ ===== */
+  .tabs{display:flex;gap:4px;background:rgba(20,30,50,.7);padding:5px;border-radius:12px;backdrop-filter:blur(10px);border:1px solid rgba(0,210,255,.2)}
+  body.light .tabs{background:rgba(255,255,255,.8);border-color:rgba(0,100,200,.3)}
+  .tab{flex:1;padding:9px 4px;background:transparent;border:none;color:#8899aa;font-size:11px;font-weight:600;
+    cursor:pointer;border-radius:8px;transition:all .2s;text-transform:uppercase;letter-spacing:.5px}
+  .tab.active{background:linear-gradient(135deg,#00d2ff,#7b2ff7);color:#fff}
+  body.light .tab{color:#456}
+  body.light .tab.active{color:#fff}
+  
+  .panel{background:rgba(20,30,50,.75);backdrop-filter:blur(10px);border:1px solid rgba(0,210,255,.2);
+    border-radius:16px;padding:15px;overflow-y:auto;max-height:calc(95vh - 60px)}
+  body.light .panel{background:rgba(255,255,255,.85);border-color:rgba(0,100,200,.3)}
+  .panel::-webkit-scrollbar{width:6px}
+  .panel::-webkit-scrollbar-thumb{background:rgba(0,210,255,.3);border-radius:3px}
+  .panel h2{font-size:16px;margin-bottom:12px;color:#00d2ff;text-align:center;letter-spacing:1px}
+  
+  /* ===== ЭЛЕМЕНТЫ МАГАЗИНА ===== */
+  .item{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:12px;
+    padding:10px;margin-bottom:8px;display:flex;align-items:center;gap:10px;cursor:pointer;transition:all .2s;position:relative;overflow:hidden}
+  body.light .item{background:rgba(0,0,0,.04);border-color:rgba(0,0,0,.1)}
+  .item:hover:not(.disabled){background:rgba(0,210,255,.12);border-color:rgba(0,210,255,.5);transform:translateX(-3px)}
+  .item.disabled{opacity:.4;cursor:not-allowed}
+  .item-icon{font-size:28px;width:46px;height:46px;display:flex;align-items:center;justify-content:center;
+    background:rgba(0,0,0,.3);border-radius:10px;flex-shrink:0}
+  body.light .item-icon{background:rgba(0,0,0,.08)}
+  .item-info{flex:1;min-width:0}
+  .item-name{font-weight:bold;font-size:14px;margin-bottom:1px}
+  .item-effect{font-size:11px;color:#00d2ff}
+  .item-cost{font-size:12px;color:#ffd700;margin-top:2px;font-weight:600}
+  .item-count{font-size:16px;font-weight:bold;color:#c77dff;background:rgba(199,125,255,.15);
+    padding:3px 9px;border-radius:8px;flex-shrink:0}
+  
+  /* ===== АЧИВКИ ===== */
+  .ach{display:flex;align-items:center;gap:10px;padding:9px;border-radius:10px;margin-bottom:7px;
+    background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);opacity:.4;transition:all .3s}
+  body.light .ach{background:rgba(0,0,0,.03);border-color:rgba(0,0,0,.08)}
+  .ach.unlocked{opacity:1;background:rgba(255,215,0,.12);border-color:rgba(255,215,0,.4);box-shadow:0 0 15px rgba(255,215,0,.2)}
+  .ach-icon{font-size:24px;flex-shrink:0}
+  .ach-info{flex:1}
+  .ach-name{font-size:13px;font-weight:bold}
+  .ach-desc{font-size:11px;color:#8899aa}
+  .ach-reward{font-size:11px;color:#ffd700}
+  
+  /* ===== КВЕСТЫ ===== */
+  .quest{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:10px;
+    padding:10px;margin-bottom:8px;font-size:12px}
+  body.light .quest{background:rgba(0,0,0,.03);border-color:rgba(0,0,0,.08)}
+  .quest-title{font-weight:bold;font-size:13px;margin-bottom:5px}
+  .quest-bar{height:6px;background:rgba(0,0,0,.4);border-radius:3px;overflow:hidden;margin:5px 0}
+  .quest-fill{height:100%;background:linear-gradient(90deg,#00d2ff,#7b2ff7);border-radius:3px;transition:width .3s}
+  .quest-reward{color:#ffd700;font-size:11px}
+  
+  /* ===== КНОПКИ ===== */
+  .btn{width:100%;padding:11px;border-radius:10px;cursor:pointer;font-size:13px;font-weight:bold;
+    border:none;transition:all .2s;margin-top:6px}
+  .btn-danger{background:rgba(255,60,60,.15);border:1px solid rgba(255,60,60,.3);color:#ff6b6b}
+  .btn-danger:hover{background:rgba(255,60,60,.3)}
+  .btn-primary{background:linear-gradient(135deg,#00d2ff,#7b2ff7);color:#fff}
+  .btn-primary:hover{filter:brightness(1.15)}
+  .btn-prestige{background:linear-gradient(135deg,#7b2ff7,#c77dff);color:#fff;font-size:14px;padding:14px}
+  .btn-prestige:hover{filter:brightness(1.2);box-shadow:0 0 25px rgba(199,125,255,.6)}
+  .btn-prestige:disabled{opacity:.4;cursor:not-allowed}
+  .btn-small{padding:7px;font-size:11px}
+  
+  /* ===== ТОСТЫ ===== */
+  .toasts{position:fixed;top:15px;right:15px;z-index:1000;display:flex;flex-direction:column;gap:8px;max-width:300px}
+  .toast{background:rgba(20,30,50,.95);border:1px solid rgba(0,210,255,.4);border-radius:10px;
+    padding:11px 14px;font-size:13px;animation:slideIn .3s;box-shadow:0 5px 20px rgba(0,0,0,.4);backdrop-filter:blur(10px)}
+  .toast.ach{border-color:rgba(255,215,0,.6);background:rgba(60,40,10,.95)}
+  @keyframes slideIn{from{transform:translateX(120%);opacity:0}to{transform:translateX(0);opacity:1}}
+  
+  /* ===== СОХРАНЕНИЕ ===== */
+  textarea.save-box{width:100%;height:80px;background:rgba(0,0,0,.4);border:1px solid rgba(0,210,255,.3);
+    border-radius:8px;color:#0f0;font-family:monospace;font-size:10px;padding:6px;resize:none;margin-top:5px}
+  
+  .stat-row{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid rgba(255,255,255,.08);font-size:12px}
+  body.light .stat-row{border-color:rgba(0,0,0,.08)}
+  .stat-row span:last-child{color:#00d2ff;font-weight:bold}
+  
+  @media(max-width:900px){
+    body{overflow:auto}
+    .game{flex-direction:column;align-items:center;padding:8px}
+    .right{width:100%;max-width:500px;max-height:none}
+    .panel{max-height:50vh}
+    .planet-wrap{width:200px;height:200px}
+    .planet{width:150px;height:150px}
+    .score{font-size:32px}
+  }
+</style>
+</head>
+<body>
+
+<div class="stars" id="stars"></div>
+<div class="nebula" style="width:400px;height:400px;background:#7b2ff7;top:-100px;left:-100px"></div>
+<div class="nebula" style="width:350px;height:350px;background:#00d2ff;bottom:-80px;right:-80px;animation-delay:-10s"></div>
+
+<div class="toasts" id="toasts"></div>
+
+<div class="game">
+  <!-- ЛЕВАЯ ЧАСТЬ -->
+  <div class="left">
+    <div class="stats">
+      <div class="score-label">Космическая энергия</div>
+      <div class="score" id="score">0</div>
+      <div class="per-sec" id="perSec">0 / сек</div>
+      <div class="mult-info" id="multInfo"></div>
+      <div class="dm" id="dmInfo" style="display:none"></div>
+    </div>
+    
+    <div class="planet-wrap" id="planetWrap">
+      <div class="planet" id="planet"></div>
+    </div>
+    
+    <div class="combo" id="combo"></div>
+  </div>
+  
+  <!-- ПРАВАЯ ЧАСТЬ -->
+  <div class="right">
+    <div class="tabs">
+      <button class="tab active" data-tab="shop">🛸 Магазин</button>
+      <button class="tab" data-tab="ach">🏆 Ачивки</button>
+      <button class="tab" data-tab="quests">📋 Квесты</button>
+      <button class="tab" data-tab="prestige">🌌 Престиж</button>
+      <button class="tab" data-tab="stats">📊 Инфо</button>
+    </div>
+    
+    <div class="panel" id="panel"></div>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════
+// СОСТОЯНИЕ
+// ═══════════════════════════════════════════════
+const state = {
+  score: 0,
+  totalClicks: 0,
+  totalEarned: 0,
+  startTime: Date.now(),
+  playTime: 0,
+  darkMatter: 0,
+  prestigeCount: 0,
+  // временные баффы
+  buffX7: 0,           // золотая планета
+  buffClickX: 1,
+  buffTimeLeft: 0,
+  // комбо
+  combo: 0,
+  lastClickTime: 0,
+  // флаг сохранения
+  soundOn: true,
+  theme: 'dark',
+  lastDaily: 0,
+  // счётчики для квестов
+  clicksThisSession: 0,
+  critHits: 0,
+  cometsCaught: 0,
+};
+
+const upgrades = [
+  { id:'click',   icon:'👆', name:'Усилитель клика', desc:'+1 за клик',       base:15,     mult:1.5,  eff:1,    cnt:0, type:'click' },
+  { id:'drone',   icon:'🤖', name:'Дрон-сборщик',    desc:'+1 в сек',         base:25,     mult:1.15, eff:1,    cnt:0, type:'auto'  },
+  { id:'sat',     icon:'🛰️', name:'Спутник',         desc:'+5 в сек',         base:150,    mult:1.15, eff:5,    cnt:0, type:'auto'  },
+  { id:'station', icon:'🏭', name:'Космостанция',    desc:'+25 в сек',        base:1000,   mult:1.15, eff:25,   cnt:0, type:'auto'  },
+  { id:'reactor', icon:'⚛️', name:'Реактор',         desc:'+100 в сек',       base:8000,   mult:1.15, eff:100,  cnt:0, type:'auto'  },
+  { id:'bh',      icon:'🌌', name:'Чёрная дыра',     desc:'+500 в сек',       base:50000,  mult:1.15, eff:500,  cnt:0, type:'auto'  },
+  { id:'galaxy',  icon:'🌠', name:'Галактика',       desc:'+2500 в сек',      base:3e5,    mult:1.15, eff:2500, cnt:0, type:'auto'  },
+  { id:'cluster', icon:'✨', name:'Скопление',       desc:'+12000 в сек',     base:2e6,    mult:1.15, eff:12000,cnt:0, type:'auto'  },
+  { id:'universe',icon:'🌌', name:'Мультивселенная', desc:'+60000 в сек',     base:1.5e7,  mult:1.15, eff:60000,cnt:0, type:'auto'  },
+  { id:'quantum', icon:'🔮', name:'Квантовый движок',desc:'+300000 в сек',    base:1e8,    mult:1.15, eff:3e5,  cnt:0, type:'auto'  },
+  { id:'god',     icon:'👁️', name:'Око Бога',        desc:'+1.5M в сек',      base:8e8,    mult:1.15, eff:1.5e6,cnt:0, type:'auto'  },
+  { id:'infinity',icon:'♾️', name:'Бесконечность',   desc:'+10M в сек',       base:6e9,    mult:1.15, eff:1e7,  cnt:0, type:'auto'  },
+];
+
+// ═══════════════════════════════════════════════
+// ДОСТИЖЕНИЯ
+// ═══════════════════════════════════════════════
+const achievements = [
+  { id:'first',    icon:'🎯', name:'Первый клик',      desc:'Сделай 1 клик',          check:()=>state.totalClicks>=1,        reward:{dmg:1} },
+  { id:'click100', icon:'👊', name:'Сотня',            desc:'100 кликов',             check:()=>state.totalClicks>=100,      reward:{dmg:2} },
+  { id:'click1k',  icon:'💪', name:'Тысячник',         desc:'1000 кликов',            check:()=>state.totalClicks>=1000,     reward:{dmg:5} },
+  { id:'click10k', icon:'🦾', name:'Клик-машина',      desc:'10000 кликов',           check:()=>state.totalClicks>=10000,    reward:{dmg:10} },
+  { id:'earn1k',   icon:'💰', name:'Первая тысяча',    desc:'Заработай 1000 энергии', check:()=>state.totalEarned>=1000,     reward:{dmg:2} },
+  { id:'earn1m',   icon:'💎', name:'Миллионер',        desc:'Заработай 1M энергии',   check:()=>state.totalEarned>=1e6,      reward:{dmg:5} },
+  { id:'earn1b',   icon:'👑', name:'Миллиардер',       desc:'Заработай 1B энергии',   check:()=>state.totalEarned>=1e9,      reward:{dmg:10} },
+  { id:'buy1',     icon:'🛒', name:'Шопоголик',        desc:'Купи 1 улучшение',       check:()=>upgrades.some(u=>u.cnt>=1),  reward:{dmg:1} },
+  { id:'buy10',    icon:'🛍️', name:'Коллекционер',     desc:'Купи 10 улучшений',      check:()=>upgrades.reduce((s,u)=>s+u.cnt,0)>=10, reward:{dmg:3} },
+  { id:'buy50',    icon:'🏪', name:'Магнат',           desc:'Купи 50 улучшений',      check:()=>upgrades.reduce((s,u)=>s+u.cnt,0)>=50, reward:{dmg:8} },
+  { id:'crit1',    icon:'⚡', name:'Критический',      desc:'Попади критом',          check:()=>state.critHits>=1,           reward:{dmg:2} },
+  { id:'crit100',  icon:'🌩️', name:'Крит-мастер',      desc:'100 критов',             check:()=>state.critHits>=100,         reward:{dmg:5} },
+  { id:'comet1',   icon:'☄️', name:'Ловец комет',      desc:'Поймай комету',          check:()=>state.cometsCaught>=1,       reward:{dmg:3} },
+  { id:'comet10',  icon:'🌠', name:'Охотник',          desc:'Поймай 10 комет',        check:()=>state.cometsCaught>=10,      reward:{dmg:8} },
+  { id:'prestige', icon:'🌌', name:'Новая жизнь',      desc:'Соверши престиж',        check:()=>state.prestigeCount>=1,      reward:{dmg:20} },
+  { id:'prestige5',icon:'🌀', name:'Путешественник',   desc:'5 престижей',            check:()=>state.prestigeCount>=5,      reward:{dmg:50} },
+  { id:'speed',    icon:'⏱️', name:'Скорость',         desc:'Достигни 1000/сек',      check:()=>getPerSec()>=1000,           reward:{dmg:5} },
+  { id:'speed2',   icon:'🚀', name:'Гиперпрыжок',      desc:'Достигни 1M/сек',        check:()=>getPerSec()>=1e6,            reward:{dmg:25} },
+  { id:'combo',    icon:'🔥', name:'Комбо x10',        desc:'Достигни комбо x10',     check:()=>state.combo>=10,             reward:{dmg:5} },
+  { id:'daily',    icon:'📅', name:'Пунктуальность',   desc:'Забери ежедневку',       check:()=>state.lastDaily>0,           reward:{dmg:5} },
+];
+
+// ═══════════════════════════════════════════════
+// КВЕСТЫ (активные)
+// ═══════════════════════════════════════════════
+let quests = [];
+
+function generateQuests() {
+  quests = [
+    { id:'q_clicks', title:'Сделай 50 кликов', target:50, prog:0, reward:'200 энергии', rewardFn:()=>addScore(200), type:'click' },
+    { id:'q_buy', title:'Купи 3 улучшения', target:3, prog:0, reward:'500 энергии', rewardFn:()=>addScore(500), type:'buy' },
+    { id:'q_earn', title:'Заработай 5000 энергии', target:5000, prog:0, reward:'Комета x2', rewardFn:()=>{state.cometsCaught+=0; spawnComet(true)}, type:'earn' },
+    { id:'q_crit', title:'Сделай 5 критов', target:5, prog:0, reward:'1000 энергии', rewardFn:()=>addScore(1000), type:'crit' },
+    { id:'q_upg', title:'Купи 5 авто-улучшений', target:5, prog:0, reward:'Тёмная материя +1', rewardFn:()=>{state.darkMatter+=1; render()}, type:'autobuy' },
+  ];
+}
+
+// ═══════════════════════════════════════════════
+// ЗВУК (Web Audio)
+// ═══════════════════════════════════════════════
+let audioCtx = null;
+function beep(freq, dur, type='sine', vol=0.05) {
+  if (!state.soundOn) return;
+  try {
+    if (!audioCtx) audioCtx = new (window.AudioContext||window.webkitAudioContext)();
+    const o = audioCtx.createOscillator();
+    const g = audioCtx.createGain();
+    o.type = type; o.frequency.value = freq;
+    g.gain.setValueAtTime(vol, audioCtx.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + dur);
+    o.connect(g); g.connect(audioCtx.destination);
+    o.start(); o.stop(audioCtx.currentTime + dur);
+  } catch(e){}
+}
+
+// ═══════════════════════════════════════════════
+// ЗВЁЗДЫ
+// ═══════════════════════════════════════════════
+(function(){
+  const c = document.getElementById('stars');
+  for (let i=0;i<180;i++){
+    const s = document.createElement('div');
+    s.className='star';
+    const sz = Math.random()*2.5+0.5;
+    s.style.width=sz+'px'; s.style.height=sz+'px';
+    s.style.left=Math.random()*100+'%';
+    s.style.top=Math.random()*100+'%';
+    s.style.animationDelay=Math.random()*3+'s';
+    c.appendChild(s);
+  }
+})();
+
+// ═══════════════════════════════════════════════
+// УТИЛИТЫ
+// ═══════════════════════════════════════════════
+function fmt(n) {
+  if (n>=1e15) return (n/1e15).toFixed(2)+'Qa';
+  if (n>=1e12) return (n/1e12).toFixed(2)+'T';
+  if (n>=1e9)  return (n/1e9).toFixed(2)+'B';
+  if (n>=1e6)  return (n/1e6).toFixed(2)+'M';
+  if (n>=1e3)  return (n/1e3).toFixed(2)+'K';
+  return Math.floor(n).toString();
+}
+function cost(u) { return Math.floor(u.base * Math.pow(u.mult, u.cnt)); }
+function getClickPower() {
+  const c = upgrades.find(u=>u.id==='click');
+  const achBonus = achievements.filter(a=>a._unlocked).reduce((s,a)=>s+(a.reward.dmg||0),0);
+  const prestigeBonus = 1 + state.darkMatter * 0.1;
+  return (1 + c.cnt * c.eff + achBonus) * prestigeBonus;
+}
+function getPerSec() {
+  const base = upgrades.filter(u=>u.type==='auto').reduce((s,u)=>s+u.cnt*u.eff,0);
+  const achBonus = achievements.filter(a=>a._unlocked).reduce((s,a)=>s+(a.reward.dmg||0),0) * 0.1;
+  const prestigeBonus = 1 + state.darkMatter * 0.1;
+  return base * (1 + achBonus) * prestigeBonus;
+}
+function getTotalMult() {
+  return (state.buffX7>0 ? 7 : 1) * (1 + state.darkMatter*0.1);
+}
+
+function addScore(amt) {
+  state.score += amt;
+  state.totalEarned += amt;
+}
+
+// ═══════════════════════════════════════════════
+// ТОСТЫ
+// ═══════════════════════════════════════════════
+function toast(msg, isAch=false) {
+  const t = document.createElement('div');
+  t.className = 'toast' + (isAch?' ach':'');
+  t.innerHTML = msg;
+  document.getElementById('toasts').appendChild(t);
+  setTimeout(()=>{ t.style.opacity=0; t.style.transform='translateX(120%)'; t.style.transition='.3s'; }, 3500);
+  setTimeout(()=>t.remove(), 3900);
+}
+
+// ═══════════════════════════════════════════════
+// ЧАСТИЦЫ И ВСПЛЫВАЮЩИЕ ЧИСЛА
+// ═══════════════════════════════════════════════function spawnParticles(x, y, color='#ffd700', count=8) {
+  for (let i=0;i<count;i++){
+    const p = document.createElement('div');
+    p.className='particle';
+    const sz = Math.random()*6+3;
+    p.style.width=sz+'px'; p.style.height=sz+'px';
+    p.style.background=color;
+    p.style.left=x+'px'; p.style.top=y+'px';
+    const ang = Math.random()*Math.PI*2;
+    const dist = Math.random()*80+30;
+    p.style.transition='transform .7s ease-out, opacity .7s';
+    document.body.appendChild(p);
+    requestAnimationFrame(()=>{
+      p.style.transform=`translate(${Math.cos(ang)*dist}px,${Math.sin(ang)*dist}px)`;
+      p.style.opacity=0;
+    });
+    setTimeout(()=>p.remove(), 750);
+  }
+}
+function floatText(x, y, text, isCrit=false) {
+  const f = document.createElement('div');
+  f.className='float-text'+(isCrit?' crit':'');
+  f.textContent=text;
+  f.style.left=(x-15)+'px'; f.style.top=(y-20)+'px';
+  document.body.appendChild(f);
+  setTimeout(()=>f.remove(), 900);
+}
+
+// ═══════════════════════════════════════════════
+// КЛИК ПО ПЛАНЕТЕ
+// ═══════════════════════════════════════════════
+const planet = document.getElementById('planet');
+planet.addEventListener('click', (e) => {
+  const now = Date.now();
+  // комбо
+  if (now - state.lastClickTime < 800) {
+    state.combo = Math.min(state.combo + 1, 50);
+  } else {
+    state.combo = 1;
+  }
+  state.lastClickTime = now;
+  
+  const comboMult = 1 + state.combo * 0.05;
+  let power = getClickPower() * getTotalMult() * comboMult;
+  
+  // крит
+  const isCrit = Math.random() < 0.1;
+  if (isCrit) { power *= 10; state.critHits++; beep(880, 0.15, 'square', 0.08); }
+  else beep(440 + Math.random()*100, 0.05, 'sine', 0.03);
+  
+  power = Math.floor(power);
+  addScore(power);
+  state.totalClicks++;
+  state.clicksThisSession++;
+  
+  // комбо-квесты
+  const qc = quests.find(q=>q.id==='q_clicks');
+  if (qc && qc.prog < qc.target) { qc.prog++; }
+  const qcr = quests.find(q=>q.id==='q_crit');
+  if (qcr && isCrit && qcr.prog < qcr.target) { qcr.prog++; }
+  
+  floatText(e.clientX, e.clientY, (isCrit?'💥 ':'+')+fmt(power), isCrit);
+  spawnParticles(e.clientX, e.clientY, isCrit?'#ff3b3b':'#ffd700', isCrit?15:8);
+  
+  checkAchievements();
+  render();
+});
+
+// ═══════════════════════════════════════════════
+// ПОКУПКА
+// ═══════════════════════════════════════════════
+function buy(u) {
+  const c = cost(u);
+  if (state.score < c) return;
+  state.score -= c;
+  u.cnt++;
+  beep(600, 0.1, 'triangle', 0.05);
+  
+  const qb = quests.find(q=>q.id==='q_buy');
+  if (qb && qb.prog < qb.target) qb.prog++;
+  if (u.type==='auto') {
+    const qa = quests.find(q=>q.id==='q_autobuy');
+    if (qa && qa.prog < qa.target) qa.prog++;
+  }
+  
+  checkAchievements();
+  render();
+}
+
+// ═══════════════════════════════════════════════
+// ДОСТИЖЕНИЯ
+// ═══════════════════════════════════════════════
+function checkAchievements() {
+  achievements.forEach(a=>{
+    if (!a._unlocked && a.check()) {
+      a._unlocked = true;
+      toast(`🏆 <b>${a.name}</b><br><small>${a.desc}</small>`, true);
+      beep(1200, 0.2, 'sine', 0.08);
+    }
+  });
+}
+
+// ═══════════════════════════════════════════════
+// КВЕСТЫ
+// ═══════════════════════════════════════════════
+function claimQuest(q) {
+  if (q.prog >= q.target) {
+    q.rewardFn();
+    toast(`✅ Квест выполнен: <b>${q.title}</b>`);
+    const idx = quests.indexOf(q);
+    if (idx>=0) quests.splice(idx,1);
+    render();
+  }
+}
+
+// ═══════════════════════════════════════════════
+// ЗОЛОТАЯ ПЛАНЕТА
+// ═══════════════════════════════════════════════
+function spawnGolden() {
+  if (state.buffX7 > 0) return;
+  const wrap = document.getElementById('planetWrap');
+  const g = document.createElement('div');
+  g.style.cssText = `position:absolute;width:70px;height:70px;border-radius:50%;
+    background:radial-gradient(circle,#fff700,#ff8c00);
+    box-shadow:0 0 40px #ffd700,0 0 80px #ff8c00;cursor:pointer;z-index:5;
+    animation:pulse .5s infinite alternate;`;
+  g.style.left = Math.random()*70+'%';
+  g.style.top = Math.random()*70+'%';
+  g.onclick = (e)=>{
+    g.remove();
+    state.buffX7 = 10;
+    toast('🌟 <b>Золотая планета!</b> x7 доход на 10 сек!');
+    beep(1500, 0.3, 'sine', 0.1);
+    spawnParticles(e.clientX, e.clientY, '#fff700', 25);
+    render();
+  };
+  wrap.appendChild(g);
+  setTimeout(()=>{ if (g.parentNode) g.remove(); }, 6000);
+}
+setInterval(()=>{ if (Math.random()<0.3) spawnGolden(); }, 20000);
+
+// ═══════════════════════════════════════════════
+// КОМЕТА (мини-игра)
+// ═══════════════════════════════════════════════
+function spawnComet(force=false) {
+  if (!force && Math.random()>0.4) return;
+  const wrap = document.getElementById('planetWrap');
+  const c = document.createElement('div');
+  c.className='comet';
+  c.style.left = (Math.random()*70-10)+'%';
+  c.style.top = (Math.random()*70-10)+'%';
+  c.onclick = (e)=>{
+    c.remove();
+    state.cometsCaught++;
+    const bonus = Math.max(50, Math.floor(getPerSec()*20));
+    addScore(bonus);
+    toast(`☄️ Комета поймана! +${fmt(bonus)}`);
+    beep(1000, 0.25, 'sine', 0.1);
+    spawnParticles(e.clientX, e.clientY, '#ffe066', 20);
+    checkAchievements();
+    render();
+  };
+  wrap.appendChild(c);
+  setTimeout(()=>{ if (c.parentNode) c.remove(); }, 5000);
+}
+setInterval(spawnComet, 15000);
+
+// ═══════════════════════════════════════════════
+// ЕЖЕДНЕВНАЯ НАГРАДА
+// ═══════════════════════════════════════════════
+function checkDaily() {
+  const now = Date.now();
+  const day = 24*60*60*1000;
+  if (now - state.lastDaily > day) {
+    const bonus = Math.max(500, Math.floor(getPerSec()*300));
+    addScore(bonus);
+    state.darkMatter += 1;
+    state.lastDaily = now;
+    toast(`📅 <b>Ежедневная награда!</b><br>+${fmt(bonus)} энергии<br>+1 Тёмная материя`);
+    checkAchievements();
+  }
+}
+
+// ═══════════════════════════════════════════════
+// ПРЕСТИЖ
+// ═══════════════════════════════════════════════
+function prestigeGain() {
+  return Math.floor(Math.pow(state.totalEarned/1e6, 0.5));
+}
+function doPrestige() {
+  const gain = prestigeGain();
+  if (gain < 1) return;
+  if (!confirm(`Сбросить прогресс и получить ${gain} тёмной материи?\n\nЭто даст постоянный бонус +${gain*10}% ко всему доходу.`)) return;
+  
+  state.darkMatter += gain;
+  state.prestigeCount++;
+  state.score = 0;
+  state.totalEarned = 0;
+  state.totalClicks = 0;
+  upgrades.forEach(u=>u.cnt=0);
+  toast(`🌌 Престиж! +${gain} тёмной материи`);
+  beep(1600, 0.4, 'sine', 0.1);
+  checkAchievements();
+  render();
+}
+
+// ═══════════════════════════════════════════════
+// РЕНДЕР
+// ═══════════════════════════════════════════════
+let currentTab = 'shop';
+
+function render() {
+  document.getElementById('score').textContent = fmt(state.score);
+  document.getElementById('perSec').textContent = fmt(getPerSec()) + ' / сек';
+  
+  let mults = [];
+  if (state.buffX7>0) mults.push(`x7 (${Math.ceil(state.buffX7)}с)`);
+  if (state.darkMatter>0) mults.push(`+${state.darkMatter*10}%`);
+  document.getElementById('multInfo').textContent = mults.length ? '⚡ ' + mults.join(' • ') : '';
+  
+  const dm = document.getElementById('dmInfo');
+  if (state.darkMatter>0) {
+    dm.style.display='block';
+    dm.textContent = `🌌 Тёмная материя: ${state.darkMatter}`;
+  } else dm.style.display='none';
+  
+  // комбо
+  const comboEl = document.getElementById('combo');
+  if (state.combo>1 && Date.now()-state.lastClickTime<800) {
+    comboEl.textContent = `🔥 Комбо x${state.combo}`;
+    comboEl.classList.add('active');
+  } else {
+    comboEl.classList.remove('active');
+  }
+  
+  renderPanel();
+}
+
+function renderPanel() {
+  const p = document.getElementById('panel');
+  
+  if (currentTab==='shop') {
+    let html = '<h2>🛸 Магазин улучшений</h2>';
+    upgrades.forEach(u=>{
+      const c = cost(u);
+      const dis = state.score < c ? 'disabled' : '';
+      html += `<div class="item ${dis}" data-upg="${u.id}">
+        <div class="item-icon">${u.icon}</div>
+        <div class="item-info">
+          <div class="item-name">${u.name}</div>
+          <div class="item-effect">${u.desc}</div>
+          <div class="item-cost">💰 ${fmt(c)}</div>
+        </div>
+        <div class="item-count">${u.cnt}</div>
+      </div>`;
+    });
+    p.innerHTML = html;
+    p.querySelectorAll('[data-upg]').forEach(el=>{
+      el.onclick = ()=>buy(upgrades.find(u=>u.id===el.dataset.upg));
+    });
+  }
+  
+  else if (currentTab==='ach') {
+    const unlocked = achievements.filter(a=>a._unlocked).length;
+    let html = `<h2>🏆 Достижения (${unlocked}/${achievements.length})</h2>`;
+    achievements.forEach(a=>{
+      html += `<div class="ach ${a._unlocked?'unlocked':''}">
+        <div class="ach-icon">${a._unlocked?a.icon:'🔒'}</div>
+        <div class="ach-info">
+          <div class="ach-name">${a.name}</div>
+          <div class="ach-desc">${a.desc}</div>
+        </div>
+        <div class="ach-reward">+${a.reward.dmg}%</div>
+      </div>`;
+    });
+    p.innerHTML = html;
+  }
+  
+  else if (currentTab==='quests') {
+    let html = '<h2>📋 Квесты</h2>';
+    if (quests.length===0) html += '<p style="text-align:center;color:#8899aa;padding:20px">Все квесты выполнены! 🎉</p>';
+    quests.forEach(q=>{
+      const pct = Math.min(100, q.prog/q.target*100);
+      const done = q.prog >= q.target;
+      html += `<div class="quest">
+        <div class="quest-title">${q.title}</div>
+        <div class="quest-bar"><div class="quest-fill" style="width:${pct}%"></div></div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-top:4px">
+          <span class="quest-reward">🎁 ${q.reward}</span>
+          <span style="font-size:11px">${q.prog}/${q.target}</span>
+        </div>
+        ${done?`<button class="btn btn-primary btn-small" data-quest="${q.id}">Забрать награду</button>`:''}
+      </div>`;
+    });
+    if (quests.length>0 && quests.length<3 && Math.random()<0.01) generateQuests();
+    p.innerHTML = html;
+    p.querySelectorAll('[data-quest]').forEach(el=>{
+      el.onclick = ()=>claimQuest(quests.find(q=>q.id===el.dataset.quest));
+    });
+  }
+  
+  else if (currentTab==='prestige') {
+    const gain = prestigeGain();
+    const canPrestige = gain >= 1;
+    p.innerHTML = `<h2>🌌 Престиж</h2>
+      <div style="text-align:center;padding:15px 0">
+        <div style="font-size:13px;color:#8899aa;margin-bottom:8px">Сбросьте прогресс, чтобы получить тёмную материю</div>
+        <div style="font-size:32px;font-weight:bold;color:#c77dff;margin:10px 0">${gain} 🌌</div>
+        <div style="font-size:12px;color:#8899aa;margin-bottom:15px">
+          Каждая единица даёт +10% ко всему доходу навсегда
+        </div>
+        <div style="background:rgba(199,125,255,.1);border:1px solid rgba(199,125,255,.3);border-radius:10px;padding:12px;margin-bottom:12px;font-size:12px">
+          <b>Текущий бонус:</b> +${state.darkMatter*10}%<br>
+          <b>После престижа:</b> +${(state.darkMatter+gain)*10}%
+        </div>
+        <button class="btn btn-prestige" id="prestigeBtn" ${canPrestige?'':'disabled'}>
+          ${canPrestige?'🌌 СОВЕРШИТЬ ПРЕСТИЖ':'Нужно больше энергии'}
+        </button>
+        <div style="font-size:11px;color:#8899aa;margin-top:10px">
+          Всего престижей: ${state.prestigeCount}
+        </div>
+      </div>`;
+    const btn = document.getElementById('prestigeBtn');
+    if (btn) btn.onclick = doPrestige;
+  }
+  
+  else if (currentTab==='stats') {
+    const playMinutes = Math.floor(state.playTime/60);
+    p.innerHTML = `<h2>📊 Статистика</h2>
+      <div class="stat-row"><span>Всего кликов</span><span>${fmt(state.totalClicks)}</span></div>
+      <div class="stat-row"><span>Критов</span><span>${state.critHits}</span></div>
+      <div class="stat-row"><span>Комет поймано</span><span>${state.cometsCaught}</span></div>
+      <div class="stat-row"><span>Всего заработано</span><span>${fmt(state.totalEarned)}</span></div>
+      <div class="stat-row"><span>Доход/сек</span><span>${fmt(getPerSec())}</span></div>
+      <div class="stat-row"><span>Сила клика</span><span>${fmt(getClickPower())}</span></div>
+      <div class="stat-row"><span>Престижей</span><span>${state.prestigeCount}</span></div>
+      <div class="stat-row"><span>Тёмная материя</span><span>${state.darkMatter}</span></div>
+      <div class="stat-row"><span>Время игры</span><span>${playMinutes} мин</span></div>
+      
+      <h2 style="margin-top:15px">⚙️ Настройки</h2>
+      <button class="btn btn-primary" id="soundBtn">${state.soundOn?'🔊 Звук: ВКЛ':'🔇 Звук: ВЫКЛ'}</button>
+      <button class="btn btn-primary" id="themeBtn">${state.theme==='dark'?'☀️ Светлая тема':'🌙 Тёмная тема'}</button>
+      
+      <h2 style="margin-top:15px">💾 Сохранение</h2>
+      <button class="btn btn-primary btn-small" id="exportBtn">📤 Экспорт кода</button>
+      <textarea class="save-box" id="saveBox" placeholder="Вставь код сохранения сюда и нажми Импорт"></textarea>
+      <button class="btn btn-primary btn-small" id="importBtn">📥 Импорт</button>
+      <button class="btn btn-danger" id="resetBtn">🔄 Сбросить прогресс</button>
+    `;
+    
+    document.getElementById('soundBtn').onclick = ()=>{ state.soundOn=!state.soundOn; render(); };
+    document.getElementById('themeBtn').onclick = ()=>{
+      state.theme = state.theme==='dark'?'light':'dark';
+      document.body.classList.toggle('light');
+      render();
+    };
+    document.getElementById('exportBtn').onclick = ()=>{
+      document.getElementById('saveBox').value = btoa(JSON.stringify(serialize()));
+      toast('Код сохранения скопирован в поле');
+    };
+    document.getElementById('importBtn').onclick = ()=>{
+      try {
+        const data = JSON.parse(atob(document.getElementById('saveBox').value));
+        deserialize(data);
+        toast('✅ Прогресс загружен!');
+        render();
+      } catch(e) { toast('❌ Ошибка импорта'); }
+    };
+    document.getElementById('resetBtn').onclick = ()=>{
+      if (confirm('Точно сбросить ВЕСЬ прогресс (включая престиж)?')) {
+        localStorage.removeItem('spaceClickerV2');
+        location.reload();
+      }
+    };
+  }
+}
+
+// ═══════════════════════════════════════════════
+// ТАБЫ
+// ═══════════════════════════════════════════════
+document.querySelectorAll('.tab').forEach(t=>{
+  t.onclick = ()=>{
+    document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
+    t.classList.add('active');
+    currentTab = t.dataset.tab;
+    renderPanel();
+  };
+});
+
+// ═══════════════════════════════════════════════
+// ГЛАВНЫЙ ЦИКЛ
+// ═══════════════════════════════════════════════
+let lastTick = Date.now();
+setInterval(()=>{
+  const now = Date.now();
+  const dt = (now - lastTick)/1000;
+  lastTick = now;
+  state.playTime += dt;
+  
+  const gain = getPerSec() * dt * (state.buffX7>0?7:1);
+  if (gain>0) { addScore(gain); }
+  
+  const qe = quests.find(q=>q.id==='q_earn');
+  if (qe && qe.prog<qe.target) { qe.prog = Math.min(qe.target, qe.prog+gain); }
+  
+  if (state.buffX7>0) {
+    state.buffX7 -= dt;
+    if (state.buffX7<=0) { state.buffX7=0; toast('Золотая планета закончилась'); }
+  }
+  
+  checkAchievements();
+  render();
+}, 100);
+
+// ═══════════════════════════════════════════════
+// СОХРАНЕНИЕ
+// ═══════════════════════════════════════════════
+function serialize() {
+  return {
+    score: state.score,
+    totalEarned: state.totalEarned,
+    totalClicks: state.totalClicks,
+    playTime: state.playTime,
+    darkMatter: state.darkMatter,
+    prestigeCount: state.prestigeCount,
+    lastDaily: state.lastDaily,
+    critHits: state.critHits,
+    cometsCaught: state.cometsCaught,
+    soundOn: state.soundOn,
+    theme: state.theme,
+    counts: upgrades.map(u=>u.cnt),
+    ach: achievements.map(a=>!!a._unlocked),
+    saveTime: Date.now(),
+  };
+}
+function deserialize(d) {
+  state.score = d.score||0;
+  state.totalEarned = d.totalEarned||0;
+  state.totalClicks = d.totalClicks||0;
+  state.playTime = d.playTime||0;
+  state.darkMatter = d.darkMatter||0;
+  state.prestigeCount = d.prestigeCount||0;
+  state.lastDaily = d.lastDaily||0;
+  state.critHits = d.critHits||0;
+  state.cometsCaught = d.cometsCaught||0;
+  state.soundOn = d.soundOn!==false;
+  state.theme = d.theme||'dark';
+  document.body.classList.toggle('light', state.theme==='light');
+  if (d.counts) d.counts.forEach((c,i)=>{ if(upgrades[i]) upgrades[i].cnt=c; });
+  if (d.ach) d.ach.forEach((u,i)=>{ if(achievements[i]) achievements[i]._unlocked=u; });
+  
+  // оффлайн-доход (макс 8 часов, 50% эффективности)
+  if (d.saveTime) {
+    const away = Math.min((Date.now()-d.saveTime)/1000, 8*3600);
+    const offline = getPerSec() * away * 0.5;
+    if (offline > 10) {
+      addScore(offline);
+      setTimeout(()=>toast(`💤 Пока тебя не было:<br><b>+${fmt(offline)}</b> энергии`), 500);
+    }
+  }
+}
+function save() {
+  try { localStorage.setItem('spaceClickerV2', JSON.stringify(serialize())); } catch(e){}
+}
+setInterval(save, 5000);
+window.addEventListener('beforeunload', save);
+
+// ═══════════════════════════════════════════════
+// ИНИЦИАЛИЗАЦИЯ
+// ═══════════════════════════════════════════════
+function init() {
+  try {
+    const raw = localStorage.getItem('spaceClickerV2');
+    if (raw) deserialize(JSON.parse(raw));
+  } catch(e){ console.warn(e); }
+  
+  generateQuests();
+  checkDaily();
+  checkAchievements();
+  render();
+  
+  setTimeout(()=>toast('🚀 Добро пожаловать в Космический Кликер v2.0!<br><small>Кликай по планете, ловите кометы и комбо!</small>'), 500);
+}
+init();
+</script>
+
+</body>
+</html>

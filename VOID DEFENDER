@@ -1,0 +1,1193 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Космический Защитник v2</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; user-select:none; }
+  body {
+    background: radial-gradient(ellipse at center, #0a0a20 0%, #02020a 100%);
+    display: flex; justify-content: center; align-items: center;
+    min-height: 100vh; font-family: 'Segoe UI', system-ui, sans-serif;
+    overflow: hidden; color: #fff;
+  }
+  #gameWrap { position: relative; }
+  canvas {
+    display: block; border-radius: 14px;
+    box-shadow: 0 0 80px rgba(80,120,255,.5), 0 0 160px rgba(255,60,180,.25);
+    background: #05050f; touch-action: none;
+  }
+  #ui { position:absolute; inset:0; pointer-events:none; display:flex; flex-direction:column; justify-content:space-between; padding:14px 18px; }
+  #topBar { display:flex; justify-content:space-between; gap:8px; font-size:14px; font-weight:600; }
+  .chip { background: rgba(10,20,50,.75); padding: 6px 14px; border-radius: 20px; border: 1px solid rgba(100,150,255,.35); backdrop-filter: blur(6px); white-space: nowrap; }
+  #hpBarWrap { width:100%; height:12px; background:rgba(255,255,255,.08); border-radius:6px; margin-top:10px; overflow:hidden; border:1px solid rgba(255,255,255,.1); }
+  #hpBar { height:100%; width:100%; background:linear-gradient(90deg,#ff3366,#ff9933); transition:width .15s; }
+  #xpBarWrap { width:100%; height:6px; background:rgba(255,255,255,.08); border-radius:6px; margin-top:5px; overflow:hidden; }
+  #xpBar { height:100%; width:0%; background:linear-gradient(90deg,#33ccff,#66ff99); transition:width .2s; }
+  #combo { position:absolute; top:70px; left:50%; transform:translateX(-50%); font-size:28px; font-weight:900; opacity:0; transition:opacity .3s; text-shadow:0 0 20px currentColor; }
+
+  #overlay { position:absolute; inset:0; display:flex; flex-direction:column; justify-content:center; align-items:center;
+    background: rgba(5,5,20,.94); backdrop-filter: blur(10px); border-radius:14px; z-index:10; pointer-events:all;
+    padding: 24px; overflow-y: auto; }
+  #overlay h1 { font-size:38px; background:linear-gradient(90deg,#66ccff,#ff66cc,#ffcc66);
+    -webkit-background-clip:text; background-clip:text; color:transparent; margin-bottom:14px; letter-spacing:2px; text-align:center; }
+  #overlay p { color:#aab; margin-bottom:8px; font-size:14px; max-width:460px; line-height:1.5; text-align:center; }
+  .btn { margin-top:16px; padding:14px 44px; font-size:17px; font-weight:700; letter-spacing:1px;
+    border:none; border-radius:40px; cursor:pointer; background:linear-gradient(135deg,#4a7dff,#a04aff); color:#fff;
+    box-shadow:0 0 30px rgba(120,80,255,.6); transition:transform .15s, box-shadow .15s; }
+  .btn:hover { transform:scale(1.06); box-shadow:0 0 50px rgba(140,100,255,.9); }
+  .btn:active { transform:scale(.97); }
+  .btn.secondary { background: linear-gradient(135deg,#2a3550,#404a70); box-shadow:0 0 20px rgba(80,100,180,.4); }
+  .btn.small { padding:10px 24px; font-size:14px; margin-top:8px; }
+  .menuBtns { display:flex; gap:12px; flex-wrap:wrap; justify-content:center; }
+
+  #upgradeList { display:flex; flex-wrap:wrap; gap:14px; justify-content:center; margin-top:20px; max-width:760px; }
+  .card { width:210px; padding:18px; background:linear-gradient(160deg, rgba(40,60,120,.7), rgba(20,20,50,.9));
+    border:1px solid rgba(100,150,255,.4); border-radius:14px; cursor:pointer;
+    transition:transform .15s, border-color .15s, box-shadow .15s; }
+  .card:hover { transform:translateY(-5px); border-color:#66ccff; box-shadow:0 12px 40px rgba(80,140,255,.5); }
+  .card .ico { font-size:30px; margin-bottom:8px; }
+  .card .name { font-weight:700; font-size:15px; margin-bottom:6px; color:#cfe4ff; }
+  .card .desc { font-size:12px; color:#99aacc; line-height:1.4; }
+  .lvl { font-size:11px; color:#ffcc66; margin-top:8px; }
+
+  #bossWarning { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); font-size:44px; font-weight:900;
+    color:#ff3366; text-shadow:0 0 30px #ff3366; opacity:0; pointer-events:none; animation:pulse 1s infinite; }
+  @keyframes pulse { 0%,100%{opacity:.4; transform:translate(-50%,-50%) scale(1);} 50%{opacity:1; transform:translate(-50%,-50%) scale(1.08);} }
+
+  .grid { display:grid; grid-template-columns: repeat(auto-fill, minmax(180px,1fr)); gap:14px; max-width:780px; margin-top:16px; width:100%; }
+  .shipCard, .wpnCard { padding:14px; background:rgba(30,40,80,.55); border:1px solid rgba(100,150,255,.3);
+    border-radius:12px; cursor:pointer; transition:all .15s; }
+  .shipCard:hover, .wpnCard:hover { border-color:#66ccff; background:rgba(40,60,120,.7); }
+  .shipCard.selected, .wpnCard.selected { border-color:#66ff99; box-shadow:0 0 20px rgba(102,255,153,.5); }
+  .shipCard.locked, .wpnCard.locked { opacity:.5; cursor:not-allowed; }
+  .shipCard h3, .wpnCard h3 { font-size:15px; margin-bottom:4px; color:#cfe4ff; }
+  .shipCard small, .wpnCard small { font-size:11px; color:#8899bb; display:block; line-height:1.4; }
+  .price { color:#ffcc66; font-weight:700; margin-top:6px; font-size:13px; }
+  .bestLine { color:#ffcc66; font-size:13px; margin-top:6px; }
+  .tabs { display:flex; gap:8px; margin-bottom:16px; flex-wrap:wrap; justify-content:center; }
+  .tab { padding:8px 20px; background:rgba(40,60,120,.5); border:1px solid rgba(100,150,255,.3); border-radius:20px; cursor:pointer; font-size:13px; font-weight:600; }
+  .tab.active { background:linear-gradient(135deg,#4a7dff,#a04aff); border-color:transparent; }
+  .scrollBox { max-height: 55vh; overflow-y: auto; width: 100%; display: flex; flex-direction: column; align-items: center; padding: 4px; }
+  .scrollBox::-webkit-scrollbar { width: 6px; }
+  .scrollBox::-webkit-scrollbar-thumb { background: rgba(100,150,255,.4); border-radius: 3px; }
+
+  #pauseOverlay { position:absolute; inset:0; background:rgba(5,5,20,.85); backdrop-filter:blur(6px); display:none;
+    flex-direction:column; justify-content:center; align-items:center; z-index:9; border-radius:14px; pointer-events:all; }
+  #pauseOverlay h1 { font-size:32px; margin-bottom:20px; }
+  #controlsHint { position:absolute; bottom:14px; left:50%; transform:translateX(-50%); font-size:11px; color:rgba(170,190,220,.5); white-space:nowrap; }
+</style>
+</head>
+<body>
+<div id="gameWrap">
+  <canvas id="c" width="900" height="640"></canvas>
+  <div id="ui">
+    <div>
+      <div id="topBar">
+        <div class="chip" id="scoreEl">Очки: 0</div>
+        <div class="chip" id="waveEl">Волна: 1</div>
+        <div class="chip" id="coinEl">💎 0</div>
+        <div class="chip" id="weaponEl">🔫 Импульс</div>
+      </div>
+      <div id="hpBarWrap"><div id="hpBar"></div></div>
+      <div id="xpBarWrap"><div id="xpBar"></div></div>
+    </div>
+    <div id="combo"></div>
+    <div id="bossWarning">⚠ БОСС ⚠</div>
+    <div id="controlsHint">WASD — движение · Мышь — прицел · Пробел — рывок · 1-4 — смена оружия · Esc — пауза</div>
+  </div>
+
+  <div id="overlay">
+    <!-- МЕНЮ -->
+    <div id="menuScreen">
+      <h1>КОСМИЧЕСКИЙ ЗАЩИТНИК</h1>
+      <p>Уничтожай врагов, собирай энергию и улучшай корабль. Каждая волна сложнее — становись сильнее!</p>
+      <p class="bestLine" id="bestLine"></p>
+      <div class="menuBtns">
+        <button class="btn" onclick="startGame()">🎮 ИГРАТЬ</button>
+      </div>
+      <div class="menuBtns" style="margin-top:8px">
+        <button class="btn secondary small" onclick="openHangar()">🚀 Ангар</button>
+        <button class="btn secondary small" onclick="openDaily()">🎯 Ежедневка</button>
+        <button class="btn secondary small" onclick="openLeaderboard()">🏆 Рекорды</button>
+      </div>
+    </div>
+
+    <!-- АНГАР -->
+    <div id="hangarScreen" style="display:none; width:100%">
+      <h1 style="font-size:30px">АНГАР</h1>
+      <p>Кристаллы: <span id="hangarCoins" style="color:#ffcc66;font-weight:700">0</span></p>
+      <div class="tabs">
+        <div class="tab active" onclick="switchHangarTab('ships', this)">🚀 Корабли</div>
+        <div class="tab" onclick="switchHangarTab('weapons', this)">⚔️ Оружие</div>
+        <div class="tab" onclick="switchHangarTab('meta', this)">💎 Улучшения</div>
+      </div>
+      <div class="scrollBox" id="hangarContent"></div>
+      <button class="btn secondary small" onclick="backToMenu()">← Назад</button>
+    </div>
+
+    <!-- ЕЖЕДНЕВКА -->
+    <div id="dailyScreen" style="display:none; width:100%">
+      <h1 style="font-size:30px">ЕЖЕДНЕВНЫЙ ЧЕЛЛЕНДЖ</h1>
+      <p>Каждый день — новый модификатор и двойная награда!</p>
+      <div id="dailyContent" style="margin-top:16px"></div>
+      <div class="menuBtns" style="margin-top:20px">
+        <button class="btn" id="dailyPlayBtn" onclick="startDailyChallenge()">▶ Начать</button>
+        <button class="btn secondary small" onclick="backToMenu()">← Назад</button>
+      </div>
+    </div>
+
+    <!-- ЛИДЕРБОРД -->
+    <div id="leaderScreen" style="display:none; width:100%">
+      <h1 style="font-size:30px">🏆 ТАБЛИЦА РЕКОРДОВ</h1>
+      <div class="scrollBox" id="leaderContent"></div>
+      <button class="btn secondary small" onclick="backToMenu()">← Назад</button>
+    </div>
+
+    <!-- УЛУЧШЕНИЕ -->
+    <div id="upgradeScreen" style="display:none; width:100%">
+      <h1 style="font-size:30px">УЛУЧШЕНИЕ</h1>
+      <p>Выбери один из перков:</p>
+      <div id="upgradeList"></div>
+    </div>
+
+    <!-- GAME OVER -->
+    <div id="gameOverScreen" style="display:none">
+      <h1>ИГРА ОКОНЧЕНА</h1>
+      <p id="finalScore"></p>
+      <p id="bestScore" style="color:#ffcc66"></p>
+      <p id="coinReward" style="color:#66ff99"></p>
+      <div class="menuBtns">
+        <button class="btn" onclick="startGame()">ЕЩЁ РАЗ</button>
+        <button class="btn secondary small" onclick="backToMenu()">← Меню</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="pauseOverlay">
+    <h1>ПАУЗА</h1>
+    <div class="menuBtns">
+      <button class="btn small" onclick="togglePause()">▶ Продолжить</button>
+      <button class="btn secondary small" onclick="backToMenu()">← Меню</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ====== ХРАНИЛИЩЕ ======
+const SAVE_KEY = 'ks_save_v2';
+let save = loadSave();
+
+function loadSave() {
+  try {
+    const s = JSON.parse(localStorage.getItem(SAVE_KEY) || '{}');
+    return {
+      coins: s.coins || 0,
+      ships: s.ships || ['scout'],
+      weapons: s.weapons || ['pulse'],
+      selectedShip: s.selectedShip || 'scout',
+      selectedWeapon: s.selectedWeapon || 'pulse',
+      meta: s.meta || {},
+      best: s.best || 0,
+      leaderboard: s.leaderboard || [],
+      dailyDone: s.dailyDone || '',
+    };
+  } catch(e) { return {coins:0, ships:['scout'], weapons:['pulse'], selectedShip:'scout', selectedWeapon:'pulse', meta:{}, best:0, leaderboard:[], dailyDone:''}; }
+}
+function persist() { localStorage.setItem(SAVE_KEY, JSON.stringify(save)); }
+
+// ====== КОНТЕНТ ======
+const SHIPS = {
+  scout:    {name:'Скаут', ico:'🚀', price:0, desc:'Быстрый и сбалансированный', stats:{speed:1.15, hp:0.9, dmg:1}},
+  tank:     {name:'Танк',   ico:'🛡️', price:150, desc:'+50% HP, медленный', stats:{speed:0.8, hp:1.5, dmg:1.1}},
+  assassin: {name:'Ассасин',ico:'⚡', price:300, desc:'+40% урона, -30% HP', stats:{speed:1.2, hp:0.7, dmg:1.4}},
+  ghost:    {name:'Призрак',ico:'👻', price:500, desc:'Рывок перезаряжается вдвое быстрее', stats:{speed:1.1, hp:1, dmg:1}, special:'fastDash'},
+};
+const WEAPONS = {
+  pulse:   {name:'Импульс', ico:'🔫', price:0, desc:'Стандартный бластер', stats:{dmg:1, rate:1, spread:0.22, bullets:1, speed:11}},
+  shotgun: {name:'Дробовик',ico:'💥', price:200, desc:'3 снаряда, меньший урон', stats:{dmg:0.55, rate:0.7, spread:0.35, bullets:3, speed:10}},
+  laser:   {name:'Лазер',   ico:'⚡', price:350, desc:'Быстрые пробивающие лучи', stats:{dmg:0.8, rate:1.6, spread:0.05, bullets:1, speed:16, pierce:1}},
+  rockets: {name:'Ракеты',  ico:'🚀', price:450, desc:'Медленные, но мощные', stats:{dmg:2.2, rate:0.55, spread:0.1, bullets:1, speed:7}},
+  tesla:   {name:'Тесла',   ico:'⚡', price:600, desc:'Цепная молния', stats:{dmg:0.7, rate:1.2, spread:0.15, bullets:2, speed:12}, special:'chain'},
+};
+const META_UPGRADES = [
+  {id:'startHp', ico:'❤️', name:'Стартовое HP', desc:'+20 HP за уровень', price:[50,100,200,400], max:4},
+  {id:'startDmg',ico:'⚔️', name:'Стартовый урон', desc:'+2 урона за уровень', price:[80,160,320,640], max:4},
+  {id:'startSpeed',ico:'💨', name:'Скорость', desc:'+5% за уровень', price:[60,120,240,480], max:4},
+  {id:'coinBonus',ico:'💰', name:'Бонус кристаллов', desc:'+15% за уровень', price:[100,200,400], max:3},
+  {id:'luck',    ico:'🍀', name:'Удача', desc:'+1 вариант перка за уровень', price:[200,500], max:2},
+];
+
+// ====== УСТАНОВКА ======
+const canvas = document.getElementById('c');
+const ctx = canvas.getContext('2d');
+const W = canvas.width, H = canvas.height;
+
+let game, keys = {}, mouse = {x:W/2, y:H/2}, lastTime = 0;
+let isDaily = false, dailyModifier = null;
+
+// ====== ВВОД ======
+addEventListener('keydown', e => {
+  keys[e.key.toLowerCase()] = true;
+  if (e.key === ' ') e.preventDefault();
+  if (game && game.running && !game.paused) {
+    if (e.key === ' ' && game.dashCd <= 0) doDash();
+    if (['1','2','3','4','5'].includes(e.key)) switchWeaponByIndex(+e.key - 1);
+  }
+  if (e.key === 'Escape' || e.key.toLowerCase() === 'p') {
+    if (game && game.running) togglePause();
+  }
+});
+addEventListener('keyup', e => keys[e.key.toLowerCase()] = false);
+canvas.addEventListener('mousemove', e => {
+  const r = canvas.getBoundingClientRect();
+  mouse.x = (e.clientX - r.left) * (W / r.width);
+  mouse.y = (e.clientY - r.top) * (H / r.height);
+});
+
+// тач
+let touchStart = null;
+canvas.addEventListener('touchstart', e => {
+  const t = e.touches[0]; const r = canvas.getBoundingClientRect();
+  touchStart = {x:(t.clientX-r.left)*(W/r.width), y:(t.clientY-r.top)*(H/r.height)};
+}, {passive:true});
+canvas.addEventListener('touchmove', e => {
+  if(!touchStart || !game || !game.running) return;
+  const t = e.touches[0]; const r = canvas.getBoundingClientRect();
+  const cx = (t.clientX-r.left)*(W/r.width), cy = (t.clientY-r.top)*(H/r.height);
+  game.player.x += (cx - touchStart.x)*1.2;
+  game.player.y += (cy - touchStart.y)*1.2;
+  touchStart = {x:cx,y:cy};
+  e.preventDefault();
+}, {passive:false});
+canvas.addEventListener('touchend', ()=> touchStart=null);
+
+// ====== УТИЛИТЫ ======
+function dist(a,b){return Math.hypot(a.x-b.x,a.y-b.y);}
+function rand(a,b){return a+Math.random()*(b-a);}
+function addParticle(x,y,color,speed=2,life=0.6,size=null){
+  game.particles.push({x,y,vx:rand(-speed,speed),vy:rand(-speed,speed),life,maxLife:life,color,r:size||rand(1.5,3.5)});
+}
+function addText(x,y,text,color='#fff',size=14){
+  game.texts.push({x,y,text,color,life:0.8,size});
+}
+function explode(x,y,color,count=20,speed=5){
+  for(let i=0;i<count;i++) addParticle(x,y,color,speed,rand(0.5,1.2),rand(2,5));
+}
+
+// ====== ИГРОВОЙ СТЕЙТ ======
+function newGame(opts={}) {
+  const ship = SHIPS[save.selectedShip] || SHIPS.scout;
+  const weapon = WEAPONS[save.selectedWeapon] || WEAPONS.pulse;
+  const meta = save.meta || {};
+  const hpBase = Math.round(100 * ship.stats.hp) + (meta.startHp||0)*20;
+  const dmgBase = 8 * ship.stats.dmg + (meta.startDmg||0)*2;
+  const speedBase = 4.2 * ship.stats.speed * (1 + (meta.startSpeed||0)*0.05);
+
+  return {
+    player: {x:W/2, y:H/2, r:15, angle:0},
+    hp: hpBase, maxHp: hpBase, speed: speedBase,
+    dmg: dmgBase,
+    fireRate: 2.5 * weapon.stats.rate,
+    fireTimer: 0,
+    projectiles: weapon.stats.bullets,
+    pierce: weapon.stats.pierce || 0,
+    bulletSpeed: weapon.stats.speed,
+    spread: weapon.stats.spread,
+    weaponSpecial: weapon.special || null,
+    weaponId: save.selectedWeapon,
+    magnet: 120, crit: 0.05, regen: 0,
+    shieldLvl: 0, shieldTimer: 0,
+    dashCdMax: ship.special==='fastDash' ? 1.25 : 2.5,
+    enemies: [], bullets: [], eBullets: [], particles: [], orbs: [], texts: [],
+    xp: 0, xpNext: 10, level: 1, coins: 0,
+    score: 0, wave: 1, waveTimer: 0, spawnTimer: 0,
+    boss: null, bossCount: 0, bossTypes: ['radial','chaser','spiral'],
+    paused: false, running: true,
+    dashCd: 0, dashTimer: 0,
+    cameraShake: 0,
+    combo: 0, comboTimer: 0, comboTicks: 0,
+    stars: Array.from({length:120},()=>({x:Math.random()*W,y:Math.random()*H,z:Math.random()*3+.5,s:Math.random()*1.5+.5})),
+    upgradesTaken: {},
+    dailyMod: opts.dailyMod || null,
+    isDaily: opts.isDaily || false,
+    timePlayed: 0,
+  };
+}
+
+function doDash() {
+  game.dashCd = game.dashCdMax;
+  game.dashTimer = 0.18;
+  game.cameraShake = 4;
+  for(let i=0;i<12;i++) addParticle(game.player.x, game.player.y, '#66ccff', 3);
+}
+
+function switchWeaponByIndex(idx) {
+  const owned = save.weapons;
+  if (idx >= 0 && idx < owned.length) {
+    save.selectedWeapon = owned[idx];
+    persist();
+    const w = WEAPONS[owned[idx]];
+    game.projectiles = w.stats.bullets;
+    game.pierce = w.stats.pierce || 0;
+    game.dmg = 8 * (SHIPS[save.selectedShip]?.stats.dmg||1) * w.stats.dmg + (save.meta.startDmg||0)*2;
+    game.fireRate = 2.5 * w.stats.rate;
+    game.bulletSpeed = w.stats.speed;
+    game.spread = w.stats.spread;
+    game.weaponSpecial = w.special || null;
+    game.weaponId = owned[idx];
+    document.getElementById('weaponEl').textContent = w.ico + ' ' + w.name;
+  }
+}
+
+// ====== ВРАГИ ======
+function spawnEnemy(){
+  const side = Math.floor(Math.random()*4);
+  let x,y;
+  if(side===0){x=rand(0,W);y=-30;}
+  else if(side===1){x=W+30;y=rand(0,H);}
+  else if(side===2){x=rand(0,W);y=H+30;}
+  else {x=-30;y=rand(0,H);}
+
+  const wave = game.wave;
+  const types = ['basic'];
+  if(wave>=2) types.push('fast');
+  if(wave>=4) types.push('tank');
+  if(wave>=5) types.push('shooter');
+  if(wave>=7) types.push('orbiter');
+  if(wave>=9) types.push('bomber');
+  let type = types[Math.floor(Math.random()*types.length)];
+
+  const hpBase = 12 + wave*4;
+  let e = {x,y,type,angle:0,hitFlash:0,vx:0,vy:0};
+  if(type==='basic'){e.hp=hpBase;e.r=14;e.speed=1.3+wave*0.05;e.color='#ff4466';e.dmg=10;}
+  if(type==='fast'){e.hp=hpBase*0.6;e.r=10;e.speed=2.6+wave*0.08;e.color='#ffaa33';e.dmg=8;}
+  if(type==='tank'){e.hp=hpBase*3;e.r=22;e.speed=0.7+wave*0.02;e.color='#aa44ff';e.dmg=18;}
+  if(type==='shooter'){e.hp=hpBase*1.2;e.r=15;e.speed=1;e.color='#33ffaa';e.dmg=6;e.shootTimer=rand(1,2);}
+  if(type==='orbiter'){e.hp=hpBase*1.5;e.r=13;e.speed=1.5;e.color='#ff66cc';e.dmg=12;e.orbitA=Math.random()*6.28;}
+  if(type==='bomber'){e.hp=hpBase*2;e.r=18;e.speed=1.2;e.color='#ff8800';e.dmg=25;e.explodeTimer=rand(2,3);}
+  if(game.dailyMod==='fast') e.speed *= 1.4;
+  if(game.dailyMod==='tank') e.hp *= 1.5;
+  game.enemies.push(e);
+}
+
+function spawnBoss(){
+  game.bossCount++;
+  const typeIdx = game.bossCount % 3;
+  const type = game.bossTypes[typeIdx];
+  const hp = 300 + game.wave*120;
+  game.boss = {
+    x: W/2, y: -80, r: 46, hp, maxHp: hp,
+    speed: 1.2, color: type==='chaser'?'#ff8800':'#ff2266',
+    type, hitFlash: 0,
+    patternTimer: 0, pattern: 0, angle: 0, phase: 0,
+    chargeTimer: 0, charging: false,
+  };
+  document.getElementById('bossWarning').style.opacity = 1;
+  setTimeout(()=>document.getElementById('bossWarning').style.opacity = 0, 2200);
+}
+
+// ====== СТРЕЛЬБА ======
+function shoot(){
+  const p = game.player;
+  const baseAngle = Math.atan2(mouse.y - p.y, mouse.x - p.x);
+  const count = game.projectiles;
+  for(let i=0;i<count;i++){
+    const offset = (i - (count-1)/2) * game.spread;
+    const a = baseAngle + offset;
+    const crit = Math.random() < game.crit;
+    game.bullets.push({
+      x:p.x + Math.cos(a)*20, y:p.y + Math.sin(a)*20,
+      vx:Math.cos(a)*game.bulletSpeed, vy:Math.sin(a)*game.bulletSpeed,
+      r: crit?5:3.5, dmg: game.dmg * (crit?2:1),
+      crit, pierceLeft: game.pierce, hit:new Set(), life:1.6,
+      chain: game.weaponSpecial==='chain' ? 2 : 0,
+    });
+  }
+  game.cameraShake = Math.max(game.cameraShake, 2);
+}
+
+// ====== ОБНОВЛЕНИЕ ======
+function update(dt){
+  const g = game;
+  const p = g.player;
+  g.timePlayed += dt;
+
+  // движение
+  let mx=0,my=0;
+  if(keys['w']||keys['arrowup']||keys['ц']) my-=1;
+  if(keys['s']||keys['arrowdown']||keys['ы']) my+=1;
+  if(keys['a']||keys['arrowleft']||keys['ф']) mx-=1;
+  if(keys['d']||keys['arrowright']||keys['в']) mx+=1;
+  if(mx||my){const l=Math.hypot(mx,my);mx/=l;my/=l;}
+  const spd = g.speed * (g.dashTimer>0?3.2:1) * 60 * dt;
+  p.x += mx*spd; p.y += my*spd;
+  p.x = Math.max(20,Math.min(W-20,p.x));
+  p.y = Math.max(20,Math.min(H-20,p.y));
+
+  if(g.dashTimer>0) g.dashTimer-=dt;
+  if(g.dashCd>0) g.dashCd-=dt;
+
+  if(g.regen>0 && g.hp<g.maxHp) g.hp = Math.min(g.maxHp, g.hp + g.regen*dt);
+  if(g.shieldTimer>0) g.shieldTimer-=dt;
+
+  // комбо
+  if(g.comboTimer>0){
+    g.comboTimer -= dt;
+    if(g.comboTimer<=0){ g.combo=0; updateComboUI(); }
+  }
+
+  // стрельба
+  g.fireTimer -= dt;
+  if(g.fireTimer<=0){ shoot(); g.fireTimer = 1/g.fireRate; }
+
+  // спавн
+  g.spawnTimer -= dt;
+  const spawnInterval = Math.max(0.35, 1.6 - g.wave*0.08) * (g.dailyMod==='fast'?0.7:1);
+  if(!g.boss && g.spawnTimer<=0 && g.enemies.length < 8 + g.wave*2){
+    spawnEnemy(); g.spawnTimer = spawnInterval;
+  }
+
+  // враги
+  for(let i=g.enemies.length-1;i>=0;i--){
+    const e = g.enemies[i];
+    e.hitFlash = Math.max(0, e.hitFlash-dt*5);
+    const dx = p.x-e.x, dy = p.y-e.y, d = Math.hypot(dx,dy)||1;
+
+    if(e.type==='orbiter'){
+      e.orbitA += dt*2;
+      const targetX = p.x + Math.cos(e.orbitA)*140;
+      const targetY = p.y + Math.sin(e.orbitA)*140;
+      e.x += (targetX-e.x)*dt*1.2;
+      e.y += (targetY-e.y)*dt*1.2;
+    } else {
+      e.x += (dx/d)*e.speed*60*dt;
+      e.y += (dy/d)*e.speed*60*dt;
+    }
+    e.angle = Math.atan2(dy,dx);
+
+    if(e.type==='shooter'){
+      e.shootTimer -= dt;
+      if(e.shootTimer<=0 && d<400){
+        e.shootTimer = 1.8;
+        const a = Math.atan2(dy,dx);
+        g.eBullets.push({x:e.x,y:e.y,vx:Math.cos(a)*4,vy:Math.sin(a)*4,r:6,dmg:8,life:3,color:'#33ffaa'});
+      }
+    }
+    if(e.type==='bomber'){
+      e.explodeTimer -= dt;
+      if(e.explodeTimer<=0){
+        e.explodeTimer = 3;
+        for(let k=0;k<10;k++){
+          const a = k/10*6.28;
+          g.eBullets.push({x:e.x,y:e.y,vx:Math.cos(a)*3,vy:Math.sin(a)*3,r:7,dmg:10,life:2.5,color:'#ff8800'});
+        }
+      }
+    }
+
+    if(d < e.r + p.r){
+      damagePlayer(e.dmg);
+      explode(e.x,e.y,e.color,10,3);
+      g.enemies.splice(i,1);
+    }
+  }
+
+  // пули игрока
+  for(let i=g.bullets.length-1;i>=0;i--){
+    const b = g.bullets[i];
+    b.x += b.vx*60*dt; b.y += b.vy*60*dt;
+    b.life -= dt;
+    if(b.life<=0 || b.x<-20||b.x>W+20||b.y<-20||b.y>H+20){g.bullets.splice(i,1);continue;}
+
+    let removed = false;
+    for(let j=g.enemies.length-1;j>=0;j--){
+      const e = g.enemies[j];
+      if(b.hit.has(e)) continue;
+      if(dist(b,e) < b.r + e.r){
+        e.hp -= b.dmg;
+        e.hitFlash = 1;
+        b.hit.add(e);
+        addText(e.x, e.y-e.r-6, Math.round(b.dmg)+(b.crit?'!':''), b.crit?'#ffcc33':'#fff');
+        for(let k=0;k<5;k++) addParticle(b.x,b.y,b.crit?'#ffcc33':'#66ccff',2,0.4);
+        if(e.hp<=0){
+          killEnemy(e,j);
+        }
+        if(b.pierceLeft>0){b.pierceLeft--;}
+        else {g.bullets.splice(i,1); removed=true;}
+        break;
+      }
+    }
+    if(removed) continue;
+
+    if(g.boss && !b.hit.has(g.boss) && dist(b,g.boss) < b.r+g.boss.r){
+      g.boss.hp -= b.dmg;
+      g.boss.hitFlash = 1;
+      b.hit.add(g.boss);
+      addText(g.boss.x+rand(-20,20), g.boss.y-20, Math.round(b.dmg)+(b.crit?'!':''), b.crit?'#ffcc33':'#fff');
+      for(let k=0;k<6;k++) addParticle(b.x,b.y,'#ff66aa',3,0.5);
+      g.cameraShake = Math.max(g.cameraShake,3);
+      if(g.boss.hp<=0) killBoss();
+      if(b.pierceLeft>0){b.pierceLeft--;}
+      else {g.bullets.splice(i,1);}
+    }
+  }
+
+  // пули врагов
+  for(let i=g.eBullets.length-1;i>=0;i--){
+    const b = g.eBullets[i];
+    b.x+=b.vx*60*dt; b.y+=b.vy*60*dt; b.life-=dt;
+    if(b.life<=0||b.x<-20||b.x>W+20||b.y<-20||b.y>H+20){g.eBullets.splice(i,1);continue;}
+    if(dist(b,p)<b.r+p.r){
+      damagePlayer(b.dmg);
+      g.eBullets.splice(i,1);
+      explode(b.x,b.y,b.color||'#33ffaa',8,2);
+    }
+  }
+
+  // орбы
+  for(let i=g.orbs.length-1;i>=0;i--){
+    const o = g.orbs[i];
+    const d = dist(o,p);
+    if(d < g.magnet){
+      const a = Math.atan2(p.y-o.y,p.x-o.x);
+      o.x += Math.cos(a)*8*60*dt;
+      o.y += Math.sin(a)*8*60*dt;
+    }
+    if(d < p.r+8){
+      g.xp += o.xp;
+      g.coins += o.coin;
+      addText(o.x,o.y,'+'+o.xp,'#66ff99');
+      g.orbs.splice(i,1);
+      while(g.xp >= g.xpNext){
+        g.xp -= g.xpNext; g.level++;
+        g.xpNext = Math.round(g.xpNext*1.35);
+        showUpgrade();
+      }
+      updateUI();
+      continue;
+    }
+  }
+
+  // босс
+  if(g.boss){
+    const b = g.boss;
+    b.hitFlash = Math.max(0,b.hitFlash-dt*5);
+    const dx = p.x-b.x, dy = p.y-b.y, d = Math.hypot(dx,dy)||1;
+
+    if(b.type === 'chaser'){
+      if(b.y < 130){ b.y += 80*dt; }
+      else {
+        if(b.chargeTimer <= 0){
+          b.charging = !b.charging;
+          b.chargeTimer = b.charging ? 0.8 : 1.4;
+          if(!b.charging){
+            // заряжён — летит к игроку
+            b.vx = (dx/d)*8; b.vy = (dy/d)*8;
+          }
+        }
+        b.chargeTimer -= dt;
+        if(b.charging){
+          // подготовка
+          b.vx *= 0.9; b.vy *= 0.9;
+        }
+        b.x += b.vx*60*dt;
+        b.y += b.vy*60*dt;
+        b.x = Math.max(60,Math.min(W-60,b.x));
+        b.y = Math.max(60,Math.min(H-60,b.y));
+      }
+    } else {
+      if(b.phase===0 && b.y < 130){ b.y += 80*dt; }
+      else {
+        b.angle += dt*0.8;
+        b.x += Math.cos(b.angle)*b.speed*60*dt;
+        b.y += Math.sin(b.angle)*b.speed*60*dt;
+        b.x = Math.max(60,Math.min(W-60,b.x));
+        b.y = Math.max(60,Math.min(H-60,b.y));
+        b.phase = 1;
+      }
+    }
+
+    b.patternTimer -= dt;
+    if(b.patternTimer<=0){
+      b.patternTimer = b.type==='chaser'?1.8:1.6;
+      b.pattern = (b.pattern+1)%3;
+      if(b.type==='chaser'){
+        // веер
+        const a = Math.atan2(dy,dx);
+        for(let k=-2;k<=2;k++){
+          g.eBullets.push({x:b.x,y:b.y,vx:Math.cos(a+k*0.2)*6,vy:Math.sin(a+k*0.2)*6,r:8,dmg:14,life:4,color:'#ffaa33'});
+        }
+      } else if(b.type==='spiral' || b.pattern===2){
+        for(let k=0;k<12;k++){
+          const a = b.angle*2 + k*(Math.PI/6);
+          g.eBullets.push({x:b.x,y:b.y,vx:Math.cos(a)*4,vy:Math.sin(a)*4,r:6,dmg:10,life:4,color:'#ff3366'});
+        }
+      } else if(b.pattern===0){
+        for(let k=0;k<16;k++){
+          const a = (k/16)*Math.PI*2 + b.angle;
+          g.eBullets.push({x:b.x,y:b.y,vx:Math.cos(a)*3.2,vy:Math.sin(a)*3.2,r:7,dmg:12,life:4,color:'#ff66aa'});
+        }
+      } else {
+        const a = Math.atan2(p.y-b.y,p.x-b.x);
+        for(let k=-1;k<=1;k++){
+          g.eBullets.push({x:b.x,y:b.y,vx:Math.cos(a+k*0.25)*5,vy:Math.sin(a+k*0.25)*5,r:8,dmg:14,life:4,color:'#ffaa33'});
+        }
+      }
+    }
+    if(dist(b,p) < b.r+p.r) damagePlayer(25);
+  }
+
+  // частицы
+  for(let i=g.particles.length-1;i>=0;i--){
+    const pt = g.particles[i];
+    pt.x+=pt.vx*60*dt; pt.y+=pt.vy*60*dt;
+    pt.vx*=0.95; pt.vy*=0.95;
+    pt.life-=dt;
+    if(pt.life<=0) g.particles.splice(i,1);
+  }
+  for(let i=g.texts.length-1;i>=0;i--){
+    const t = g.texts[i];
+    t.y -= 40*dt; t.life-=dt;
+    if(t.life<=0) g.texts.splice(i,1);
+  }
+
+  for(const s of g.stars){
+    s.y += s.z*15*dt;
+    if(s.y>H) { s.y=0; s.x=Math.random()*W; }
+  }
+  g.cameraShake *= 0.9;
+
+  if(!g.boss){
+    g.waveTimer += dt;
+    const needBoss = g.wave%5===0 && g.enemies.length===0 && g.bossCount < g.wave/5;
+    if(needBoss) spawnBoss();
+    if(g.waveTimer > 20 && g.enemies.length===0){
+      g.wave++; g.waveTimer=0;
+      updateUI();
+    }
+  }
+}
+
+function killEnemy(e, idx){
+  game.enemies.splice(idx,1);
+  const mult = 1 + game.combo*0.1;
+  game.score += Math.round((10 + game.wave*2) * mult);
+  explode(e.x,e.y,e.color,14,4);
+  // комбо
+  game.combo++;
+  game.comboTimer = 3;
+  updateComboUI();
+  const n = e.type==='tank'?3:1;
+  for(let k=0;k<n;k++){
+    game.orbs.push({
+      x:e.x+rand(-10,10), y:e.y+rand(-10,10),
+      xp:2+Math.floor(game.wave/2), coin:1, r:6, pulse:Math.random()*6.28
+    });
+  }
+  updateUI();
+}
+
+function killBoss(){
+  const b = game.boss;
+  game.score += 200 + game.wave*30;
+  game.cameraShake = 20;
+  explode(b.x,b.y,'#ff3366',40,6);
+  explode(b.x,b.y,'#ffcc33',30,5);
+  for(let k=0;k<10;k++){
+    game.orbs.push({x:b.x+rand(-40,40),y:b.y+rand(-40,40),xp:8+game.wave,coin:5,r:8,pulse:0});
+  }
+  game.boss = null;
+  game.wave++;
+  game.waveTimer = 0;
+  updateUI();
+}
+
+function damagePlayer(dmg){
+  if(game.dashTimer>0) return;
+  if(game.shieldTimer<=0 && game.shieldLvl>0){
+    game.shieldTimer = 8;
+    game.cameraShake = 6;
+    for(let i=0;i<20;i++) addParticle(game.player.x,game.player.y,'#66ccff',4);
+    return;
+  }
+  if(game.dailyMod==='oneshot') { game.hp = 0; }
+  else game.hp -= dmg;
+  game.cameraShake = 8;
+  explode(game.player.x,game.player.y,'#ff3366',10,3);
+  game.combo = 0; updateComboUI();
+  updateUI();
+  if(game.hp<=0) gameOver();
+}
+
+function updateComboUI(){
+  const el = document.getElementById('combo');
+  if(game.combo >= 3){
+    el.textContent = 'x' + game.combo;
+    el.style.color = game.combo>=20?'#ff3366':game.combo>=10?'#ffcc33':'#66ff99';
+    el.style.opacity = 1;
+  } else {
+    el.style.opacity = 0;
+  }
+}
+
+// ====== ОТРИСОВКА ======
+function draw(){
+  ctx.save();
+  if(game.cameraShake>0.5){
+    ctx.translate(rand(-game.cameraShake,game.cameraShake), rand(-game.cameraShake,game.cameraShake));
+  }
+  ctx.fillStyle = '#05050f';
+  ctx.fillRect(-20,-20,W+40,H+40);
+  ctx.strokeStyle = 'rgba(60,80,160,0.08)';
+  ctx.lineWidth = 1;
+  for(let x=0;x<W;x+=60){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,H);ctx.stroke();}
+  for(let y=0;y<H;y+=60){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke();}
+  for(const s of game.stars){
+    ctx.globalAlpha = s.z/3.5;
+    ctx.fillStyle = '#aaccff';
+    ctx.fillRect(s.x,s.y,s.s,s.s);
+  }
+  ctx.globalAlpha = 1;
+
+  // орбы
+  for(const o of game.orbs){
+    o.pulse += 0.1;
+    const glow = 6 + Math.sin(o.pulse)*2;
+    const grad = ctx.createRadialGradient(o.x,o.y,0,o.x,o.y,glow+8);
+    grad.addColorStop(0,'rgba(102,255,153,0.9)');
+    grad.addColorStop(1,'rgba(102,255,153,0)');
+    ctx.fillStyle = grad;
+    ctx.beginPath(); ctx.arc(o.x,o.y,glow+8,0,6.28); ctx.fill();
+    ctx.fillStyle = '#66ff99';
+    ctx.beginPath(); ctx.arc(o.x,o.y,5,0,6.28); ctx.fill();
+  }
+
+  // враги
+  for(const e of game.enemies){
+    ctx.save();
+    ctx.translate(e.x,e.y);
+    ctx.rotate(e.angle);
+    const col = e.hitFlash>0 ? '#fff' : e.color;
+    ctx.shadowColor = e.color; ctx.shadowBlur = 15;
+    ctx.fillStyle = col;
+    if(e.type==='tank'){
+      ctx.beginPath();
+      for(let i=0;i<6;i++){const a=i/6*6.28;const r=e.r;ctx.lineTo(Math.cos(a)*r,Math.sin(a)*r);}
+      ctx.closePath();ctx.fill();
+    } else if(e.type==='fast'){
+      ctx.beginPath();ctx.moveTo(e.r,0);ctx.lineTo(-e.r*0.7,e.r*0.7);ctx.lineTo(-e.r*0.7,-e.r*0.7);
+      ctx.closePath();ctx.fill();
+    } else if(e.type==='orbiter'){
+      ctx.beginPath();
+      for(let i=0;i<5;i++){const a=i/5*6.28-Math.PI/2;const r=e.r;const ia=a+0.3;
+        ctx.lineTo(Math.cos(a)*r,Math.sin(a)*r);ctx.lineTo(Math.cos(ia)*r*0.45,Math.sin(ia)*r*0.45);}
+      ctx.closePath();ctx.fill();
+    } else if(e.type==='bomber'){
+      ctx.beginPath();ctx.arc(0,0,e.r,0,6.28);ctx.fill();
+      ctx.strokeStyle='#ffcc33';ctx.lineWidth=2;
+      ctx.beginPath();ctx.arc(0,0,e.r*0.5,0,6.28);ctx.stroke();
+    } else {
+      ctx.beginPath();ctx.arc(0,0,e.r,0,6.28);ctx.fill();
+    }
+    ctx.shadowBlur = 0;
+    ctx.fillStyle='#000';
+    ctx.beginPath();ctx.arc(e.r*0.3,0,e.r*0.18,0,6.28);ctx.fill();
+    ctx.restore();
+  }
+
+  // босс
+  if(game.boss){
+    const b = game.boss;
+    ctx.save(); ctx.translate(b.x,b.y);
+    ctx.rotate(b.angle*0.5);
+    ctx.shadowColor=b.color; ctx.shadowBlur=30;
+    const col = b.hitFlash>0?'#fff':b.color;
+    if(b.type==='chaser'){
+      // острый
+      ctx.fillStyle=col;
+      ctx.beginPath();
+      ctx.moveTo(b.r*1.3,0);
+      ctx.lineTo(-b.r*0.5,b.r*0.8);
+      ctx.lineTo(-b.r*0.2,0);
+      ctx.lineTo(-b.r*0.5,-b.r*0.8);
+      ctx.closePath();ctx.fill();
+      if(b.charging){ctx.strokeStyle='#ffcc33';ctx.lineWidth=4;ctx.stroke();}
+    } else {
+      ctx.fillStyle = col;
+      ctx.beginPath();
+      for(let i=0;i<8;i++){
+        const a=i/8*6.28;
+        const r = i%2===0? b.r : b.r*0.7;
+        ctx.lineTo(Math.cos(a)*r,Math.sin(a)*r);
+      }
+      ctx.closePath(); ctx.fill();
+    }
+    ctx.shadowBlur=0;
+    ctx.fillStyle='#fff';
+    ctx.beginPath();ctx.arc(0,0,b.r*0.3,0,6.28);ctx.fill();
+    ctx.fillStyle=b.color;
+    ctx.beginPath();ctx.arc(0,0,b.r*0.15,0,6.28);ctx.fill();
+    ctx.restore();
+
+    const bw = 400, bx = W/2-bw/2, by = 20;
+    ctx.fillStyle='rgba(0,0,0,0.6)';
+    ctx.fillRect(bx-2,by-2,bw+4,14);
+    ctx.fillStyle='#331122';
+    ctx.fillRect(bx,by,bw,10);
+    ctx.fillStyle=b.color;
+    ctx.fillRect(bx,by,bw*(b.hp/b.maxHp),10);
+    ctx.strokeStyle='#ff66aa';ctx.lineWidth=1;
+    ctx.strokeRect(bx,by,bw,10);
+  }
+
+  // пули
+  for(const b of game.bullets){
+    ctx.shadowColor = b.crit?'#ffcc33':'#66ccff';
+    ctx.shadowBlur = 12;
+    ctx.fillStyle = b.crit?'#ffcc33':'#aae0ff';
+    ctx.beginPath();ctx.arc(b.x,b.y,b.r,0,6.28);ctx.fill();
+    ctx.shadowBlur=0;
+  }
+  for(const b of game.eBullets){
+    ctx.shadowColor=b.color;ctx.shadowBlur=12;
+    ctx.fillStyle=b.color;
+    ctx.beginPath();ctx.arc(b.x,b.y,b.r,0,6.28);ctx.fill();
+    ctx.shadowBlur=0;
+  }
+
+  for(const p of game.particles){
+    ctx.globalAlpha = p.life/p.maxLife;
+    ctx.fillStyle = p.color;
+    ctx.beginPath();ctx.arc(p.x,p.y,p.r*(p.life/p.maxLife),0,6.28);ctx.fill();
+  }
+  ctx.globalAlpha = 1;
+
+  // игрок
+  const pl = game.player;
+  const angle = Math.atan2(mouse.y-pl.y, mouse.x-pl.x);
+  ctx.save();
+  ctx.translate(pl.x,pl.y);
+  ctx.rotate(angle);
+  if(game.shieldLvl>0 && game.shieldTimer<=0){
+    ctx.strokeStyle='rgba(102,204,255,0.6)';
+    ctx.lineWidth=2;
+    ctx.beginPath();ctx.arc(0,0,pl.r+8,0,6.28);ctx.stroke();
+  }
+  ctx.shadowColor='#66ccff';ctx.shadowBlur=20;
+  ctx.fillStyle='#aae0ff';
+  ctx.beginPath();
+  ctx.moveTo(pl.r+4,0);
+  ctx.lineTo(-pl.r*0.7,pl.r*0.75);
+  ctx.lineTo(-pl.r*0.3,0);
+  ctx.lineTo(-pl.r*0.7,-pl.r*0.75);
+  ctx.closePath();ctx.fill();
+  ctx.shadowBlur=0;
+  ctx.fillStyle='#2255aa';
+  ctx.beginPath();ctx.arc(0,0,pl.r*0.35,0,6.28);ctx.fill();
+  const thrust = (keys['w']||keys['s']||keys['a']||keys['d']||keys['arrowup']||keys['arrowdown']||keys['arrowleft']||keys['arrowright'])?1:0.4;
+  const fl = 8+Math.random()*8*thrust;
+  const fg = ctx.createLinearGradient(-pl.r*0.3,0,-pl.r*0.3-fl,0);
+  fg.addColorStop(0,'rgba(255,180,50,0.9)');
+  fg.addColorStop(1,'rgba(255,60,50,0)');
+  ctx.fillStyle=fg;
+  ctx.beginPath();
+  ctx.moveTo(-pl.r*0.3,-4);ctx.lineTo(-pl.r*0.3-fl,0);ctx.lineTo(-pl.r*0.3,4);
+  ctx.closePath();ctx.fill();
+  ctx.restore();
+
+  ctx.font = 'bold 14px system-ui';
+  ctx.textAlign='center';
+  for(const t of game.texts){
+    ctx.globalAlpha = Math.min(1,t.life/0.4);
+    ctx.fillStyle = t.color;
+    ctx.strokeStyle='rgba(0,0,0,0.8)';ctx.lineWidth=3;
+    ctx.strokeText(t.text,t.x,t.y);
+    ctx.fillText(t.text,t.x,t.y);
+  }
+  ctx.globalAlpha=1;
+
+  if(game.dashCd>0){
+    const pct = 1 - game.dashCd/game.dashCdMax;
+    ctx.strokeStyle='rgba(102,204,255,0.4)';
+    ctx.lineWidth=3;
+    ctx.beginPath();ctx.arc(pl.x,pl.y,pl.r+14,-Math.PI/2,-Math.PI/2+pct*6.28);ctx.stroke();
+  }
+
+  ctx.restore();
+}
+
+// ====== UI ======
+function updateUI(){
+  document.getElementById('scoreEl').textContent = 'Очки: ' + game.score;
+  document.getElementById('waveEl').textContent = 'Волна: ' + game.wave;
+  document.getElementById('coinEl').textContent = '💎 ' + (save.coins + game.coins);
+  document.getElementById('hpBar').style.width = Math.max(0,(game.hp/game.maxHp)*100) + '%';
+  document.getElementById('xpBar').style.width = (game.xp/game.xpNext)*100 + '%';
+  const w = WEAPONS[game.weaponId] || WEAPONS.pulse;
+  document.getElementById('weaponEl').textContent = w.ico + ' ' + w.name;
+}
+
+const PERKS = [
+  {id:'dmg', ico:'⚔️', name:'Урон', desc:'+3 урона снарядов', apply:g=>g.dmg+=3},
+  {id:'rate', ico:'⚡', name:'Скорострельность', desc:'+25% скорости стрельбы', apply:g=>g.fireRate*=1.25},
+  {id:'speed', ico:'🚀', name:'Скорость', desc:'+15% скорости движения', apply:g=>g.speed*=1.15},
+  {id:'hp', ico:'❤️', name:'Здоровье', desc:'+25 макс. HP и лечение', apply:g=>{g.maxHp+=25; g.hp=g.maxHp;}},
+  {id:'multi', ico:'🔱', name:'Мультивыстрел', desc:'+1 снаряд за залп', apply:g=>g.projectiles+=1},
+  {id:'pierce', ico:'🗡️', name:'Пробитие', desc:'Снаряды пробивают +1 врага', apply:g=>g.pierce+=1},
+  {id:'magnet', ico:'🧲', name:'Магнит', desc:'Радиус сбора +60%', apply:g=>g.magnet*=1.6},
+  {id:'crit', ico:'💥', name:'Крит', desc:'+15% шанс крита (x2 урон)', apply:g=>g.crit+=0.15},
+  {id:'regen',ico:'✨', name:'Регенерация', desc:'+1 HP в секунду', apply:g=>g.regen+=1},
+  {id:'shield',ico:'🛡️', name:'Щит', desc:'Блокирует 1 удар (КД 8с)', apply:g=>g.shieldLvl++},
+];
+
+function showUpgrade(){
+  game.paused = true;
+  const screen = document.getElementById('upgradeScreen');
+  const list = document.getElementById('upgradeList');
+  screen.style.display='block';
+  document.getElementById('menuScreen').style.display='none';
+  document.getElementById('gameOverScreen').style.display='none';
+
+  const pool = [...PERKS];
+  const count = 3 + (save.meta.luck||0);
+  const picks = [];
+  while(picks.length<count && pool.length){
+    const idx = Math.floor(Math.random()*pool.length);
+    picks.push(pool.splice(idx,1)[0]);
+  }
+  list.innerHTML = '';
+  for(const u of picks){
+    const lvl = (game.upgradesTaken[u.id]||0);
+    const card = document.createElement('div');
+    card.className='card';
+    card.innerHTML = `<div class="ico">${u.ico}</div>
+      <div class="name">${u.name}</div>
+      <div class="desc">${u.desc}</div>
+      <div class="lvl">Уровень: ${lvl}</div>`;
+    card.onclick = ()=>{
+      u.apply(game);
+      game.upgradesTaken[u.id] = lvl+1;
+      screen.style.display='none';
+      game.paused = false;
+    };
+    list.appendChild(card);
+  }
+}
+
+function gameOver(){
+  game.running = false;
+  const bonusCoins = Math.round(game.coins * (1 + (save.meta.coinBonus||0)*0.15) * (game.isDaily?2:1));
+  save.coins += bonusCoins;
+  const best = Math.max(save.best, game.score);
+  save.best = best;
+  save.leaderboard.push({score:game.score, wave:game.wave, date:Date.now(), daily:game.isDaily});
+  save.leaderboard.sort((a,b)=>b.score-a.score);
+  save.leaderboard = save.leaderboard.slice(0,10);
+  if(game.isDaily){ save.dailyDone = todayKey(); }
+  persist();
+
+  document.getElementById('overlay').style.display='flex';
+  document.getElementById('menuScreen').style.display='none';
+  document.getElementById('upgradeScreen').style.display='none';
+  const go = document.getElementById('gameOverScreen');
+  go.style.display='block';
+  document.getElementById('finalScore').textContent = `Очки: ${game.score} | Волна: ${game.wave} | Уровень: ${game.level}`;
+  document.getElementById('bestScore').textContent = `🏆 Рекорд: ${best}`;
+  document.getElementById('coinReward').textContent = `💎 Получено кристаллов: +${bonusCoins}`;
+}
+
+// ====== МЕНЮ ======
+function startGame(dailyOpts){
+  isDaily = !!dailyOpts;
+  dailyModifier = dailyOpts?.mod || null;
+  game = newGame({isDaily, dailyMod: dailyModifier});
+  document.getElementById('overlay').style.display='none';
+  document.getElementById('menuScreen').style.display='none';
+  document.getElementById('hangarScreen').style.display='none';
+  document.getElementById('dailyScreen').style.display='none';
+  document.getElementById('leaderScreen').style.display='none';
+  document.getElementById('upgradeScreen').style.display='none';
+  document.getElementById('gameOverScreen').style.display='none';
+  document.getElementById('pauseOverlay').style.display='none';
+  updateUI();
+  updateComboUI();
+  lastTime = performance.now();
+}
+
+function backToMenu(){
+  if(game) game.running = false;
+  document.getElementById('overlay').style.display='flex';
+  document.getElementById('pauseOverlay').style.display='none';
+  document.getElementById('menuScreen').style.display='block';
+  document.getElementById('hangarScreen').style.display='none';
+  document.getElementById('dailyScreen').style.display='none';
+  document.getElementById('leaderScreen').style.display='none';
+  document.getElementById('upgradeScreen').style.display='none';
+  document.getElementById('gameOverScreen').style.display='none';
+  document.getElementById('bestLine').textContent = save.best>0 ? `🏆 Рекорд: ${save.best} · 💎 ${save.coins}` : `💎 ${save.coins}`;
+}
+
+function togglePause(){
+  if(!game || !game.running) return;
+  game.paused = !game.paused;
+  document.getElementById('pauseOverlay').style.display = game.paused ? 'flex' : 'none';
+}
+
+function openHangar(){
+  document.getElementById('menuScreen').style.display='none';
+  document.getElementById('hangarScreen').style.display='block';
+  document.getElementById('hangarCoins').textContent = save.coins;
+  renderHangarContent('ships');
+}
+function switchHangarTab(tab, el){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  renderHangarContent(tab);
+}
+function renderHangarContent(tab){
+  const box = document.getElementById('hangarContent');
+  box.innerHTML = '';
+
+  if(tab === 'ships'){
+    for(const [id, s] of Object.entries(SHIPS)){
+      const owned = save.ships.includes(id);
+      const selected = save.selectedShip === id;
+      const card = document.createElement('div');
+      card.className = 'shipCard' + (selected?' selected':'') + (!owned?' locked':'');
+      card.innerHTML = `<h3>${s.ico} ${s.name}</h3><small>${s.desc}</small>` +
+        (owned ? (selected?'<div class="price">✓ Выбран</div>':'<div class="price" style="color:#66ff99">Куплен</div>')
+               : `<div class="price">💎 ${s.price}</div>`);
+      card.onclick = ()=>{
+        if(!owned){
+          if(save.coins >= s.price){
+            save.coins -= s.price; save.ships.push(id); persist();
+            document.getElementById('hangarCoins').textContent = save.coins;
+          } else { alert('Недостаточно кристаллов!'); return; }
+        }
+        save.selectedShip = id; persist();
+        renderHangarContent('ships');
+      };
+      box.appendChild(card);
+    }
+  }
+  else if(tab === 'weapons'){
+    for(const [id, w] of Object.entries(WEAPONS)){
+      const owned = save.weapons.includes(id);
+      const selected = save.selectedWeapon === id;
+      const card = document.createElement('div');
+      card.className = 'wpnCard' + (selected?' selected':'') + (!owned?' locked':'');
+      card.innerHTML = `<h3>${w.ico} ${w.name}</h3><small>${w.desc}</small>` +
+        (owned ? (selected?'<div class="price">✓ Выбран</div>':'<div class="price" style="color:#66ff99">Куплен</div>')
+               : `<div class="price">💎 ${w.price}</div>`);
+      card.onclick = ()=>{
+        if(!owned){
+          if(save.coins >= w.price){
+            save.coins -= w.price; save.weapons.push(id); persist();
+            document.getElementById('hangarCoins').textContent = save.coins;
+          } else { alert('Недостаточно кристаллов!'); return; }
+        }
+        save.selectedWeapon = id; persist();
+        renderHangarContent('weapons');
+      };
+      box.appendChild(card);
+    }
+  }
+  else if(tab === 'meta'){
+    for(const m of META_UPGRADES){
+      const lvl = save.meta[m.id] || 0;
+      const maxed = lvl >= m.max;
+      const price = maxed ? 0 : m.price[lvl];
+      const card = document.createElement('div');
+      card.className = 'shipCard' + (maxed?' selected':'');
+      card.innerHTML = `<h3>${m.ico} ${m.name}</h3><small>${m.desc}</small>
+        <div class="lvl">Уровень: ${lvl}/${m.max}</div>
+        ${maxed ? '<div class="price" style="color:#66ff99">✓ Максимум</div>' : `<div class="price">💎 ${price}</div>`}`;
+      card.onclick = ()=>{
+        if(maxed) return;
+        if(save.coins >= price){
+          save.coins -= price;
+          save.meta[m.id] = lvl+1;
+          persist();
+          document.getElementById('hangarCoins').textContent = save.coins;
+          renderHangarContent('meta');
+        } else alert('Недостаточно кристаллов!');
+      };
+      box.appendChild(card);
+    }
+  }
+}
+
+function todayKey(){ const d = new Date(); return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate(); }
+
+const DAILY_MODS = [
+  {id:'fast', name:'Ускорение', desc:'Враги двигаются на 40% быстрее'},
+  {id:'tank', name:'Броня', desc:'Враги имеют +50% HP'},
+  {id:'oneshot', name:'Стеклянный', desc:'Любое попадание — смерть'},
+];
+
+function getDailyMod(){
+  const day = Math.floor(Date.now()/86400000);
+  return DAILY_MODS[day % DAILY_MODS.length];
+}
+
+function openDaily(){
+  document.getElementById('menuScreen').style.display='none';
+  document.getElementById('dailyScreen').style.display='block';
+  const mod = getDailyMod();
+  const done = save.dailyDone === todayKey();
+  document.getElementById('dailyContent').innerHTML = `
+    <div class="shipCard" style="max-width:400px;margin:0 auto">
+      <h3>🎯 ${mod.name}</h3>
+      <small>${mod.desc}</small>
+      <div class="price" style="color:#66ff99">Награда: x2 кристаллов</div>
+      ${done?'<div class="price" style="color:#ff8888">Уже пройдено сегодня</div>':''}
+    </div>`;
+  document.getElementById('dailyPlayBtn').disabled = done;
+  document.getElementById('dailyPlayBtn').style.opacity = done?0.4:1;
+}
+
+function startDailyChallenge(){
+  const mod = getDailyMod();
+  startGame({mod:mod.id});
+}
+
+function openLeaderboard(){
+  document.getElementById('menuScreen').style.display='none';
+  document.getElementById('leaderScreen').style.display='block';
+  const box = document.getElementById('leaderContent');
+  if(save.leaderboard.length === 0){
+    box.innerHTML = '<p>Пока нет рекордов. Сыграй первый!</p>';
+  } else {
+    box.innerHTML = save.leaderboard.map((r,i)=>{
+      const medal = ['🥇','🥈','🥉'][i] || `#${i+1}`;
+      return `<div class="shipCard" style="width:100%;max-width:400px">
+        <h3>${medal} ${r.score} очков ${r.daily?'🎯':''}</h3>
+        <small>Волна ${r.wave} · ${new Date(r.date).toLocaleDateString()}</small>
+      </div>`;
+    }).join('');
+  }
+}
+
+// ====== ЦИКЛ ======
+function loop(now){
+  const dt = Math.min(0.05, (now-lastTime)/1000);
+  lastTime = now;
+  if(game && game.running && !game.paused){
+    update(dt);
+  }
+  if(game) draw();
+  requestAnimationFrame(loop);
+}
+
+game = newGame();
+game.running = false;
+requestAnimationFrame(loop);
+
+window.addEventListener('load',()=>{
+  backToMenu();
+  document.getElementById('overlay').style.display='flex';
+});
+</script>
+</body>
+</html>

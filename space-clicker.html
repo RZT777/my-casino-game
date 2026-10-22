@@ -3,39 +3,43 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>🚀 Космический Кликер ULTIMATE</title>
+<title>🚀 Космический Кликер v3.1</title>
 <style>
   * { margin:0; padding:0; box-sizing:border-box; user-select:none; -webkit-tap-highlight-color:transparent; }
   body { font-family:'Segoe UI',Arial,sans-serif; background:radial-gradient(ellipse at bottom,#1b2735 0%,#090a0f 100%); color:#fff; min-height:100vh; display:flex; justify-content:center; align-items:center; overflow:hidden; }
-  
-  /* Фон */
   .stars { position:fixed; inset:0; pointer-events:none; z-index:0; }
   .star { position:absolute; background:#fff; border-radius:50%; animation:twinkle 3s infinite; }
   @keyframes twinkle { 0%,100%{opacity:.2} 50%{opacity:1} }
   
-  /* Лэйаут */
   .game { position:relative; z-index:1; display:flex; gap:20px; padding:15px; max-width:1100px; width:100%; align-items:flex-start; }
   .left { flex:1; display:flex; flex-direction:column; align-items:center; gap:15px; }
-  .right { width:380px; display:flex; flex-direction:column; gap:10px; max-height:95vh; }
+  .right { width:400px; display:flex; flex-direction:column; gap:10px; max-height:95vh; }
   
-  /* Счёт */
+  .profile { display:flex; justify-content:space-between; align-items:center; width:100%; background:rgba(255,255,255,0.05); padding:10px 15px; border-radius:12px; border:1px solid rgba(255,255,255,0.1); }
+  .lvl-box { display:flex; align-items:center; gap:10px; }
+  .lvl-badge { background:linear-gradient(135deg,#ff8c00,#ffd700); color:#000; font-weight:bold; padding:5px 10px; border-radius:8px; font-size:14px; }
+  .xp-bar { width:120px; height:6px; background:rgba(0,0,0,0.5); border-radius:3px; overflow:hidden; }
+  .xp-fill { height:100%; background:#00d2ff; width:0%; transition:width 0.3s; }
+  
   .stats { text-align:center; }
   .score { font-size:46px; font-weight:800; background:linear-gradient(90deg,#00d2ff,#7b2ff7); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; filter:drop-shadow(0 0 15px rgba(0,210,255,.5)); }
   .label { font-size:11px; color:#8899aa; letter-spacing:3px; text-transform:uppercase; }
   .per-sec { font-size:16px; color:#00d2ff; font-weight:bold; margin-top:5px; }
   .dm-info { font-size:14px; color:#c77dff; margin-top:5px; font-weight:bold; }
   
-  /* Планета */
   .planet-wrap { position:relative; width:260px; height:260px; display:flex; align-items:center; justify-content:center; }
   .planet { width:200px; height:200px; border-radius:50%; cursor:pointer; position:relative;
     background:radial-gradient(circle at 30% 30%,#ff6b6b,#c92a2a 40%,#862e2e 70%,#4a1818);
     box-shadow:0 0 60px rgba(255,107,107,.5),inset -20px -20px 60px rgba(0,0,0,.6),inset 15px 15px 40px rgba(255,255,255,.15);
-    transition:transform .08s; z-index:2; }
+    transition:transform .08s, background .3s; z-index:2; }
   .planet:active { transform:scale(.94); }
   .planet::before { content:''; position:absolute; width:150%; height:26px; top:50%; left:-25%; transform:translateY(-50%) rotate(-20deg); border-radius:50%; background:linear-gradient(90deg,transparent,rgba(200,180,140,.8),transparent); box-shadow:0 0 20px rgba(200,180,140,.5); z-index:-1; }
   .planet::after { content:''; position:absolute; inset:0; border-radius:50%; background:radial-gradient(circle at 35% 35%,transparent 40%,rgba(0,0,0,.5) 85%); }
   
-  /* Эффекты */
+  .skin-earth { background:radial-gradient(circle at 30% 30%,#4ade80,#16a34a 40%,#14532d 70%,#052e16) !important; box-shadow:0 0 60px rgba(74,222,128,.5),inset -20px -20px 60px rgba(0,0,0,.6),inset 15px 15px 40px rgba(255,255,255,.15) !important; }
+  .skin-gas { background:radial-gradient(circle at 30% 30%,#fde047,#ca8a04 40%,#854d0e 70%,#422006) !important; box-shadow:0 0 60px rgba(253,224,71,.5),inset -20px -20px 60px rgba(0,0,0,.6),inset 15px 15px 40px rgba(255,255,255,.15) !important; }
+  .skin-ice { background:radial-gradient(circle at 30% 30%,#bae6fd,#38bdf8 40%,#0369a1 70%,#082f49) !important; box-shadow:0 0 60px rgba(186,230,253,.5),inset -20px -20px 60px rgba(0,0,0,.6),inset 15px 15px 40px rgba(255,255,255,.15) !important; }
+  
   .particle { position:fixed; pointer-events:none; border-radius:50%; z-index:99; }
   .float-text { position:fixed; pointer-events:none; font-weight:bold; font-size:20px; color:#ffd700; text-shadow:0 0 10px rgba(255,215,0,.9); animation:floatUp .9s ease-out forwards; z-index:100; }
   .crit { color:#ff3b3b; font-size:28px; text-shadow:0 0 15px rgba(255,60,60,1); }
@@ -47,22 +51,36 @@
   .comet { position:absolute; width:60px; height:60px; border-radius:50%; background:radial-gradient(circle,#66ffff,#0088ff); box-shadow:0 0 40px #00d2ff; cursor:pointer; z-index:5; animation:pulse .4s infinite alternate; }
   @keyframes pulse { from{transform:scale(1)} to{transform:scale(1.15)} }
   
-  /* Вкладки и Магазин */
-  .tabs { display:flex; gap:4px; background:rgba(20,30,50,.7); padding:5px; border-radius:12px; border:1px solid rgba(0,210,255,.2); }
-  .tab { flex:1; padding:10px 4px; background:transparent; border:none; color:#8899aa; font-size:12px; font-weight:600; cursor:pointer; border-radius:8px; transition:all .2s; }
+  .tabs { display:flex; gap:2px; background:rgba(20,30,50,.7); padding:5px; border-radius:12px; border:1px solid rgba(0,210,255,.2); flex-wrap:wrap; }
+  .tab { flex:1; min-width:70px; padding:8px 4px; background:transparent; border:none; color:#8899aa; font-size:11px; font-weight:600; cursor:pointer; border-radius:8px; transition:all .2s; }
   .tab.active { background:linear-gradient(135deg,#00d2ff,#7b2ff7); color:#fff; }
-  .panel { background:rgba(20,30,50,.75); border:1px solid rgba(0,210,255,.2); border-radius:16px; padding:15px; overflow-y:auto; max-height:calc(95vh - 70px); }
+  
+  .panel { background:rgba(20,30,50,.75); border:1px solid rgba(0,210,255,.2); border-radius:16px; padding:15px; overflow-y:auto; max-height:calc(95vh - 100px); }
   .panel::-webkit-scrollbar { width:6px; }
   .panel::-webkit-scrollbar-thumb { background:rgba(0,210,255,.3); border-radius:3px; }
   
-  .item { background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.1); border-radius:12px; padding:10px; margin-bottom:8px; display:flex; align-items:center; gap:10px; cursor:pointer; transition:all .2s; }
-  .item:hover { background:rgba(0,210,255,.15); border-color:rgba(0,210,255,.5); transform:translateX(-3px); }
-  .item.locked { opacity:.4; cursor:not-allowed; }
-  .item-icon { font-size:28px; width:45px; height:45px; display:flex; align-items:center; justify-content:center; background:rgba(0,0,0,.3); border-radius:10px; }
-  .item-info { flex:1; }
-  .item-name { font-weight:bold; font-size:14px; }
+  /* Кнопка покупки */
+  .item { background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.1); border-radius:12px; padding:10px; margin-bottom:8px; display:flex; align-items:center; gap:10px; transition:all .2s; }
+  .item:hover { background:rgba(0,210,255,.15); border-color:rgba(0,210,255,.5); }
+  .item.locked { opacity:.5; }
+  .item-icon { font-size:28px; width:45px; height:45px; display:flex; align-items:center; justify-content:center; background:rgba(0,0,0,.3); border-radius:10px; flex-shrink:0; }
+  .item-info { flex:1; min-width:0; }
+  .item-name { font-weight:bold; font-size:14px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
   .item-cost { font-size:12px; color:#ffd700; margin-top:2px; }
-  .item-count { font-size:16px; font-weight:bold; color:#c77dff; background:rgba(199,125,255,.15); padding:3px 8px; border-radius:8px; }
+  .item-count { font-size:16px; font-weight:bold; color:#c77dff; background:rgba(199,125,255,.15); padding:3px 8px; border-radius:8px; flex-shrink:0; }
+  
+  .buy-btns { display:flex; flex-direction:column; gap:4px; margin-left:5px; }
+  .buy-btn { padding:6px 10px; border-radius:6px; background:linear-gradient(135deg,#00d2ff,#7b2ff7); color:#fff; font-weight:bold; border:none; cursor:pointer; font-size:12px; transition:all .1s; }
+  .buy-btn:hover:not(:disabled) { filter:brightness(1.2); transform:scale(1.05); }
+  .buy-btn:active:not(:disabled) { transform:scale(0.95); }
+  .buy-btn:disabled { background:#555; opacity:0.5; cursor:not-allowed; filter:grayscale(1); }
+  .btn-small { padding:4px 8px; font-size:11px; }
+  
+  .quest { background:rgba(255,255,255,.05); padding:10px; border-radius:10px; margin-bottom:10px; border:1px solid rgba(255,255,255,.1); }
+  .quest-title { font-size:13px; font-weight:bold; margin-bottom:5px; }
+  .quest-prog { font-size:11px; color:#8899aa; }
+  .q-bar { height:6px; background:rgba(0,0,0,.4); border-radius:3px; margin:5px 0; overflow:hidden; }
+  .q-fill { height:100%; background:#00d2ff; transition:width 0.3s; }
   
   .ach { display:flex; align-items:center; gap:10px; padding:8px; border-radius:10px; margin-bottom:6px; background:rgba(255,255,255,.05); border:1px solid transparent; opacity:.4; }
   .ach.unlocked { opacity:1; border-color:rgba(255,215,0,.5); background:rgba(255,215,0,.1); }
@@ -71,8 +89,10 @@
   .ach-desc { font-size:11px; color:#8899aa; }
   
   .btn { width:100%; padding:12px; border-radius:10px; cursor:pointer; font-size:14px; font-weight:bold; border:none; background:linear-gradient(135deg,#7b2ff7,#c77dff); color:#fff; margin-top:10px; transition:all .2s; }
-  .btn:hover { filter:brightness(1.2); box-shadow:0 0 20px rgba(199,125,255,.5); }
-  .btn:disabled { opacity:.4; cursor:not-allowed; filter:none; box-shadow:none; }
+  .btn:hover:not(:disabled) { filter:brightness(1.2); box-shadow:0 0 20px rgba(199,125,255,.5); }
+  .btn:disabled { opacity:.4; cursor:not-allowed; }
+  .skin-btn { padding:8px 12px; border-radius:8px; background:rgba(255,255,255,.1); border:1px solid rgba(255,255,255,.2); color:#fff; cursor:pointer; font-size:12px; margin:3px; transition:all .2s; }
+  .skin-btn.active { background:#00d2ff; border-color:#00d2ff; color:#000; }
   
   @media(max-width:850px) { body{overflow:auto;} .game{flex-direction:column; align-items:center; padding:10px;} .right{width:100%; max-width:450px;} .panel{max-height:50vh;} .planet{width:150px; height:150px;} .score{font-size:36px;} }
 </style>
@@ -82,12 +102,21 @@
 <div class="stars" id="stars"></div>
 <div class="game">
   <div class="left">
+    <div class="profile">
+      <div class="lvl-box">
+        <div class="lvl-badge" id="lvlBadge">Ур. 1</div>
+        <div class="xp-bar"><div class="xp-fill" id="xpFill"></div></div>
+      </div>
+      <div style="font-size:12px; color:#8899aa; font-weight:bold;">XP: <span id="xpText">0/100</span></div>
+    </div>
+
     <div class="stats">
       <div class="label">Космическая энергия</div>
       <div class="score" id="score">0</div>
       <div class="per-sec" id="perSec">0 / сек</div>
       <div class="dm-info" id="dmInfo" style="display:none;">🌌 Тёмная материя: 0</div>
     </div>
+    
     <div class="planet-wrap" id="planetWrap">
       <div class="planet" id="planet"></div>
     </div>
@@ -97,8 +126,9 @@
   <div class="right">
     <div class="tabs">
       <button class="tab active" onclick="switchTab('shop')">🛸 Магазин</button>
+      <button class="tab" onclick="switchTab('quests')">📋 Квесты</button>
       <button class="tab" onclick="switchTab('ach')">🏆 Ачивки</button>
-      <button class="tab" onclick="switchTab('prestige')">🌌 Престиж</button>
+      <button class="tab" onclick="switchTab('settings')">⚙️ Настройки</button>
     </div>
     <div class="panel" id="panel"></div>
   </div>
@@ -108,15 +138,18 @@
 // ===== СОСТОЯНИЕ =====
 let state = {
   score: 0, totalEarned: 0, totalClicks: 0, darkMatter: 0, prestigeCount: 0,
-  combo: 0, lastClick: 0, critHits: 0, cometsCaught: 0, buffX7: 0, saveTime: Date.now(), soundOn: true
+  combo: 0, lastClick: 0, critHits: 0, cometsCaught: 0, buffX7: 0, saveTime: Date.now(),
+  level: 1, xp: 0, xpNeeded: 100, skin: 'default'
 };
 let upgrades = [
   { id:'click', icon:'👆', name:'Усилитель клика', desc:'+1 за клик', base:15, mult:1.5, eff:1, cnt:0, type:'click' },
   { id:'drone', icon:'🤖', name:'Дрон', desc:'+1 в сек', base:25, mult:1.15, eff:1, cnt:0, type:'auto' },
-  { id:'sat', icon:'🛰️', name:'Спутник', desc:'+5 в сек', base:150, mult:1.15, eff:5, cnt:0, type:'auto' },
-  { id:'station', icon:'🏭', name:'Станция', desc:'+25 в сек', base:1000, mult:1.15, eff:25, cnt:0, type:'auto' },
-  { id:'reactor', icon:'⚛️', name:'Реактор', desc:'+150 в сек', base:8000, mult:1.15, eff:150, cnt:0, type:'auto' },
-  { id:'bh', icon:'🌌', name:'Чёрная дыра', desc:'+1000 в сек', base:50000, mult:1.15, eff:1000, cnt:0, type:'auto' },
+  { id:'sat', icon:'🛰️', name:'Спутник', desc:'+10 в сек', base:150, mult:1.15, eff:10, cnt:0, type:'auto' },
+  { id:'station', icon:'🏭', name:'Станция', desc:'+50 в сек', base:1000, mult:1.15, eff:50, cnt:0, type:'auto' },
+  { id:'reactor', icon:'⚛️', name:'Реактор', desc:'+250 в сек', base:8000, mult:1.15, eff:250, cnt:0, type:'auto' },
+  { id:'bh', icon:'🌌', name:'Чёрная дыра', desc:'+2000 в сек', base:50000, mult:1.15, eff:2000, cnt:0, type:'auto' },
+  { id:'quantum', icon:'🔮', name:'Квантовый движок', desc:'+15000 в сек', base:4e5, mult:1.15, eff:15000, cnt:0, type:'auto' },
+  { id:'galaxy', icon:'🌠', name:'Галактика', desc:'+100000 в сек', base:3e6, mult:1.15, eff:100000, cnt:0, type:'auto' },
 ];
 let achievements = [
   { id:'c1', icon:'🎯', name:'Первый шаг', desc:'1 клик', check:()=>state.totalClicks>=1, dmg:1 },
@@ -126,16 +159,18 @@ let achievements = [
   { id:'e1b', icon:'💎', name:'Миллиардер', desc:'Заработай 1B', check:()=>state.totalEarned>=1e9, dmg:15 },
   { id:'crit', icon:'⚡', name:'Критический удар', desc:'Попади критом', check:()=>state.critHits>=1, dmg:2 },
   { id:'comet', icon:'☄️', name:'Ловец комет', desc:'Поймай комету', check:()=>state.cometsCaught>=1, dmg:5 },
+  { id:'lvl5', icon:'🌟', name:'Новичок', desc:'Достигни 5 уровня', check:()=>state.level>=5, dmg:5 },
+  { id:'lvl10', icon:'✨', name:'Опытный', desc:'Достигни 10 уровня', check:()=>state.level>=10, dmg:10 },
   { id:'prest', icon:'🌌', name:'Новая жизнь', desc:'Соверши престиж', check:()=>state.prestigeCount>=1, dmg:20 },
 ];
-let buffs = []; // Активные баффы
-let currentTab = 'shop';
+let quests = [];
 let achBonus = 0;
+let currentTab = 'shop';
+let audioCtx = null;
+let shopBuilt = false; // Флаг: магазин построен
 
 // ===== ЗВУК =====
-let audioCtx = null;
 function playSound(freq, dur, type='sine', vol=0.05) {
-  if (!state.soundOn) return;
   try {
     if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
     if (audioCtx.state === 'suspended') audioCtx.resume();
@@ -157,20 +192,33 @@ function fmt(n) {
   if (n >= 1e3) return (n/1e3).toFixed(2)+'K';
   return Math.floor(n).toString();
 }
-function getCost(u) { return Math.floor(u.base * Math.pow(u.mult, u.cnt)); }
+function getCost(u, amount=1) {
+  let cost = 0;
+  for (let i=0; i<amount; i++) cost += Math.floor(u.base * Math.pow(u.mult, u.cnt + i));
+  return cost;
+}
 function getClickPower() {
   let base = 1 + upgrades[0].cnt * upgrades[0].eff;
-  let mult = (1 + achBonus * 0.01) * (1 + state.darkMatter * 0.1);
+  let mult = (1 + achBonus * 0.01) * (1 + state.darkMatter * 0.1) * (1 + (state.level-1)*0.1);
   return base * mult;
 }
 function getPerSec() {
   let base = upgrades.filter(u=>u.type==='auto').reduce((s,u)=>s+u.cnt*u.eff, 0);
-  let mult = (1 + achBonus * 0.01) * (1 + state.darkMatter * 0.1);
+  let mult = (1 + achBonus * 0.01) * (1 + state.darkMatter * 0.1) * (1 + (state.level-1)*0.1);
   return base * mult;
 }
 function getTotalMult() { return state.buffX7 > 0 ? 7 : 1; }
-
 function addScore(amt) { state.score += amt; state.totalEarned += amt; }
+function addXP(amt) {
+  state.xp += amt;
+  while (state.xp >= state.xpNeeded) {
+    state.xp -= state.xpNeeded;
+    state.level++;
+    state.xpNeeded = Math.floor(state.xpNeeded * 1.5);
+    playSound(1400, 0.4, 'sine', 0.1);
+    showToast(`🌟 Новый уровень: ${state.level}!`);
+  }
+}
 
 // ===== ЧАСТИЦЫ =====
 function spawnParticles(x, y, color='#ffd700', count=8) {
@@ -189,9 +237,16 @@ function floatText(x, y, text, isCrit=false) {
   f.textContent=text; f.style.left=(x-20)+'px'; f.style.top=(y-30)+'px';
   document.body.appendChild(f); setTimeout(()=>f.remove(), 900);
 }
+function showToast(msg) {
+  const t = document.createElement('div');
+  t.style.cssText = 'position:fixed; top:20px; right:20px; background:rgba(255,215,0,0.9); color:#000; padding:10px 20px; border-radius:8px; font-weight:bold; z-index:999; animation:slideIn 0.3s;';
+  t.innerText = msg; document.body.appendChild(t);
+  setTimeout(() => t.remove(), 3000);
+}
 
 // ===== КЛИК =====
-document.getElementById('planet').addEventListener('click', (e) => {
+document.getElementById('planet').addEventListener('pointerdown', (e) => {
+  e.preventDefault();
   const now = Date.now();
   if (now - state.lastClick < 800) state.combo = Math.min(state.combo + 1, 50);
   else state.combo = 1;
@@ -203,26 +258,53 @@ document.getElementById('planet').addEventListener('click', (e) => {
   else playSound(440 + Math.random()*100, 0.05, 'sine', 0.03);
 
   power = Math.floor(power);
-  addScore(power);
+  addScore(power); addXP(1);
   state.totalClicks++;
   
   floatText(e.clientX, e.clientY, (isCrit?'💥 ':'+')+fmt(power), isCrit);
   spawnParticles(e.clientX, e.clientY, isCrit?'#ff3b3b':'#ffd700', isCrit?15:8);
   
+  let qc = quests.find(q => q.type === 'click');
+  if (qc) qc.prog++;
+  
   checkAch(); updateUI();
 });
 
-// ===== ПОКУПКА =====
-function buy(u) {
-  const c = getCost(u);
-  if (state.score < c) return;
-  state.score -= c; u.cnt++;
-  playSound(600, 0.1, 'triangle', 0.05);
-  checkAch(); updateUI();
+// ===== ПОКУПКА (Исправлено) =====
+window.buy = function(index, amount) {
+  let u = upgrades[index];
+  const c = getCost(u, amount);
+  if (state.score >= c) {
+    state.score -= c; 
+    u.cnt += amount;
+    addXP(5 * amount);
+    playSound(600, 0.1, 'triangle', 0.05);
+    
+    let qb = quests.find(q => q.type === 'buy');
+    if (qb) qb.prog += amount;
+    
+    checkAch(); updateUI();
+  }
+};
+
+// ===== КВЕСТЫ =====
+function generateQuests() {
+  quests = [
+    { id:'q1', type:'click', title:'Сделай 50 кликов', target:50, prog:0, reward:()=>{ addScore(500); showToast('🎁 +500 Энергии!'); } },
+    { id:'q2', type:'buy', title:'Купи 5 улучшений', target:5, prog:0, reward:()=>{ addScore(1000); showToast('🎁 +1000 Энергии!'); } },
+    { id:'q3', type:'earn', title:'Заработай 5000', target:5000, prog:0, reward:()=>{ state.darkMatter+=1; showToast('🎁 +1 Тёмная материя!'); } },
+  ];
 }
+window.claimQuest = function(id) {
+  const q = quests.find(x => x.id === id);
+  if (q && q.prog >= q.target) {
+    q.reward();
+    q.prog = 0; q.target = Math.floor(q.target * 2);
+    checkAch(); updateUI();
+  }
+};
 
 // ===== СПЕЦ. СОБЫТИЯ =====
-// Золотая планета
 setInterval(() => {
   if (Math.random() < 0.3 && state.buffX7 <= 0) {
     const wrap = document.getElementById('planetWrap');
@@ -238,7 +320,6 @@ setInterval(() => {
   }
 }, 20000);
 
-// Комета
 setInterval(() => {
   if (Math.random() < 0.5) {
     const wrap = document.getElementById('planetWrap');
@@ -247,7 +328,8 @@ setInterval(() => {
     c.onclick = (e) => {
       c.remove(); state.cometsCaught++;
       const bonus = Math.max(50, Math.floor(getPerSec()*15));
-      addScore(bonus); floatText(e.clientX, e.clientY, '☄️ +'+fmt(bonus), true);
+      addScore(bonus); addXP(10);
+      floatText(e.clientX, e.clientY, '☄️ +'+fmt(bonus), true);
       playSound(1000, 0.25, 'sine', 0.1); spawnParticles(e.clientX, e.clientY, '#66ffff', 20);
       checkAch(); updateUI();
     };
@@ -261,41 +343,47 @@ function checkAch() {
     if (!a.unlocked && a.check()) {
       a.unlocked = true; achBonus += a.dmg;
       playSound(1200, 0.2, 'sine', 0.08);
-      // Маленький тост (уведомление) в углу
-      const t = document.createElement('div');
-      t.style.cssText = 'position:fixed; top:20px; right:20px; background:rgba(255,215,0,0.9); color:#000; padding:10px 20px; border-radius:8px; font-weight:bold; z-index:999; animation:slideIn 0.3s;';
-      t.innerText = '🏆 ' + a.name; document.body.appendChild(t);
-      setTimeout(() => t.remove(), 3000);
+      showToast('🏆 ' + a.name);
       updateUI();
     }
   });
 }
 
-// ===== ПРЕСТИЖ =====
-function getPrestigeGain() { return Math.floor(Math.sqrt(state.totalEarned / 1e6)); }
-function doPrestige() {
-  const gain = getPrestigeGain();
-  if (gain < 1) return;
-  if (confirm(`Сбросить прогресс и получить ${gain} Тёмной Материи?\n(Каждая единица даёт +10% ко всему доходу)`)) {
-    state.darkMatter += gain; state.prestigeCount++;
-    state.score = 0; state.totalEarned = 0; state.totalClicks = 0;
-    upgrades.forEach(u => u.cnt = 0);
-    playSound(1600, 0.4, 'sine', 0.1);
-    checkAch(); updateUI();
-  }
-}
+// ===== СКИНЫ =====
+window.changeSkin = function(skin) {
+  if (skin === 'earth' && state.level < 5) return;
+  if (skin === 'gas' && state.level < 10) return;
+  if (skin === 'ice' && state.level < 15) return;
+  state.skin = skin;
+  updateUI();
+};
 
 // ===== UI =====
-function switchTab(tab) {
+window.switchTab = function(tab) {
   currentTab = tab;
-  document.querySelectorAll('.tab').forEach((t,i) => t.classList.toggle('active', ['shop','ach','prestige'][i]===tab));
+  document.querySelectorAll('.tab').forEach((t) => t.classList.remove('active'));
+  if(tab === 'shop') document.querySelectorAll('.tab')[0].classList.add('active');
+  if(tab === 'quests') document.querySelectorAll('.tab')[1].classList.add('active');
+  if(tab === 'ach') document.querySelectorAll('.tab')[2].classList.add('active');
+  if(tab === 'settings') document.querySelectorAll('.tab')[3].classList.add('active');
+  shopBuilt = false; // При смене вкладки пересобираем магазин
   updateUI();
-}
+};
 
 function updateUI() {
+  // Обновляем только цифры
   document.getElementById('score').innerText = fmt(state.score);
   document.getElementById('perSec').innerText = fmt(getPerSec()) + ' / сек';
+  document.getElementById('lvlBadge').innerText = 'Ур. ' + state.level;
+  document.getElementById('xpText').innerText = Math.floor(state.xp) + '/' + state.xpNeeded;
+  document.getElementById('xpFill').style.width = (state.xp / state.xpNeeded * 100) + '%';
   
+  const planet = document.getElementById('planet');
+  planet.className = 'planet';
+  if (state.skin === 'earth') planet.classList.add('skin-earth');
+  if (state.skin === 'gas') planet.classList.add('skin-gas');
+  if (state.skin === 'ice') planet.classList.add('skin-ice');
+
   if (state.darkMatter > 0) {
     const dm = document.getElementById('dmInfo'); dm.style.display='block';
     dm.innerText = `🌌 Тёмная материя: ${state.darkMatter} (+${state.darkMatter*10}%)`;
@@ -307,21 +395,66 @@ function updateUI() {
   } else { comboEl.classList.remove('active'); }
 
   const p = document.getElementById('panel');
+
+  // Если магазин уже построен, просто обновляем доступность кнопок и цены
+  if (currentTab === 'shop' && shopBuilt) {
+    upgrades.forEach((u, index) => {
+      const c1 = getCost(u, 1);
+      const c10 = getCost(u, 10);
+      const btn1 = document.getElementById(`btn1-${index}`);
+      const btn10 = document.getElementById(`btn10-${index}`);
+      const costText = document.getElementById(`cost-${index}`);
+      const cntText = document.getElementById(`cnt-${index}`);
+      
+      if (btn1) btn1.disabled = state.score < c1;
+      if (btn10) btn10.disabled = state.score < c10;
+      if (costText) costText.innerText = `💰 ${fmt(c1)}`;
+      if (cntText) cntText.innerText = u.cnt;
+    });
+    return;
+  }
+
+  // Полная перестройка панели
   let html = '';
 
   if (currentTab === 'shop') {
     html = '<h2 style="text-align:center;font-size:16px;margin-bottom:15px;color:#00d2ff">🛸 Улучшения</h2>';
-    upgrades.forEach(u => {
-      const c = getCost(u);
-      const dis = state.score < c ? 'locked' : '';
-      html += `<div class="item ${dis}" onclick="buy(upgrades.find(x=>x.id==='${u.id}'))">
+    upgrades.forEach((u, index) => {
+      const c1 = getCost(u, 1);
+      const c10 = getCost(u, 10);
+      html += `<div class="item">
         <div class="item-icon">${u.icon}</div>
-        <div class="item-info"><div class="item-name">${u.name}</div><div class="item-cost">💰 ${fmt(c)}</div></div>
-        <div class="item-count">${u.cnt}</div>
+        <div class="item-info">
+          <div class="item-name">${u.name}</div>
+          <div class="item-cost" id="cost-${index}">💰 ${fmt(c1)}</div>
+        </div>
+        <div class="item-count" id="cnt-${index}">${u.cnt}</div>
+        <div class="buy-btns">
+          <button class="buy-btn" id="btn1-${index}" onclick="buy(${index}, 1)">Купить 1</button>
+          <button class="buy-btn btn-small" id="btn10-${index}" onclick="buy(${index}, 10)">Купить 10</button>
+        </div>
       </div>`;
     });
+    shopBuilt = true;
+    p.innerHTML = html;
   } 
+  else if (currentTab === 'quests') {
+    shopBuilt = false;
+    html = '<h2 style="text-align:center;font-size:16px;margin-bottom:15px;color:#ffd700">📋 Квесты</h2>';
+    quests.forEach(q => {
+      const pct = Math.min(100, q.prog / q.target * 100);
+      const done = q.prog >= q.target;
+      html += `<div class="quest">
+        <div class="quest-title">${q.title}</div>
+        <div class="q-bar"><div class="q-fill" style="width:${pct}%"></div></div>
+        <div class="quest-prog">${Math.floor(q.prog)} / ${q.target}</div>
+        <button class="btn" style="padding:6px; font-size:12px; margin-top:8px;" onclick="claimQuest('${q.id}')" ${done?'':'disabled'}>Забрать награду</button>
+      </div>`;
+    });
+    p.innerHTML = html;
+  }
   else if (currentTab === 'ach') {
+    shopBuilt = false;
     html = '<h2 style="text-align:center;font-size:16px;margin-bottom:15px;color:#ffd700">🏆 Достижения</h2>';
     achievements.forEach(a => {
       html += `<div class="ach ${a.unlocked ? 'unlocked' : ''}">
@@ -330,23 +463,27 @@ function updateUI() {
         <div style="color:#ffd700;font-size:12px;font-weight:bold">+${a.dmg}%</div>
       </div>`;
     });
+    p.innerHTML = html;
   }
-  else if (currentTab === 'prestige') {
-    const gain = getPrestigeGain();
-    html = `<h2 style="text-align:center;font-size:16px;margin-bottom:15px;color:#c77dff">🌌 Престиж</h2>
-      <p style="text-align:center;font-size:13px;color:#8899aa;margin-bottom:15px;">Сбросьте прогресс, чтобы навсегда увеличить доход!</p>
-      <div style="text-align:center;font-size:32px;color:#c77dff;font-weight:bold;margin:20px 0;">${gain} 🌌</div>
-      <button class="btn" onclick="doPrestige()" ${gain<1?'disabled':''}>Совершить престиж</button>
-      <div style="text-align:center;font-size:12px;color:#8899aa;margin-top:15px;">Всего престижей: ${state.prestigeCount}</div>
+  else if (currentTab === 'settings') {
+    shopBuilt = false;
+    html = `<h2 style="text-align:center;font-size:16px;margin-bottom:15px;color:#00d2ff">🎨 Скины планеты</h2>
+      <div style="text-align:center">
+        <button class="skin-btn ${state.skin==='default'?'active':''}" onclick="changeSkin('default')">Красная</button>
+        <button class="skin-btn ${state.skin==='earth'?'active':''}" onclick="changeSkin('earth')" ${state.level<5?'disabled':''}>Земля (Ур.5)</button>
+        <button class="skin-btn ${state.skin==='gas'?'active':''}" onclick="changeSkin('gas')" ${state.level<10?'disabled':''}>Газовый (Ур.10)</button>
+        <button class="skin-btn ${state.skin==='ice'?'active':''}" onclick="changeSkin('ice')" ${state.level<15?'disabled':''}>Ледяная (Ур.15)</button>
+      </div>
+      <button class="btn" style="background:#ff3b3b; margin-top:20px;" onclick="if(confirm('Удалить весь прогресс?')){localStorage.clear(); location.reload();}">🗑 Сбросить прогресс</button>
     `;
+    p.innerHTML = html;
   }
-  p.innerHTML = html;
 }
 
-// ===== СОХРАНЕНИЕ И ОФФЛАЙН =====
+// ===== СОХРАНЕНИЕ =====
 function save() {
   state.saveTime = Date.now();
-  localStorage.setItem('spaceClickerUltimate', JSON.stringify({
+  localStorage.setItem('spaceClickerV3', JSON.stringify({
     s: state, c: upgrades.map(u=>u.cnt), a: achievements.map(a=>a.unlocked)
   }));
 }
@@ -354,28 +491,31 @@ setInterval(save, 5000);
 window.addEventListener('beforeunload', save);
 
 function load() {
-  const raw = localStorage.getItem('spaceClickerUltimate');
-  if (!raw) return;
+  const raw = localStorage.getItem('spaceClickerV3');
+  if (!raw) { generateQuests(); return; }
   try {
     const d = JSON.parse(raw);
     if (d.s) state = { ...state, ...d.s };
     if (d.c) d.c.forEach((cnt, i) => { if(upgrades[i]) upgrades[i].cnt = cnt; });
     if (d.a) d.a.forEach((unl, i) => { if(achievements[i]) { achievements[i].unlocked = unl; if(unl) achBonus += achievements[i].dmg; } });
     
-    // Оффлайн доход (макс 8 часов)
     const away = Math.min((Date.now() - (state.saveTime || Date.now()))/1000, 8*3600);
     const offline = getPerSec() * away * 0.5;
     if (offline > 10) {
       addScore(offline);
-      setTimeout(()=>alert(`💤 Пока тебя не было, дроны добыли:\n+${fmt(offline)} энергии!`), 500);
+      setTimeout(()=>alert(`💤 Пока тебя не было:\n+${fmt(offline)} энергии!`), 500);
     }
-  } catch(e) { console.warn('Ошибка загрузки', e); }
+  } catch(e) { console.warn(e); }
+  generateQuests();
 }
 
-// ===== ГЛАВНЫЙ ЦИКЛ =====
+// ===== ЦИКЛ =====
 setInterval(() => {
   const gain = getPerSec() * 0.1;
   addScore(gain * getTotalMult());
+  
+  let qe = quests.find(q => q.type === 'earn');
+  if (qe) qe.prog += gain * getTotalMult();
   
   if (state.buffX7 > 0) { state.buffX7 -= 0.1; if (state.buffX7 <= 0) state.buffX7 = 0; }
   checkAch();
@@ -383,7 +523,6 @@ setInterval(() => {
 }, 100);
 
 // ===== СТАРТ =====
-// Генерация фона
 const starsEl = document.getElementById('stars');
 for(let i=0; i<150; i++) {
   const s = document.createElement('div'); s.className='star';
@@ -391,7 +530,6 @@ for(let i=0; i<150; i++) {
   s.style.cssText = `width:${sz}px;height:${sz}px;left:${Math.random()*100}%;top:${Math.random()*100}%;animation-delay:${Math.random()*3}s`;
   starsEl.appendChild(s);
 }
-// Анимация для тоста
 const style = document.createElement('style');
 style.innerHTML = `@keyframes slideIn { from{transform:translateX(120%);opacity:0} to{transform:translateX(0);opacity:1} }`;
 document.head.appendChild(style);

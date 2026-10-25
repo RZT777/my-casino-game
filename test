@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Обезьяна или нет?</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    min-height: 100vh; display: flex; align-items: center; justify-content: center;
+    background: radial-gradient(circle at 50% 0%, #3a1c71, #1a1a2e);
+    font-family: 'Segoe UI', system-ui, sans-serif; color: #fff; padding: 16px;
+  }
+  .card {
+    background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 24px; padding: 32px 24px; max-width: 460px; width: 100%;
+    text-align: center; box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+  }
+  h1 { font-size: 24px; margin-bottom: 4px; }
+  .sub { color: #8b93a7; font-size: 13px; margin-bottom: 20px; }
+  .emoji { font-size: 70px; margin: 4px 0 14px; }
+  .q { font-size: 19px; font-weight: 600; min-height: 80px; display: flex; align-items: center; justify-content: center; line-height: 1.35; margin-bottom: 20px; }
+  .btns { display: flex; gap: 12px; justify-content: center; }
+  button {
+    border: none; border-radius: 14px; padding: 14px 24px; font-size: 16px;
+    font-weight: 700; cursor: pointer; color: #fff; flex: 1; max-width: 160px;
+    transition: transform .12s;
+  }
+  button:active { transform: scale(0.95); }
+  .yes { background: linear-gradient(135deg,#11998e,#38ef7d); }
+  .no { background: linear-gradient(135deg,#cb2d3e,#ef473a); }
+  .again { background: rgba(255,255,255,0.15); margin-top: 20px; width: 100%; max-width: none; }
+  .verdict { font-size: 21px; font-weight: 800; margin: 12px 0 8px; color: #ffd166; }
+  .desc { font-size: 14px; color: #a8b0c2; line-height: 1.55; }
+  .counter { font-size: 12px; color: #6b7280; margin-top: 18px; }
+  .hidden { display: none; }
+</style>
+</head>
+<body>
+<div class="card">
+  <h1>🐒 Обезьяна или нет?</h1>
+  <p class="sub">Тест точный. Отвечай честно.</p>
+
+  <div id="game">
+    <div class="emoji" id="emoji">🙈</div>
+    <div class="q" id="question"></div>
+    <div class="btns">
+      <button class="yes" onclick="answer()">Да</button>
+      <button class="no" onclick="answer()">Нет</button>
+    </div>
+    <div class="counter" id="counter"></div>
+  </div>
+
+  <div id="result" class="hidden">
+    <div class="emoji" id="rEmoji"></div>
+    <div class="verdict" id="rTitle"></div>
+    <div class="desc" id="rDesc"></div>
+    <button class="again" onclick="restart()">Ещё раз 🔄</button>
+  </div>
+</div>
+
+<script>
+// Вопросы абсурдные — ответ ни на что не влияет
+const questions = [
+  "Ты когда-нибудь смотрел на банан и чувствовал, что он смотрит в ответ?",
+  "Если бы тебе предложили стать обезьяной на один день — ты бы согласился?",
+  "Ты умеешь открывать банан без рук?",
+  "Ты когда-нибудь задумывался, почему у обезьян нет ипотеки?",
+  "Ты бы съел банан, который пролежал под диваном неделю?",
+  "Ты считаешь, что арахис — это валюта?",
+  "Ты когда-нибудь висел на ветке и думал о жизни?",
+  "Если бы твой друг превратился в обезьяну, ты бы заметил?",
+  "Ты бы променял телефон на банан?",
+  "Ты когда-нибудь чесал голову и находил там что-то интересное?",
+  "Обезьяны умнее людей? (отвечай честно)",
+  "Ты бы хотел иметь хвост?"
+];
+
+// Рандомные вердикты — не зависят от ответов
+const verdicts = [
+  { e:"🐒", t:"ТЫ ОБЕЗЬЯНА. БЕЗ ВАРИАНТОВ.", d:"Смирись. Тест не ошибается. Бананы уже ждут тебя. Другу передай, что он тоже." },
+  { e:"🙊", t:"Ты обезьяна, но скрываешь это", d:"Ты слишком хорошо притворяешься человеком. Подозрительно. Настоящий человек так не притворяется." },
+  { e:"🧍", t:"Ты человек. Скучный.", d:"Поздравляем, ты человек. Теперь иди работай, плати налоги и не мешай обезьянам веселиться." },
+  { e:"🤖", t:"Ты не обезьяна и не человек", d:"Ты робот. Тест это понял. Не пытайся отрицать, мы видим твой процессор." },
+  { e:"🦧", t:"Ты — ОРАНГУТАН", d:"Не обезьяна, но близко. Ты сильный, мудрый и немного медленный. Уважение." },
+  { e:"🍌", t:"Ты — БАНАН", d:"Ты не обезьяна. Ты — бана
+
+
+н. Тебя съедят. Извини." },
+  { e:"🐵", t:"Ты обезьяна-стажёр", d:"Почти получилось. Ещё немного бананов — и повысят до полноценной обезьяны." },
+  { e:"👑", t:"ЦАРЬ ОБЕЗЬЯН", d:"Ты не просто обезьяна. Ты вожак. Все остальные — твои подданные. Включая друга." },
+  { e:"💩", t:"Ты не обезьяна. Ты...", d:"Тест не знает, что ты такое. Тест в замешательстве. Пожалуйста, покинь джунгли." },
+  { e:"🐒", t:"ОБЕЗЬЯНА 100%", d:"Тест проверил дважды. Ты обезьяна. Не спорь с наукой. Иди ешь банан." },
+  { e:"🙈", t:"Ты обезьяна, которая не хочет знать", d:"Ты закрыл глаза руками, но это не помогло. Ты обезьяна. Мы всё видели." },
+  { e:"🧠", t:"Ты обезьяна-интеллектуал", d:"Ты читаешь книги, но всё равно хочешь банан. Это называется «высокоразвитая обезьяна»." }
+];
+
+let current = 0;
+const emojis = ["🙈","🐵","🙉","🐒","🙊","🍌","🌴","🥜","🦧","💩"];
+
+function render() {
+  const q = document.getElementById("question");
+  q.textContent = questions[current];
+  q.style.opacity = 0;
+  setTimeout(() => q.style.opacity = 1, 50);
+  document.getElementById("emoji").textContent = emojis[current % emojis.length];
+  document.getElementById("counter").textContent = `Вопрос ${current + 1} из ${questions.length}`;
+}
+
+function answer() {
+  current++;
+  if (current < questions.length) render();
+  else showResult();
+}
+
+function showResult() {
+  document.getElementById("game").classList.add("hidden");
+  const r = document.getElementById("result");
+  r.classList.remove("hidden");
+
+  const v = verdicts[Math.floor(Math.random() * verdicts.length)];
+  document.getElementById("rEmoji").textContent = v.e;
+  document.getElementById("rTitle").textContent = v.t;
+  document.getElementById("rDesc").textContent = v.d;
+}
+
+function restart() {
+  current = 0;
+  document.getElementById("result").classList.add("hidden");
+  document.getElementById("game").classList.remove("hidden");
+  render();
+}
+
+render();
+</script>
+</body>
+</html>

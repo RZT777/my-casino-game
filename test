@@ -8,45 +8,56 @@
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body {
     min-height: 100vh; display: flex; align-items: center; justify-content: center;
-    background: radial-gradient(circle at 50% 0%, #3a1c71, #1a1a2e);
+    background: radial-gradient(circle at 50% 0%, #2b1055, #0f0f1a);
     font-family: 'Segoe UI', system-ui, sans-serif; color: #fff; padding: 16px;
   }
   .card {
-    background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.15);
-    border-radius: 24px; padding: 32px 24px; max-width: 460px; width: 100%;
-    text-align: center; box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+    background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 20px; padding: 30px 20px; max-width: 440px; width: 100%;
+    text-align: center; box-shadow: 0 15px 40px rgba(0,0,0,0.6);
+    position: relative; overflow: hidden;
   }
-  h1 { font-size: 24px; margin-bottom: 4px; }
-  .sub { color: #8b93a7; font-size: 13px; margin-bottom: 20px; }
-  .emoji { font-size: 70px; margin: 4px 0 14px; }
-  .q { font-size: 19px; font-weight: 600; min-height: 80px; display: flex; align-items: center; justify-content: center; line-height: 1.35; margin-bottom: 20px; }
-  .btns { display: flex; gap: 12px; justify-content: center; }
+  h1 { font-size: 22px; margin-bottom: 5px; text-transform: uppercase; letter-spacing: 1px;}
+  .sub { color: #7b8396; font-size: 13px; margin-bottom: 25px; }
+  .emoji { font-size: 75px; margin: 10px 0 15px; line-height: 1; }
+  .q { 
+    font-size: 18px; font-weight: 600; min-height: 85px; 
+    display: flex; align-items: center; justify-content: center; 
+    line-height: 1.4; margin-bottom: 25px; transition: opacity 0.2s ease;
+  }
+  .btns { display: flex; gap: 10px; justify-content: center; }
   button {
-    border: none; border-radius: 14px; padding: 14px 24px; font-size: 16px;
-    font-weight: 700; cursor: pointer; color: #fff; flex: 1; max-width: 160px;
-    transition: transform .12s;
+    border: none; border-radius: 10px; padding: 14px 20px; font-size: 16px;
+    font-weight: 700; cursor: pointer; color: #fff; flex: 1;
+    transition: transform 0.1s, filter 0.2s;
   }
-  button:active { transform: scale(0.95); }
-  .yes { background: linear-gradient(135deg,#11998e,#38ef7d); }
-  .no { background: linear-gradient(135deg,#cb2d3e,#ef473a); }
-  .again { background: rgba(255,255,255,0.15); margin-top: 20px; width: 100%; max-width: none; }
-  .verdict { font-size: 21px; font-weight: 800; margin: 12px 0 8px; color: #ffd166; }
-  .desc { font-size: 14px; color: #a8b0c2; line-height: 1.55; }
-  .counter { font-size: 12px; color: #6b7280; margin-top: 18px; }
+  button:hover { filter: brightness(1.2); }
+  button:active { transform: scale(0.96); }
+  .yes { background: #2e7d32; }
+  .no { background: #c62828; }
+  .again { background: rgba(255,255,255,0.1); margin-top: 25px; width: 100%; border: 1px solid rgba(255,255,255,0.2);}
+  .verdict { font-size: 20px; font-weight: 800; margin: 0 0 10px; color: #ffca28; line-height: 1.2;}
+  .desc { font-size: 14px; color: #b0b8c8; line-height: 1.5; white-space: pre-line; }
+  .counter { font-size: 12px; color: #5c6370; margin-top: 20px; }
   .hidden { display: none; }
+  
+  .progress-bar {
+    position: absolute; bottom: 0; left: 0; height: 3px; 
+    background: #ffca28; transition: width 0.3s ease; width: 0%;
+  }
 </style>
 </head>
 <body>
 <div class="card">
   <h1>🐒 Обезьяна или нет?</h1>
-  <p class="sub">Тест точный. Отвечай честно.</p>
+  <p class="sub">Не ври. Я вижу.</p>
 
   <div id="game">
     <div class="emoji" id="emoji">🙈</div>
     <div class="q" id="question"></div>
     <div class="btns">
-      <button class="yes" onclick="answer()">Да</button>
-      <button class="no" onclick="answer()">Нет</button>
+      <button class="yes" id="btn-yes">Да</button>
+      <button class="no" id="btn-no">Нет</button>
     </div>
     <div class="counter" id="counter"></div>
   </div>
@@ -55,12 +66,13 @@
     <div class="emoji" id="rEmoji"></div>
     <div class="verdict" id="rTitle"></div>
     <div class="desc" id="rDesc"></div>
-    <button class="again" onclick="restart()">Ещё раз 🔄</button>
+    <button class="again" id="btn-restart">Заново 🔄</button>
   </div>
+  
+  <div class="progress-bar" id="progress"></div>
 </div>
 
 <script>
-// Вопросы абсурдные — ответ ни на что не влияет
 const questions = [
   "Ты когда-нибудь смотрел на банан и чувствовал, что он смотрит в ответ?",
   "Если бы тебе предложили стать обезьяной на один день — ты бы согласился?",
@@ -76,60 +88,114 @@ const questions = [
   "Ты бы хотел иметь хвост?"
 ];
 
-// Рандомные вердикты — не зависят от ответов
-const verdicts = [
-  { e:"🐒", t:"ТЫ ОБЕЗЬЯНА. БЕЗ ВАРИАНТОВ.", d:"Смирись. Тест не ошибается. Бананы уже ждут тебя. Другу передай, что он тоже." },
-  { e:"🙊", t:"Ты обезьяна, но скрываешь это", d:"Ты слишком хорошо притворяешься человеком. Подозрительно. Настоящий человек так не притворяется." },
-  { e:"🧍", t:"Ты человек. Скучный.", d:"Поздравляем, ты человек. Теперь иди работай, плати налоги и не мешай обезьянам веселиться." },
-  { e:"🤖", t:"Ты не обезьяна и не человек", d:"Ты робот. Тест это понял. Не пытайся отрицать, мы видим твой процессор." },
-  { e:"🦧", t:"Ты — ОРАНГУТАН", d:"Не обезьяна, но близко. Ты сильный, мудрый и немного медленный. Уважение." },
-  { e:"🍌", t:"Ты — БАНАН", d:"Ты не обезьяна. Ты — бана
-
-
-н. Тебя съедят. Извини." },
-  { e:"🐵", t:"Ты обезьяна-стажёр", d:"Почти получилось. Ещё немного бананов — и повысят до полноценной обезьяны." },
-  { e:"👑", t:"ЦАРЬ ОБЕЗЬЯН", d:"Ты не просто обезьяна. Ты вожак. Все остальные — твои подданные. Включая друга." },
-  { e:"💩", t:"Ты не обезьяна. Ты...", d:"Тест не знает, что ты такое. Тест в замешательстве. Пожалуйста, покинь джунгли." },
-  { e:"🐒", t:"ОБЕЗЬЯНА 100%", d:"Тест проверил дважды. Ты обезьяна. Не спорь с наукой. Иди ешь банан." },
-  { e:"🙈", t:"Ты обезьяна, которая не хочет знать", d:"Ты закрыл глаза руками, но это не помогло. Ты обезьяна. Мы всё видели." },
-  { e:"🧠", t:"Ты обезьяна-интеллектуал", d:"Ты читаешь книги, но всё равно хочешь банан. Это называется «высокоразвитая обезьяна»." }
+// Концовки для тех, кто постоянно жмет "Да"
+const endingsYes = [
+  { e:"🐒", t:"ТЫ ОБЕЗЬЯНА. ТОЧКА.", d:"Ты на всё соглашался. Тест не ошибается. Бананы уже ждут. Другу передай, что он тоже." },
+  { e:"👑", t:"ЦАРЬ ОБЕЗЬЯН", d:"Ты на всё соглашался. Ты не просто обезьяна, ты вожак. Все остальные — твои подданные. Включая твою маму." },
+  { e:"🍌", t:"ТЫ — БАНАН", d:"Ты так уверенно соглашался, что сам стал бананом. Тебя съедят. Извини, но такова жизнь." },
+  { e:"🤡", t:"ТЫ НАИВНАЯ ОБЕЗЬЯНА", d:"Ты слишком доверчивый. Нажимал «Да» на всё подряд. Тебя легко обмануть. Иди ешь банан." }
 ];
 
-let current = 0;
+// Концовки для тех, кто всё отрицает (жмет "Нет")
+const endingsNo = [
+  { e:"🧍", t:"Ты человек. Скучный.", d:"Ты всё отрицал. Поздравляем, ты человек. Теперь иди работай, плати налоги и не мешай обезьянам веселиться." },
+  { e:"🤖", t:"Ты робот-отказник", d:"Ты отрицал всё. Тест понял: ты робот. Не пытайся врать, мы видим твой процессор." },
+  { e:"🙈", t:"ОБЕЗЬЯНА-СТРАУС", d:"Ты постоянно нажимал «Нет», пряча голову в песок. Это не помогло. Ты обезьяна. Мы всё видели." },
+  { e:"💩", t:"Ты — НЕЧТО ИНОЕ", d:"Ты слишком упрямый. Тест в замешательстве. Ты не обезьяна и не человек. Пожалуйста, покинь джунгли и не позорься." }
+];
+
+// Концовки для тех, кто отвечал по-разному
+const endingsMixed = [
+  { e:"🙊", t:"Ты обезьяна, но скрываешь это", d:"Ты отвечал по-разному. Слишком хорошо притворяешься человеком. Подозрительно. Настоящий человек так не притворяется." },
+  { e:"🐵", t:"Ты обезьяна-стажёр", d:"Твои ответы были неопределенными. Почти получилось. Ещё немного бананов — и повысят до полноценной обезьяны." },
+  { e:"🧠", t:"Ты обезьяна-интеллектуал", d:"Ты думал над каждым вопросом. Ты читаешь книги, но всё равно хочешь банан. Это называется «высокоразвитая обезьяна»." },
+  { e:"🎭", t:"Ты — ЛИЦЕМЕР", d:"Ты отвечал то так, то эдак. Ты пытался казаться нормальным, но тест видит твою обезьянью сущность." }
+];
+
+// Секретная концовка для тех, кто высчитывал 6 на 6
+const secretEnding = { 
+  e:"🤡", 
+  t:"СЕКРЕТНАЯ КОНЦОВКА", 
+  d:"Ты специально ответил 6 раз «Да» и 6 раз «Нет», чтобы найти секрет. Тест раскусил тебя. Ты не мост между мирами, ты просто задрот. И да, ты обезьяна." 
+};
+
 const emojis = ["🙈","🐵","🙉","🐒","🙊","🍌","🌴","🥜","🦧","💩"];
 
+let current = 0;
+let stats = { yes: 0, no: 0 };
+
+const elQuestion = document.getElementById("question");
+const elEmoji = document.getElementById("emoji");
+const elCounter = document.getElementById("counter");
+const elProgress = document.getElementById("progress");
+const elGame = document.getElementById("game");
+const elResult = document.getElementById("result");
+
 function render() {
-  const q = document.getElementById("question");
-  q.textContent = questions[current];
-  q.style.opacity = 0;
-  setTimeout(() => q.style.opacity = 1, 50);
-  document.getElementById("emoji").textContent = emojis[current % emojis.length];
-  document.getElementById("counter").textContent = `Вопрос ${current + 1} из ${questions.length}`;
+  elQuestion.style.opacity = 0;
+  setTimeout(() => {
+    elQuestion.textContent = questions[current];
+    elEmoji.textContent = emojis[current % emojis.length];
+    elCounter.textContent = `${current + 1} / ${questions.length}`;
+    
+    const percent = ((current) / questions.length) * 100;
+    elProgress.style.width = `${percent}%`;
+    
+    elQuestion.style.opacity = 1;
+  }, 150);
 }
 
-function answer() {
+function handleAnswer(isYes) {
+  if (isYes) stats.yes++;
+  else stats.no++;
+  
   current++;
-  if (current < questions.length) render();
-  else showResult();
+  if (current < questions.length) {
+    render();
+  } else {
+    showResult();
+  }
 }
 
 function showResult() {
-  document.getElementById("game").classList.add("hidden");
-  const r = document.getElementById("result");
-  r.classList.remove("hidden");
+  elGame.classList.add("hidden");
+  elResult.classList.remove("hidden");
+  elProgress.style.width = "100%";
+  
+  let selectedEnding;
+  const y = stats.yes;
+  const n = stats.no;
 
-  const v = verdicts[Math.floor(Math.random() * verdicts.length)];
-  document.getElementById("rEmoji").textContent = v.e;
-  document.getElementById("rTitle").textContent = v.t;
-  document.getElementById("rDesc").textContent = v.d;
+  // Логика выбора концовки
+  if (y === 6 && n === 6) {
+    selectedEnding = secretEnding; 
+  } else if (y >= 9) {
+    selectedEnding = endingsYes[Math.floor(Math.random() * endingsYes.length)];
+  } else if (n >= 9) {
+    selectedEnding = endingsNo[Math.floor(Math.random() * endingsNo.length)];
+  } else {
+    selectedEnding = endingsMixed[Math.floor(Math.random() * endingsMixed.length)];
+  }
+  
+  document.getElementById("rEmoji").textContent = selectedEnding.e;
+  document.getElementById("rTitle").textContent = selectedEnding.t;
+  
+  const statsText = `\n\n(Да: ${stats.yes} | Нет: ${stats.no})`;
+  document.getElementById("rDesc").textContent = selectedEnding.d + statsText;
 }
 
 function restart() {
   current = 0;
-  document.getElementById("result").classList.add("hidden");
-  document.getElementById("game").classList.remove("hidden");
+  stats = { yes: 0, no: 0 };
+  elResult.classList.add("hidden");
+  elGame.classList.remove("hidden");
+  elProgress.style.width = "0%";
   render();
 }
+
+document.getElementById("btn-yes").addEventListener("click", () => handleAnswer(true));
+document.getElementById("btn-no").addEventListener("click", () => handleAnswer(false));
+document.getElementById("btn-restart").addEventListener("click", restart);
 
 render();
 </script>
